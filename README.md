@@ -1,3 +1,3 @@
 # PyTorch
-Training DL with PyTorch 
+Training using PyTorch framework 
 
