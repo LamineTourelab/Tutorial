@@ -1,3 +1,3 @@
 # PyTorch
-Training using PyTorch framework 
+In this repository, you will find all models developped in PyTorch. 
 
