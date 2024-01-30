@@ -2,7 +2,7 @@
 ############################ Analyse lipidomique des foies de souris  #################################
 #######################################################################################################
 
-setRepositories()### permet de définir le lieu où sont entreposés les packages
+setRepositories()### permet de dÃ©finir le lieu oÃ¹ sont entreposÃ©s les packages
 library("beeswarm")
 library("reshape2")
 library("ggplot2")
@@ -36,8 +36,8 @@ library("heatmap3")
 library("pamr")
 update.packages(checkBuilt=TRUE, ask=FALSE)####update packages
 
-rm(list=ls())### permet d'éliminer les éléments uploadés lors d'une analyse précédente= session précédente
-ls()### verification que la liste est vide ou dan RStudio que la fenêtre "Envoronnement est vide#
+rm(list=ls())### permet d'Ã©liminer les Ã©lÃ©ments uploadÃ©s lors d'une analyse prÃ©cÃ©dente= session prÃ©cÃ©dente
+ls()### verification que la liste est vide ou dan RStudio que la fenÃªtre "Envoronnement est vide#
 
 
 #############################################################################################
@@ -46,7 +46,7 @@ ls()### verification que la liste est vide ou dan RStudio que la fenêtre "Envoro
 
 
 #############################################################################################
-####################  l'analyse du 28/08/2015 apres pamr à sélectionner 38 lipides
+####################  l'analyse du 28/08/2015 apres pamr Ã  sÃ©lectionner 38 lipides
 #################### le but de l'analyse RF qui suit est d'utiliser le fichier non normaliser "dataframesouriswork1"
 #################### au lieu du fichier extrat de l'analyse pam "resultfoie2"
 
@@ -58,16 +58,16 @@ View(dataframesouriswork1)
 
 
 ########################################################################################
-########### dans le dossier "dataframesouriswork1" il faut sélectionner que le foie  ###
+########### dans le dossier "dataframesouriswork1" il faut sÃ©lectionner que le foie  ###
 
 dataframe <-subset(dataframesouriswork1, Tissue=="liver")
 View(dataframe)
 
 
-###########  analyse des 38 lipides trouvés dans le foie après pamr analyse pour threshold 2.301  #########
+###########  analyse des 38 lipides trouvÃ©s dans le foie aprÃ¨s pamr analyse pour threshold 2.301  #########
 usedVar =cbind("Cholesterol","CholC16","CholC18","DG1618","C51TG161616","C53TG161618","C55TG161818","C57TG181818","FAME_140","FAME_160","FAME_180","FAME_200","FAME_161w7","FAME_181w7","FAME_181w9","FAME_201w9","FAME_182w6","FAME_202w6","FAME_183w3","FAME_183w6","FAME_204w6","FAME_225w3","EICO_12HETE","EICO_18HEPE","PC160160","PC160161","PC160181","PC160182","PC161182","PC180181","PC181181","PC181182","PC182182","PC182204","PI181181","PI181182","PE180226","PE181205")
 
-############# boxplots correspondat à chaque variable   ##########
+############# boxplots correspondat Ã  chaque variable   ##########
 library("reshape2")
 lipid <- dataframe[,c("groupe",usedVar)]#### remplacer groups par groupe>>>> qu'est que cela donne???
 df.m <- melt(lipid, id.var = "groupe")
@@ -107,7 +107,7 @@ plot(lipid.pv)
 ask.bak <- par()$ask
 par(ask=TRUE)
 pvrect(lipid.pv)
-print(lipid.pv, digits=4)###digits = nbre de chiffres après la virgule
+print(lipid.pv, digits=4)###digits = nbre de chiffres aprÃ¨s la virgule
 print(lipid.pv, digits=3)
 x11()
 msplot(lipid.pv, edges=c(2,4,6,7))
@@ -125,14 +125,14 @@ x11()
 heatmap.2(z, Colv=as.dendrogram(lipid.pv$hclust), col = greenred(256), scale="row", margins=c(5,10), density="density", xlab = "Patients", ylab= "Lipids", main = "heatmap(Lipidomic souris foie lipides pamr)",breaks=seq(-1.5,1.5,length.out=257))
 
 
-#### analyse en composante principal des résultats de "lipid" resultat de pamr
+#### analyse en composante principal des rÃ©sultats de "lipid" resultat de pamr
 ### 
 res.pcaa <- PCA(lipids, graph=T)
 sourisfoie <- HCPC(res.pcaa, nb.clust=3, cluster.CA="rows",order=TRUE,nb.par=3,proba=0.05,consol=TRUE, iter.max=10)
 
 lipidsss <- data.frame(groupsssss=dataframe$groups,dataframe[, c(usedVar)])
 lipidss <- data.frame(groupsssss=dataframe$groups,lipids)
-#### analyse en composante principal des résultats de "lipid" resultat de pamr
+#### analyse en composante principal des rÃ©sultats de "lipid" resultat de pamr
 ### 
 res.pcaa <- PCA(lipidss, scale.unit=TRUE, ncp=40, quali.sup=c(1:1), graph = FALSE)
 sourisfoie <- HCPC(res.pcaa, nb.clust=3, cluster.CA="rows",order=TRUE,nb.par=3,proba=0.05,consol=TRUE, iter.max=10)
@@ -151,7 +151,7 @@ dimdesc(res.pcaa)$Dim.3$quanti[,1]
 z1 <- as.matrix(lipids)
 
 
-### détermine le meilleur "mtry"
+### dÃ©termine le meilleur "mtry"
 bestmtry <- tuneRF(z1, group, ntreeTry=12, stepFactor=1.5,improve=0.01, trace=TRUE, plot=TRUE, dobest=T)
 ### mtry=12
 
@@ -161,18 +161,18 @@ x11()
 varImpPlot(lipid.rf)
 
 ####################  MDSplot=Multi-dimensional Scaling Plot of Proximity matrix from randomForest #######
-##### Tracer les coordonnées d'échelle de la matrice de proximité de Forest aléatoire ####################
+##### Tracer les coordonnÃ©es d'Ã©chelle de la matrice de proximitÃ© de Forest alÃ©atoire ####################
 ### "PCA" des "groupe"= "Control", "NAFLD" et "NASH" en fonction de l'analyse Randome Forest "lipid.rf ###
 ##########################################################################################################
 
 x11()
-MDSplot(lipid.rf, dataframe$groups, palette=rep(1, 3), pch=as.numeric(dataframe$groups))   ### "groups" correspoind à la colonne des 3 groupe "control", HFD et MCD
+MDSplot(lipid.rf, dataframe$groups, palette=rep(1, 3), pch=as.numeric(dataframe$groups))   ### "groups" correspoind Ã  la colonne des 3 groupe "control", HFD et MCD
 legend(x=0, y=0, legend=c("Control", "HFD", "MCD"), pch= c(1:3))
 
 ################# alternative pour faire un RF "on regarde les branche pas les feuilles ############
 #### dans ce cas on n'utilise pas la matrice mais un "vecteur=B" ou il y a les groupes  ############
-##### groupe= "Control", "NAFL1", "NAFL2", "NAFL3", "NASH" qui représentent les "branches" #########
-###### c'est pour ça que le "MDS" qui en découle est plus jolie ####################################
+##### groupe= "Control", "NAFL1", "NAFL2", "NAFL3", "NASH" qui reprÃ©sentent les "branches" #########
+###### c'est pour Ã§a que le "MDS" qui en dÃ©coule est plus jolie ####################################
 
 
 
@@ -220,18 +220,18 @@ x11()
 barplot(sort(data.cforest.varimp), horiz=TRUE, xlab="Variable Importance in mydata", las=1, ylbias=1)
 abline(v=abs(min(data.cforest.varimp)), col="red", lty="longdash", lwd=2) 
 
-########## Cette approche permet de sélectionner le plus petit nombre de variables 
-########## capablent de discriminer à la foies les branches et les feuilles
-########## ce qui permet de déterminer du coup le OOB: Out of bag error rate.
+########## Cette approche permet de sÃ©lectionner le plus petit nombre de variables 
+########## capablent de discriminer Ã  la foies les branches et les feuilles
+########## ce qui permet de dÃ©terminer du coup le OOB: Out of bag error rate.
 
 
 
 
-########## Cette approche permet de sélectionner le plus petit nombre de variables 
-########## capablent de discriminer à la foies les branches et les feuilles
-########## ce qui permet de déterminer du coup le OOB: Out of bag error rate.
+########## Cette approche permet de sÃ©lectionner le plus petit nombre de variables 
+########## capablent de discriminer Ã  la foies les branches et les feuilles
+########## ce qui permet de dÃ©terminer du coup le OOB: Out of bag error rate.
 
-z1  <- as.matrix(lipids) ##### on reprend la matrice créee au début
+z1  <- as.matrix(lipids) ##### on reprend la matrice crÃ©ee au dÃ©but
 cl <-dataframe$groups ###### correspond aux "branches" = les 5 groupes   "Control", "NAFL1", "NAFL2", "NAFL3", "NASH"
 rf.vs1 <- varSelRF(z1, cl, ntree = ncol(z1)*10, ntreeIterat = 2000, vars.drop.frac = 0.2,  mtryFactor = 25, whole.range = TRUE, recompute.var.imp = FALSE, returnFirstForest = TRUE, keep.forest = TRUE)
 rf.vs1
@@ -263,11 +263,11 @@ selProbPlot(rf.vsb, k= c(9,20), legend = TRUE, xlegend = 15, ylegend =0.8)
 
 
 
-####  lipides majeur après Randome Forest (voir le graphique Variable Importnace"
+####  lipides majeur aprÃ¨s Randome Forest (voir le graphique Variable Importnace"
 usedVarInter =cbind("Cholesterol","CholC16","CholC18","FAME_140","FAME_200","FAME_161w7","FAME_181w7","FAME_225w3","EICO_12HETE","EICO_18HEPE","PC160160","PC160161","PC160181","PC160182","PC161182","PC182182","PC182204","PI181181","PI181182","PE180226","PE181205")
 
 
-############# boxplots correspondat à chaque variable   ##########
+############# boxplots correspondat Ã  chaque variable   ##########
 ##### library("reshape2")
 lipidInter1 <- dataframe[,c("groups",usedVarInter)]
 df.m <- melt(lipidInter1, id.var = "groups")
@@ -293,21 +293,21 @@ heatmap.2(z32, Colv=as.dendrogram(dv32), col = greenred(256), scale="row", margi
 
 
 
-#### analyse en composante principal des résultats de "lipid" resultat de pamr
+#### analyse en composante principal des rÃ©sultats de "lipid" resultat de pamr
 ### 
 res.pcaa32 <- PCA(lipidInter, graph=T)
 sourisfoie32 <- HCPC(res.pcaa32, nb.clust=3, cluster.CA="rows",order=TRUE,nb.par=3,proba=0.05,consol=TRUE, iter.max=10)
 
 lipids32 <- data.frame(groupe=dataframe$groups,dataframe[, c(usedVarInter)])
 lipidss32 <- data.frame(groupe=dataframe$groups,lipidInter)
-#### analyse en composante principal des résultats de "lipid" resultat de pamr
+#### analyse en composante principal des rÃ©sultats de "lipid" resultat de pamr
 ### 
 res.pcaa32 <- PCA(lipidss32, scale.unit=TRUE, ncp=40, quali.sup=c(1:1), graph = FALSE)
 sourisfoie32 <- HCPC(res.pcaa32, nb.clust=3, cluster.CA="rows",order=TRUE,nb.par=3,proba=0.05,consol=TRUE, iter.max=10)
-dimdesc(res.pcaa32) ###permet de définir les dimension de la PCA pour lesquels les lipides son discriminant
-dimdesc(res.pcaa32, axes=1:5) ###on regarde les dimension de la PCA de 1 à 5
+dimdesc(res.pcaa32) ###permet de dÃ©finir les dimension de la PCA pour lesquels les lipides son discriminant
+dimdesc(res.pcaa32, axes=1:5) ###on regarde les dimension de la PCA de 1 Ã  5
 x11()
-plotellipses(res.pcaa32, axis=c(1,2)) ### on représente la PCA sur les dimension significative ici 1 et 3 d'après le resultat dimdesc
+plotellipses(res.pcaa32, axis=c(1,2)) ### on reprÃ©sente la PCA sur les dimension significative ici 1 et 3 d'aprÃ¨s le resultat dimdesc
 
 dimdesc(res.pcaa32)$Dim.1$quanti[,1]
 dimdesc(res.pcaa32)$Dim.2$quanti[,1]
@@ -317,7 +317,7 @@ dimdesc(res.pcaa32)$Dim.3$quanti[,1]
 ##################################################################################################
 ##################################################################################################
 
-############### 15 lipides commun foie et serum à partir des 38 lipides foie et 38 lipides serum
+############### 15 lipides commun foie et serum Ã  partir des 38 lipides foie et 38 lipides serum
 
 ####################################################################################################
 
@@ -325,7 +325,7 @@ dimdesc(res.pcaa32)$Dim.3$quanti[,1]
 usedVarInter15 =cbind("Cholesterol","CholC16","CholC18","FAME_140","FAME_160","FAME_180","FAME_161w7","FAME_202w6","FAME_183w3","FAME_183w6","FAME_204w6","FAME_225w3","PC180181","PC181181","PC181182")
 
 
-############# boxplots correspondat à chaque variable   ##########
+############# boxplots correspondat Ã  chaque variable   ##########
 ##### library("reshape2")
 lipidInter15 <- dataframe[,c("groups",usedVarInter15)]
 df.m15 <- melt(lipidInter15, id.var = "groups")
@@ -352,21 +352,21 @@ heatmap.2(z15, Colv=as.dendrogram(dv15), col = greenred(256), scale="row", margi
 
 
 
-#### analyse en composante principal des résultats de "lipid" resultat de pamr
+#### analyse en composante principal des rÃ©sultats de "lipid" resultat de pamr
 ### 
 res.pcaa15 <- PCA(lipidInter15, graph=T)
 sourisfoie15 <- HCPC(res.pcaa15, nb.clust=3, cluster.CA="rows",order=TRUE,nb.par=3,proba=0.05,consol=TRUE, iter.max=10)
 
 lipids15 <- data.frame(groupe=dataframe$groups,dataframe[, c(usedVarInter15)])
 lipidss15 <- data.frame(groupe=dataframe$groups,lipidInter15)
-#### analyse en composante principal des résultats de "lipid" resultat de pamr
+#### analyse en composante principal des rÃ©sultats de "lipid" resultat de pamr
 ### 
 res.pcaa15 <- PCA(lipidss15, scale.unit=TRUE, ncp=40, quali.sup=c(1:1), graph = FALSE)
 sourisfoie15 <- HCPC(res.pcaa15, nb.clust=3, cluster.CA="rows",order=TRUE,nb.par=3,proba=0.05,consol=TRUE, iter.max=10)
-dimdesc(res.pcaa15) ###permet de définir les dimension de la PCA pour lesquels les lipides son discriminant
-dimdesc(res.pcaa15, axes=1:5) ###on regarde les dimension de la PCA de 1 à 5
+dimdesc(res.pcaa15) ###permet de dÃ©finir les dimension de la PCA pour lesquels les lipides son discriminant
+dimdesc(res.pcaa15, axes=1:5) ###on regarde les dimension de la PCA de 1 Ã  5
 x11()
-plotellipses(res.pcaa15, axis=c(1,2)) ### on représente la PCA sur les dimension significative ici 1 et 3 d'après le resultat dimdesc
+plotellipses(res.pcaa15, axis=c(1,2)) ### on reprÃ©sente la PCA sur les dimension significative ici 1 et 3 d'aprÃ¨s le resultat dimdesc
 
 dimdesc(res.pcaa15)$Dim.1$quanti[,1]
 dimdesc(res.pcaa15)$Dim.2$quanti[,1]
@@ -400,10 +400,10 @@ abline(model2, col="green")
 model
 model1
 model2
-summary(model)[[8]]#### permet d'extraire le R2 de la fonction linéaire
+summary(model)[[8]]#### permet d'extraire le R2 de la fonction linÃ©aire
 summary(model1)[[8]]
 summary(model2)[[8]]
-anova(model)#### permet de tester R2 de la fonction linéaire pour voir p
+anova(model)#### permet de tester R2 de la fonction linÃ©aire pour voir p
 anova(model1)
 anova(model2)
 
@@ -421,10 +421,10 @@ abline(model2, col="green")
 model
 model1
 model2
-summary(model)[[8]]#### permet d'extraire le R2 de la fonction linéaire
+summary(model)[[8]]#### permet d'extraire le R2 de la fonction linÃ©aire
 summary(model1)[[8]]
 summary(model2)[[8]]
-anova(model)#### permet de tester R2 de la fonction linéaire pour voir p
+anova(model)#### permet de tester R2 de la fonction linÃ©aire pour voir p
 anova(model1)
 anova(model2)
 
@@ -443,10 +443,10 @@ abline(model2, col="green")
 model
 model1
 model2
-summary(model)[[8]]#### permet d'extraire le R2 de la fonction linéaire
+summary(model)[[8]]#### permet d'extraire le R2 de la fonction linÃ©aire
 summary(model1)[[8]]
 summary(model2)[[8]]
-anova(model)#### permet de tester R2 de la fonction linéaire pour voir p
+anova(model)#### permet de tester R2 de la fonction linÃ©aire pour voir p
 anova(model1)
 anova(model2)
 
@@ -463,10 +463,10 @@ abline(model2, col="green")
 model
 model1
 model2
-summary(model)[[8]]#### permet d'extraire le R2 de la fonction linéaire
+summary(model)[[8]]#### permet d'extraire le R2 de la fonction linÃ©aire
 summary(model1)[[8]]
 summary(model2)[[8]]
-anova(model)#### permet de tester R2 de la fonction linéaire pour voir p
+anova(model)#### permet de tester R2 de la fonction linÃ©aire pour voir p
 anova(model1)
 anova(model2)
 
@@ -483,10 +483,10 @@ abline(model2, col="green")
 model
 model1
 model2
-summary(model)[[8]]#### permet d'extraire le R2 de la fonction linéaire
+summary(model)[[8]]#### permet d'extraire le R2 de la fonction linÃ©aire
 summary(model1)[[8]]
 summary(model2)[[8]]
-anova(model)#### permet de tester R2 de la fonction linéaire pour voir p
+anova(model)#### permet de tester R2 de la fonction linÃ©aire pour voir p
 anova(model1)
 anova(model2)
 
@@ -507,10 +507,10 @@ abline(model2, col="green")
 model
 model1
 model2
-summary(model)[[8]]#### permet d'extraire le R2 de la fonction linéaire
+summary(model)[[8]]#### permet d'extraire le R2 de la fonction linÃ©aire
 summary(model1)[[8]]
 summary(model2)[[8]]
-anova(model)#### permet de tester R2 de la fonction linéaire pour voir p
+anova(model)#### permet de tester R2 de la fonction linÃ©aire pour voir p
 anova(model1)
 anova(model2)
 
@@ -528,14 +528,14 @@ abline(model2, col="green")
 model
 model1
 model2
-summary(model)[[8]]#### permet d'extraire le R2 de la fonction linéaire
+summary(model)[[8]]#### permet d'extraire le R2 de la fonction linÃ©aire
 summary(model1)[[8]]
 summary(model2)[[8]]
-anova(model)#### permet de tester R2 de la fonction linéaire pour voir p
+anova(model)#### permet de tester R2 de la fonction linÃ©aire pour voir p
 anova(model1)
 anova(model2)
 
-### etc..... avec toutes les varible à tester 
+### etc..... avec toutes les varible Ã  tester 
 
 ########################################################################################################################
 ###################    Correlation des 21 lipides trouver dans le foie avec le serum    #################################
@@ -555,7 +555,7 @@ anova(model2)
 usedVarInter =cbind("Cholesterol","EICO_12HETE","EICO_18HEPE","PC160160","PC160182","PC161182","PC182182","PC182204","PE181205","PE180226","PI181181")
 
 
-############# boxplots correspondat à chaque variable   ##########
+############# boxplots correspondat Ã  chaque variable   ##########
 ##### library("reshape2")
 lipidInter1 <- dataframe[,c("groups",usedVarInter)]
 df.m <- melt(lipidInter1, id.var = "groups")
@@ -568,7 +568,7 @@ p + facet_wrap( ~ variable, scales="free")
 
 
 
-detach(dataframesouriswork1)### on sort de la session, on se détache
-rm(list=ls())### permet d'éliminer les éléments uploadés lors d'une analyse précédente= session précédente
-ls()### verification que la liste est vide ou dan RStudio que la fenêtre "Envoronnement est vide#
+detach(dataframesouriswork1)### on sort de la session, on se dÃ©tache
+rm(list=ls())### permet d'Ã©liminer les Ã©lÃ©ments uploadÃ©s lors d'une analyse prÃ©cÃ©dente= session prÃ©cÃ©dente
+ls()### verification que la liste est vide ou dan RStudio que la fenÃªtre "Envoronnement est vide#
 
