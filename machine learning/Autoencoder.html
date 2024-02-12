@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyMUdIO6iSUC4rzMrOfIS8Au",
+      "authorship_tag": "ABX9TyNoemluTfVZWA8Z78G2flKu",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -1739,7 +1739,7 @@
         "colab_type": "text"
       },
       "source": [
-        "<a href=\"https://colab.research.google.com/github/LamineTou/PyTorch/blob/main/Autoencoder.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+        "<a href=\"https://colab.research.google.com/github/LamineTourelab/Tutorial/blob/main/machine%20learning/Autoencoder.html\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
       ]
     },
     {
@@ -2006,7 +2006,7 @@
         "         Remember the input of the encoder is the same as the last output of decoder\n",
         "        '''\n",
         "        super(Autoencoder, self).__init__()\n",
-        "        \n",
+        "\n",
         "        self.encoder = nn.Sequential(\n",
         "            nn.Linear(28*28, 128),\n",
         "            nn.ReLU(),\n",
@@ -2023,7 +2023,7 @@
         "\n",
         "    def forward(self, x):\n",
         "        \"\"\"\n",
-        "        The forward function takes in an image (x) and returns the reconstructed image. \n",
+        "        The forward function takes in an image (x) and returns the reconstructed image.\n",
         "        The latent is also returned in this case while it can be used for the visualization of latent representation\n",
         "        \"\"\"\n",
         "        latent = self.encoder(x)\n",
@@ -2091,7 +2091,7 @@
     {
       "cell_type": "markdown",
       "source": [
-        "### Train Model "
+        "### Train Model"
       ],
       "metadata": {
         "id": "k1ET1n6iyb_X"
@@ -2156,15 +2156,15 @@
         "dataloader = DataLoader(mnist_data, batch_size=512, shuffle=True)\n",
         "for data in dataloader:\n",
         "        img, labels = data\n",
-        "        img = img.view(img.size(0), -1)    \n",
-        "        model.cpu()    \n",
+        "        img = img.view(img.size(0), -1)\n",
+        "        model.cpu()\n",
         "        _,latent = model(img)\n",
         "        break\n",
         "\n",
-        "d = {0: 'red', 1: \"green\", 2: \"blue\", 3: \"maroon\", 4: \"yellow\", \n",
+        "d = {0: 'red', 1: \"green\", 2: \"blue\", 3: \"maroon\", 4: \"yellow\",\n",
         "     5: \"pink\", 6: \"brown\", 7: \"black\", 8: \"teal\", 9: \"aqua\"}\n",
         "\n",
-        "colors = []       \n",
+        "colors = []\n",
         "for e in labels.numpy():\n",
         "    colors.append(d[e])\n",
         "\n",
@@ -2173,7 +2173,7 @@
         "ax.set_xlabel('Latent feature 1')\n",
         "ax.set_ylabel('Latent feature 2')\n",
         "\n",
-        "ax.scatter(latent[:,0].detach().numpy(), latent[:,1].detach().numpy(), \n",
+        "ax.scatter(latent[:,0].detach().numpy(), latent[:,1].detach().numpy(),\n",
         "           c=list(colors))"
       ],
       "metadata": {
@@ -2388,7 +2388,7 @@
         "        kernel_size: Size of the convolving kernel\n",
         "        stride : controls the stride for the cross-correlation, a single number or a tuple.\n",
         "        padding : controls the amount of padding applied to the input.\n",
-        "        in_channels : 3. In CIFAR10, each image has 3 color channels and is 32x32 pixels large. \n",
+        "        in_channels : 3. In CIFAR10, each image has 3 color channels and is 32x32 pixels large.\n",
         "        So we can use 3 channels instead of using the black-and-white\n",
         "        out_channels : 6\n",
         "        As always the input of the decoder is the output of the encoder and the decoder reconstruct the initial data (so output is 3).\n",
