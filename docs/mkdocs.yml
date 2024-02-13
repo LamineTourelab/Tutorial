@@ -5,17 +5,21 @@ site_description: A repository dedicated for education. Lets learn together
 
 repo_url: https://github.com/LamineTourelab/Tutorial
 repo_name: GitHub
-edit_uri: https://github.com/LamineTourelab/Tutorial/tree/main/docs
+edit_uri: https://github.com/LamineTourelab/Tutorial/tree/main/docs/sources
 
 # docs_dir: sources
 #theme:
 #    name: null
 #    custom_dir: 'custom_theme/'
 theme: yeti
-
+markdown_extensions:
+  - tables
+  - fenced_code
+  - mdx_math:
+      enable_dollar_delimiter: True #for use of inline $..$
 
 
 nav:
-  - Home: index.md
+  - Home: 'index.md'
   - Machine learning:
-      - USER_GUIDE_INDEX.md
+      - "USER_GUIDE_INDEX.md"
