@@ -1,1 +1,11 @@
 site_name: My Docs
+site_url: https://LamineTourelab.github.io/Tutorial
+site_author: Lamine TOURE
+site_description: A repository dedicated for education. Lets learn together 
+
+repo_url: https://github.com/LamineTourelab/Tutorial
+repo_name: GitHub
+edit_uri: https://github.com/LamineTourelab/Tutorial/tree/main/docs
+
+nav:
+  - Home: index.md
