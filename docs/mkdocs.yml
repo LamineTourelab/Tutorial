@@ -7,7 +7,7 @@ repo_url: https://github.com/LamineTourelab/Tutorial
 repo_name: GitHub
 edit_uri: https://github.com/LamineTourelab/Tutorial/tree/main/docs
 
-docs_dir: sources
+# docs_dir: sources
 #theme:
 #    name: null
 #    custom_dir: 'custom_theme/'
