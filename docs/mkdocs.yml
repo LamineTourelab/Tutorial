@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-site_name: My Docs
-=======
+
 site_name: Tutorial web pages
->>>>>>> 54ef556e27424da7c3ee8414238fcd4cd106c002
 site_url: https://LamineTourelab.github.io/Tutorial
 site_author: Lamine TOURE
 site_description: A repository dedicated for education. Lets learn together 
@@ -11,6 +8,7 @@ repo_url: https://github.com/LamineTourelab/Tutorial
 repo_name: GitHub
 edit_uri: https://github.com/LamineTourelab/Tutorial/tree/main/docs
 
+docs_dir: sources
 #theme:
 #    name: null
 #    custom_dir: 'custom_theme/'
