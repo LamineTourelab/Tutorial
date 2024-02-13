@@ -14,21 +14,7 @@ docs_dir: sources
 #    custom_dir: 'custom_theme/'
 theme: yeti
 
-markdown_extensions:
-  - tables
-  - fenced_code
-  - mdx_math:
-      enable_dollar_delimiter: True #for use of inline $..$
-extra_javascript:
-  - https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML
-  - mathjaxhelper.js
-extra_css:
-  - cinder/css/base.css
-  - cinder/css/bootstrap.min.css
-  - cinder/css/font-awesome.min.css
 
-copyright: Copyright &copy; 2014-2023 <a href="https://sebastianraschka.com">Sebastian Raschka</a>
-google_analytics: ['UA-38457794-2', 'LamineTourelab.github.io/Tutorial/']
 
 nav:
   - Home: index.md
