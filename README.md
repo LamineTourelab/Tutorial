@@ -6,7 +6,11 @@ In this repository, you will find tutorials about AI in general and specifically
 The repository is divided into differents sections where each section contains tutorials about an erea in data science field like NLP, Image processing and analysis, graph etc. Fill free to propose update or to collaborate. I tried to do all the code in colab to make it easy for reproducibility. Some code are not mine!.
 
 ```
-pip install mkdocs
-mkdocs new Name
-
+conda create -n mkdoc python=3.11  
+pip install -U mkdocs
+pip install mkdocs-jupyter
+pip install python-markdown-math
+pip install markdown-callouts
+pip install mdx-gh-links
+pip install mkdocs-click
 ```
