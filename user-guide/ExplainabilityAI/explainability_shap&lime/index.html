@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Lamine TOURE">
+        <link rel="canonical" href="https://LamineTourelab.github.io/Tutorial/user-guide/ExplainabilityAI/explainability_shap%26lime/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Explainability shap&lime - Tutorial web pages</title>
+        <link href="../../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <link href="../../../css/extra.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../../..">Tutorial web pages</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../../notebook.ipynb" class="nav-link">Notebook page</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../../getting-started/" class="nav-link">Getting Started</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">User Guide <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../USER_GUIDE_INDEX/" class="dropdown-item">User Guide Index</a>
+</li>
+                                    
+<li>
+    <a href="../../" class="dropdown-item">None</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Bioinformatics</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../Bioinformatics/SingleCellData/RNA_Velocity_analysis_scVelo/" class="dropdown-item">Getting Started with RNA Velocity</a>
+</li>
+            
+<li>
+    <a href="../../Bioinformatics/SingleCellData/SingleCellData_Preprocessing_with_scanpy/" class="dropdown-item">Installation</a>
+</li>
+            
+<li>
+    <a href="../../Bioinformatics/SingleCellData/Trajectory_inference_With_CellRank/Trajectory_inference_With_CellRank/" class="dropdown-item">Getting Started with CellRank</a>
+</li>
+            
+<li>
+    <a href="../../Bioinformatics/SingleCellData/Readme/" class="dropdown-item">Tutorials</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Machine learning</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../Machine%20learning/Autoencoder/Autoencoder/" class="dropdown-item">Autoencoder</a>
+</li>
+            
+<li>
+    <a href="../../Machine%20learning/DecisionTrees_using_iris_dataset/DecisionTrees_using_iris_dataset/" class="dropdown-item">DecisionTrees using iris dataset</a>
+</li>
+            
+<li>
+    <a href="../../Machine%20learning/Transfer_learning_using_VGG16/Transfer_learning_using_VGG16/" class="dropdown-item">Transfer learning using VGG16</a>
+</li>
+            
+<li>
+    <a href="../../Machine%20learning/tensorflow_API_tutorial/tensorflow_API_tutorial/" class="dropdown-item">tensorflow API tutorial</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">ExplainabilityAI</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="./" class="dropdown-item active">Explainability shap&lime</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">DataViz</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../DataViz/EDA_matplotlib_Dashboard_Dataviz/EDA_matplotlib_Dashboard_Dataviz/" class="dropdown-item">EDA</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../about/release-notes.md" class="dropdown-item">Release Notes</a>
+</li>
+                                    
+<li>
+    <a href="../../../about/contributing.md" class="dropdown-item">Contributing</a>
+</li>
+                                    
+<li>
+    <a href="../../../about/license.md" class="dropdown-item">License</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../../Machine%20learning/tensorflow_API_tutorial/tensorflow_API_tutorial/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../DataViz/EDA_matplotlib_Dashboard_Dataviz/EDA_matplotlib_Dashboard_Dataviz/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/LamineTourelab/Tutorial/tree/main/docs/user-guide/ExplainabilityAI/explainability_shap&lime.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#data-load-and-preprocessing" class="nav-link">Data load and preprocessing</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#expression-data" class="nav-link">Expression data</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#label-data" class="nav-link">label data</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#explainability" class="nav-link">Explainability</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#lime" class="nav-link">Lime</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#shap" class="nav-link">Shap</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#explainability-tools" class="nav-link">Explainability Tools</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#shapash" class="nav-link">Shapash</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#explainerdashboard" class="nav-link">Explainerdashboard</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<pre class="highlight"><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt</code></pre>
+<h1 id="data-load-and-preprocessing">Data load and preprocessing<a class="headerlink" href="#data-load-and-preprocessing" title="Permanent link"></a></h1>
+<h2 id="expression-data">Expression data<a class="headerlink" href="#expression-data" title="Permanent link"></a></h2>
+<pre class="highlight"><code class="language-python">df = pd.read_table("~/Downloads/GLORY_20170922.genes_all_samples_TPM.txt", sep="\t", index_col=0)
+df</code></pre>
+<pre class="highlight"><code class="language-python">df.index = df['hugo_id']
+df = df.drop(['hugo_id'], axis=1)
+df = df.T
+df.head()</code></pre>
+<pre class="highlight"><code class="language-python">df.info()</code></pre>
+<pre class="highlight"><code class="language-python">duplicate_columns = df.columns[df.columns.duplicated()]
+duplicate_columns</code></pre>
+<pre class="highlight"><code class="language-python">df = df.drop(columns=duplicate_columns)
+df.head()</code></pre>
+<h2 id="label-data">label data<a class="headerlink" href="#label-data" title="Permanent link"></a></h2>
+<pre class="highlight"><code class="language-python">samples = pd.read_excel('~/Downloads/GBM_GLORY_sample_info.xlsx', index_col=0)
+samples.head()</code></pre>
+<pre class="highlight"><code class="language-python">Outcome = pd.DataFrame(samples['IDH1_STATUS-sequencing'])
+Outcome.head()</code></pre>
+<pre class="highlight"><code class="language-python">Outcome = Outcome.replace("MUT",1)
+Outcome = Outcome.replace("WT",0)
+Outcome.head()</code></pre>
+<pre class="highlight"><code class="language-python">Outcome = Outcome[Outcome.index.isin(df.index)]
+Outcome.head()</code></pre>
+<pre class="highlight"><code class="language-python">print('Labels counts in Outcome:', np.bincount(Outcome['IDH1_STATUS-sequencing']))</code></pre>
+<p>here we clearly dealing with class imbalance.</p>
+<h3 id="class-imbalance-correct-using-imblearn">Class imbalance correct using imblearn<a class="headerlink" href="#class-imbalance-correct-using-imblearn" title="Permanent link"></a></h3>
+<pre class="highlight"><code class="language-python">#!pip install -U imbalanced-learn</code></pre>
+<pre class="highlight"><code class="language-python">from imblearn.over_sampling import RandomOverSampler
+ros = RandomOverSampler(random_state=0)
+df_resampled, Outcome_resampled = ros.fit_resample(df, Outcome['IDH1_STATUS-sequencing'])</code></pre>
+<pre class="highlight"><code class="language-python">from collections import Counter
+print(sorted(Counter(Outcome_resampled).items()))</code></pre>
+<pre class="highlight"><code class="language-python">print('Labels counts in Outcome:', np.bincount(Outcome_resampled))</code></pre>
+<h1 id="explainability">Explainability<a class="headerlink" href="#explainability" title="Permanent link"></a></h1>
+<h2 id="lime">Lime<a class="headerlink" href="#lime" title="Permanent link"></a></h2>
+<pre class="highlight"><code class="language-python">#!pip install lime
+import lime </code></pre>
+<pre class="highlight"><code class="language-python">X_train, X_test, y_train, y_test = train_test_split(df_resampled, Outcome_resampled, test_size=0.3, random_state=42)
+
+model = xgb.XGBClassifier(objective ='binary:logistic', colsample_bytree = 0.3, learning_rate = 0.1,
+                max_depth = 5, alpha = 10, n_estimators = 10)
+model.fit(X_train, y_train)
+pred= model.predict(X_test)</code></pre>
+<pre class="highlight"><code class="language-python">y_pred = pd.DataFrame(model.predict(X_test), columns=['pred'], index=X_test.index)
+y_pred.head()</code></pre>
+<pre class="highlight"><code class="language-python">explainer = lime_tabular.LimeTabularExplainer(
+    training_data=np.array(X_train),
+    feature_names=X_train.columns,
+    class_names= ['WT', 'MUT'],
+    mode='classification'
+)</code></pre>
+<pre class="highlight"><code class="language-python">random.seed(10)
+# Choose the instance and use it to predict the results. Here I use the 30th (below the 334 patient). 
+exp = explainer.explain_instance(
+    data_row=X_test.iloc[8], 
+    #num_features: maximum number of features present in explanation. I keept default 10.
+    #num_samples: size of the neighborhood to learn the linear model.Default 500.
+    predict_fn=model.predict_proba
+)
+exp.show_in_notebook(show_table=True)</code></pre>
+<pre class="highlight"><code class="language-python"># Show the results as list.
+exp.as_list()</code></pre>
+<pre class="highlight"><code class="language-python">%matplotlib inline
+fig = exp.as_pyplot_figure()</code></pre>
+<pre class="highlight"><code class="language-python">from lime import submodular_pick</code></pre>
+<pre class="highlight"><code class="language-python"># Let's use SP-LIME to return explanations on a few sample data sets 
+# and obtain a non-redundant global decision perspective of the black-box model
+sp_exp = submodular_pick.SubmodularPick(explainer, 
+                                        np.array(X_test),
+                                        model.predict_proba,
+                                        num_features=10,
+                                        num_exps_desired=2)   </code></pre>
+<pre class="highlight"><code class="language-python">[exp.as_pyplot_figure(label=exp.available_labels()[0]) for exp in sp_exp.sp_explanations]
+print('SP-LIME Local Explanations')</code></pre>
+<h2 id="shap">Shap<a class="headerlink" href="#shap" title="Permanent link"></a></h2>
+<pre class="highlight"><code class="language-python">#!pip install shap
+import shap</code></pre>
+<pre class="highlight"><code class="language-python">explainer=shap.Explainer(model)
+shap_values = explainer(X_train)
+shap_contrib = explainer.shap_values(X_test)</code></pre>
+<pre class="highlight"><code class="language-python">#import Javascript
+
+#shap_values
+shap.initjs(),
+shap.plots.force(shap_values)</code></pre>
+<pre class="highlight"><code class="language-python">#shap.plots.waterfall(shap_values[0])</code></pre>
+<pre class="highlight"><code class="language-python"># Global bar plot
+shap.plots.bar(shap_values, max_display=8)</code></pre>
+<pre class="highlight"><code class="language-python"># Local bar plot for the patient 334 (index 8).
+shap.plots.bar(shap_values[8], max_display=8)</code></pre>
+<pre class="highlight"><code class="language-python">shap.plots.beeswarm(shap_values, max_display=8)</code></pre>
+<h1 id="explainability-tools">Explainability Tools<a class="headerlink" href="#explainability-tools" title="Permanent link"></a></h1>
+<h2 id="shapash">Shapash<a class="headerlink" href="#shapash" title="Permanent link"></a></h2>
+<pre class="highlight"><code class="language-python">response_dict = {0: 'WT', 1:'MUT'}</code></pre>
+<pre class="highlight"><code class="language-python">#!pip install shapash</code></pre>
+<pre class="highlight"><code class="language-python">
+#
+from shapash import SmartExplainer
+import tkinter as TK
+
+
+xpl = SmartExplainer(
+    model=model,
+    #backend='shap' is the default.
+    label_dict=response_dict  #Dictionary mapping integer labels to domain names (classification - target values).
+    #preprocessing=encoder,   # Optional: compile step can use inverse_transform method
+    #features_dict=name # optional parameter, specifies label for features name 
+)
+
+xpl.compile(
+   contributions=shap_contrib, # Shap Contributions pd.DataFrame
+    y_pred=y_pred,  #Prediction values (1 column only)
+    x=X_test,  # a preprocessed dataset: Shapash can apply the model to it
+    y_target=y_test #Target values (1 column only). 
+)
+</code></pre>
+<pre class="highlight"><code class="language-python">xpl.plot.features_importance(max_features=10, label=1)
+xpl.plot.scatter_plot_prediction()
+#y_pred
+xpl.filter(max_contrib=10)
+xpl.plot.local_plot(index=334, label='MUT')
+xpl.plot.compare_plot(row_num=[0, 1, 2, 3, 4, 5, 6], max_features=8)
+</code></pre>
+<pre class="highlight"><code class="language-python">#Start WebApp
+app = xpl.run_app(port=8850, title_story='Explanation')
+# Kill the wepapp
+app.kill()</code></pre>
+<h2 id="explainerdashboard">Explainerdashboard<a class="headerlink" href="#explainerdashboard" title="Permanent link"></a></h2>
+<pre class="highlight"><code class="language-python">#!pip install explainerdashboard</code></pre>
+<pre class="highlight"><code class="language-python">from IPython.core.interactiveshell import InteractiveShell
+InteractiveShell.ast_node_interactivity = "all"
+from explainerdashboard import ClassifierExplainer, ExplainerDashboard</code></pre>
+<pre class="highlight"><code class="language-python">patient_idx=X_test.index
+patient_idx</code></pre>
+<pre class="highlight"><code class="language-python">explainerdb = ClassifierExplainer(model, X_test, y_test, 
+                                    X_background=X_train, 
+                                    model_output='y_pred',
+                                    idxs=patient_idx,
+                                    labels=['WT', 'MUT'])</code></pre>
+<pre class="highlight"><code class="language-python">db = ExplainerDashboard(explainerdb)</code></pre>
+<pre class="highlight"><code class="language-python">#Run the dashboard webApp
+db.run(port=8050, mode='external')</code></pre>
+<pre class="highlight"><code class="language-python">db.terminate(8050)</code></pre>
+<pre class="highlight"><code class="language-python"></code></pre>
+<pre class="highlight"><code class="language-python"></code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>Copyright &copy; 2024 <a href="https://twitter.com/ltoure_officiel">Lamine TOURE</a>, Maintained by <a href="https://github.com/LamineTourelab">Lamine TOURE</a>.</p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
