@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Lamine TOURE">
+        <link rel="canonical" href="https://LamineTourelab.github.io/Tutorial/user-guide/Bioinformatics/SingleCellData/RNA_Velocity_analysis_scVelo/">
+        <link rel="shortcut icon" href="../../../../img/favicon.ico">
+        <title>Getting Started with RNA Velocity - Tutorial web pages</title>
+        <link href="../../../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <link href="../../../../css/extra.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../../../..">Tutorial web pages</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../../../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../../../notebook.ipynb" class="nav-link">Notebook page</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../../../getting-started/" class="nav-link">Getting Started</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">User Guide <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../../USER_GUIDE_INDEX/" class="dropdown-item">User Guide Index</a>
+</li>
+                                    
+<li>
+    <a href="../../../" class="dropdown-item">None</a>
+</li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Bioinformatics</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="./" class="dropdown-item active">Getting Started with RNA Velocity</a>
+</li>
+            
+<li>
+    <a href="../SingleCellData_Preprocessing_with_scanpy/" class="dropdown-item">Installation</a>
+</li>
+            
+<li>
+    <a href="../Trajectory_inference_With_CellRank/Trajectory_inference_With_CellRank/" class="dropdown-item">Getting Started with CellRank</a>
+</li>
+            
+<li>
+    <a href="../Readme/" class="dropdown-item">Tutorials</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">Machine learning</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../Machine%20learning/Autoencoder/Autoencoder/" class="dropdown-item">Autoencoder</a>
+</li>
+            
+<li>
+    <a href="../../../Machine%20learning/DecisionTrees_using_iris_dataset/DecisionTrees_using_iris_dataset/" class="dropdown-item">DecisionTrees using iris dataset</a>
+</li>
+            
+<li>
+    <a href="../../../Machine%20learning/Transfer_learning_using_VGG16/Transfer_learning_using_VGG16/" class="dropdown-item">Transfer learning using VGG16</a>
+</li>
+            
+<li>
+    <a href="../../../Machine%20learning/tensorflow_API_tutorial/tensorflow_API_tutorial/" class="dropdown-item">tensorflow API tutorial</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">ExplainabilityAI</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../ExplainabilityAI/explainability_shap%26lime/" class="dropdown-item">Explainability shap&lime</a>
+</li>
+    </ul>
+  </li>
+                                    
+  <li class="dropdown-submenu">
+    <a href="#" class="dropdown-item">DataViz</a>
+    <ul class="dropdown-menu">
+            
+<li>
+    <a href="../../../DataViz/EDA_matplotlib_Dashboard_Dataviz/EDA_matplotlib_Dashboard_Dataviz/" class="dropdown-item">EDA</a>
+</li>
+    </ul>
+  </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../../../about/release-notes.md" class="dropdown-item">Release Notes</a>
+</li>
+                                    
+<li>
+    <a href="../../../../about/contributing.md" class="dropdown-item">Contributing</a>
+</li>
+                                    
+<li>
+    <a href="../../../../about/license.md" class="dropdown-item">License</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a rel="prev" href="../../../../USER_GUIDE_INDEX/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../SingleCellData_Preprocessing_with_scanpy/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/LamineTourelab/Tutorial/tree/main/docs/user-guide/Bioinformatics/SingleCellData/RNA_Velocity_analysis_scVelo.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#getting-started-with-rna-velocity" class="nav-link">Getting Started with RNA Velocity</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#select-only-wt-condition" class="nav-link">Select only WT condition</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#estimate-rna-velocity" class="nav-link">Estimate RNA velocity</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#project-the-velocities" class="nav-link">Project the velocities</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#interprete-the-velocities" class="nav-link">Interprete the velocities</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#identify-important-genes" class="nav-link">Identify important genes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#speed-and-coherence" class="nav-link">Speed and coherence</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#velocity-graph-and-pseudotime" class="nav-link">Velocity graph and pseudotime</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#paga-velocity-graph" class="nav-link">PAGA velocity graph</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#some-more-analysis-for-dynamical-mode" class="nav-link">Some more analysis for dynamical mode</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="getting-started-with-rna-velocity">Getting Started with RNA Velocity<a class="headerlink" href="#getting-started-with-rna-velocity" title="Permanent link"></a></h1>
+<p>RNA velocity is based on bridging measurements to a underlying mechanism, mRNA splicing, with two modes indicating the current and future state [<a href="https://www.embopress.org/doi/full/10.15252/msb.202110282">RNA velocity—current challenges and future perspectives</a>].  It is a method used to predict the future gene expression of a cell based on the measurement of both spliced and unspliced transcripts of mRNA [<a href="https://towardsdatascience.com/rna-velocity-the-cells-internal-compass-cf8d75bb2f89">2</a>].</p>
+<p>RNA velocity could be used to infer the direction of gene expression changes in single-cell RNA sequencing (scRNA-seq) data. It provides insights into the future state of individual cells by using the abundance of unspliced to spliced RNA transcripts. This ratio can indicate the transcriptional dynamics and potential fate of a cell, such as whether it is transitioning from one cell type to another or undergoing differentiation [<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6130801/">RNA velocity of single cells</a>].</p>
+<ul>
+<li><strong>velocyto</strong></li>
+</ul>
+<p>Velocyto is a package for the analysis of expression dynamics in single cell RNA seq data. In particular, it enables estimations of RNA velocities of single cells by distinguishing unspliced and spliced mRNAs in standard single-cell RNA sequencing protocols. It is the first paper proposed the concept of RNA velocity. velocyto predicted RNA velocity by solving the proposed differential equations for each gene [<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6130801/">RNA velocity of single cells</a>]. </p>
+<ul>
+<li><strong>scVelo</strong></li>
+</ul>
+<p>scVelo is a method that solves the full transcriptional dynamics of splicing kinetics using a likelihood-based dynamical model. This generalizes RNA velocity to systems with transient cell states, which are common in development and in response to perturbations. scVelo was applied to disentangling subpopulation kinetics in neurogenesis and pancreatic endocrinogenesis. scVelo demonstrate the capabilities of the dynamical model on various cell lineages in hippocampal dentate gyrus neurogenesis and pancreatic endocrinogenesis [<a href="https://www.nature.com/articles/s41587-020-0591-3">Generalizing RNA velocity to transient cell states through dynamical modeling</a>].</p>
+<p>Here,I will go through the basics of scVelo. The following tutorials go straight into analysis of RNA velocity, latent time, driver identification and many more.</p>
+<p>First of all, the input data for scVelo are two count matrices of pre-mature (unspliced) and mature (spliced) abundances, which were obtained from standard sequencing protocols, using the velocyto.</p>
+<pre class="highlight"><code class="language-python">from platform import python_version
+
+print(python_version())</code></pre>
+<pre class="highlight"><code class="language-python">#!pip install numpy==1.23.2 pandas==1.5.3 matplotlib==3.7.3 scanpy==1.9.6 igraph==0.9.8 scvelo==0.2.5 loompy==3.0.6 anndata==0.8.0</code></pre>
+<pre class="highlight"><code class="language-python">#!pip install tqdm 
+#!pip install ipywidgets
+#!pip install pandas==1.1.5 
+#!pip install numpy==1.21.1</code></pre>
+<pre class="highlight"><code class="language-python">import numpy as np
+import pandas as pd
+import matplotlib.pyplot as pl
+import scanpy as sc
+import igraph
+import scvelo as scv
+import loompy as lmp
+import anndata
+import session_info
+import warnings
+warnings.filterwarnings('ignore')</code></pre>
+<pre class="highlight"><code class="language-python"># Set parameters for plots, including size, color, etc.
+scv.settings.verbosity = 3  # show errors(0), warnings(1), info(2), hints(3)
+scv.settings.presenter_view = True  # set max width size for presenter view
+scv.set_figure_params('scvelo')  # for beautified visualization</code></pre>
+<pre class="highlight"><code class="language-python">adata = scv.read('/path/file.h5ad', cache=True)
+adata</code></pre>
+<pre class="highlight"><code class="language-python">adata.obs</code></pre>
+<ul>
+<li>
+<p>Metadata info:
+    The single-cell data consists of 8 different samples-A0 A6 B0 B6 C0 C6 DO D6:</p>
+<p>A- A549 WT Cells with no IFNb pretreatment.</p>
+<p>B- A549 WT Cells, pretreated with 10U of IFNb for 18 hours. </p>
+<p>C- A549 IRF3 K.O Cells with no IFNb pretreatment.</p>
+<p>D- A549 IRF3 K.O Cells, pretreated with 10U of IFNb for 18 hours.</p>
+<p>0- a sample that was not stimulated with vRNA.</p>
+<p>6- a sample that was stimulated with vRNA for 6 hours.</p>
+</li>
+</ul>
+<pre class="highlight"><code class="language-python">adata.obs['batch']</code></pre>
+<h1 id="select-only-wt-condition">Select only WT condition<a class="headerlink" href="#select-only-wt-condition" title="Permanent link"></a></h1>
+<pre class="highlight"><code class="language-python"># adata = adata[
+#     adata.obs['condition'].isin([
+#         'WT',
+#         'WT&amp;IFNb',
+#         'WT&amp;IFNb&amp;vRNA',
+#         'WT&amp;vRNA'
+#     ])
+# ]</code></pre>
+<pre class="highlight"><code class="language-python">adata</code></pre>
+<pre class="highlight"><code class="language-python">%%time
+ldata = scv.read('/path/file.loom', cache=True)
+ldata</code></pre>
+<pre class="highlight"><code class="language-python">scv.utils.clean_obs_names(adata)
+scv.utils.clean_obs_names(ldata)
+adata = scv.utils.merge(adata, ldata)</code></pre>
+<pre class="highlight"><code class="language-python">adata.obs</code></pre>
+<pre class="highlight"><code class="language-python">adata.layers</code></pre>
+<pre class="highlight"><code class="language-python">scv.pl.proportions(adata, groupby="batch")</code></pre>
+<pre class="highlight"><code class="language-python">#adata.obs['condition']=adata.obs['condition'].astype('category')</code></pre>
+<p>Here, the proportions of spliced/unspliced counts are displayed. Depending on the protocol used (Drop-Seq, Smart-Seq, inDrop and 10x Genomics Chromium protocols), we typically have between 10%-25% of unspliced molecules containing intronic sequences. We also advice you to examine the variations on cluster level to verify consistency in splicing efficiency. Here, we find variations, with slightly <strong>lower</strong> unspliced proportions at <strong>Ciliated &amp; Merkels cells</strong>, then <strong><em>higher proportion</em></strong> at <strong><em>Mesangial &amp; Keratinocytes cells</em></strong>.</p>
+<pre class="highlight"><code class="language-python">scv.pl.proportions(adata, groupby="batch")</code></pre>
+<pre class="highlight"><code class="language-python">sc.pl.embedding(adata, basis="umap", color= "batch", wspace=.3)</code></pre>
+<h2 id="estimate-rna-velocity">Estimate RNA velocity<a class="headerlink" href="#estimate-rna-velocity" title="Permanent link"></a></h2>
+<p>RNA velocity estimation can currently be tackled with three existing approaches:</p>
+<p>• steady-state / deterministic model (using steady-state residuals)</p>
+<p>• stochastic model (using second-order moments),</p>
+<p>• dynamical model (using a likelihood-based framework).</p>
+<ul>
+<li>
+<p><strong>The steady-state / deterministic model:</strong>, as being used in velocyto, estimates velocities as follows: Under the assumption that transcriptional phases (induction and repression) last sufficiently long to reach a steady-state equilibrium (active and inactive),<strong><code>velocities are quantified as the deviation of the observed ratio from its steady-state ratio</code></strong>. The equilibrium mRNA levels are approximated with a linear regression on the presumed steady states in the lower and upper quantiles. This simplification makes two fundamental assumptions: a common splicing rate across genes and steady-state mRNA levels to be reflected in the data. It can lead to errors in velocity estimates and cellular states as the assumptions are often violated, in particular when a population comprises multiple heterogeneous subpopulation dynamics.</p>
+</li>
+<li>
+<p><strong>The stochastic model:</strong> aims to better capture the steady states. By treating transcription, splicing and degradation as probabilistic events, the resulting Markov process is approximated by moment equations. By including secondorder moments, <strong><code>it exploits not only the balance of unspliced to spliced mRNA levels but also their covariation</code></strong>. It has been demonstrated on the endocrine pancreas that stochasticity adds valuable information, overall yielding higher consistency than the deterministic model, while remaining as efficient in computation time.</p>
+</li>
+<li>
+<p><strong>The dynamical model:</strong> (most powerful while computationally most expensive) solves the full dynamics of splicing kinetics for each gene. <strong><code>It thereby adapts RNA velocity to widely varying specifications such as non-stationary populations, as does not rely on the restrictions of a common splicing rate or steady states to be sampled</code></strong>.</p>
+<p>The splicing dynamics </p>
+<p><code>𝑑𝑢(𝑡)/𝑑𝑡 = 𝛼𝑘(𝑡) − 𝛽𝑢(𝑡), (4.1)</code> </p>
+<p><code>𝑑𝑠(𝑡)/𝑑𝑡 = 𝛽𝑢(𝑡) − 𝛾𝑠(4.2) (𝑡)</code>,</p>
+<p>is solved in a likelihood-based expectation-maximization framework, <strong><code>by iteratively estimating the parameters of reaction rates and latent cell-specific variables</code></strong>, i.e. transcriptional state k and cell-internal latent time t.It thereby aims to learn the unspliced/spliced phase trajectory. Four transcriptional states are modeled to account for all possible configurations of gene activity: two dynamic transient states (induction and repression) and two steady states (active and inactive) potentially reached after each dynamic transition.</p>
+</li>
+</ul>
+<pre class="highlight"><code class="language-python">scv.pp.filter_genes(adata, min_shared_counts=20)
+scv.pp.normalize_per_cell(adata)
+scv.pp.filter_genes_dispersion(adata, n_top_genes=2000)
+scv.pp.log1p(adata)</code></pre>
+<pre class="highlight"><code class="language-python">scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
+scv.pp.neighbors(adata)
+scv.pp.moments(adata, n_pcs=30, n_neighbors=30)</code></pre>
+<pre class="highlight"><code class="language-python">%%time
+scv.tl.recover_dynamics(adata, n_jobs=4)</code></pre>
+<pre class="highlight"><code class="language-python">%%time
+scv.tl.velocity(adata, mode='dynamical', n_jobs=4)</code></pre>
+<pre class="highlight"><code class="language-python">%%time
+scv.tl.velocity_graph(adata)</code></pre>
+<pre class="highlight"><code class="language-python">adata</code></pre>
+<p>Running the dynamical model can take a while. Hence, you may want to store the results for re-use.</p>
+<pre class="highlight"><code class="language-python">adata.write('/Users/lamine/ShapiraLab/Analysis/Project2/Data/Project2&amp;DynVelo.h5ad', compression='gzip')</code></pre>
+<pre class="highlight"><code class="language-python">#adata = scv.read('/Users/lamine/ShapiraLab/Analysis/Project2/Data/Project2&amp;DynVelo.h5ad', cache=True)</code></pre>
+<pre class="highlight"><code class="language-python">adata</code></pre>
+<pre class="highlight"><code class="language-python">print(adata.var['velocity_genes'].sum(), adata.n_vars)
+top_genes = adata.var_names[adata.var.fit_likelihood.argsort()[::-1]]
+scv.pl.scatter(adata, basis=top_genes[:10], ncols=4, color='batch', wspace=1.5, hspace=1, legend_loc='right margin')</code></pre>
+<p>There are 465 genes being used and 1102 cells.</p>
+<h2 id="project-the-velocities">Project the velocities<a class="headerlink" href="#project-the-velocities" title="Permanent link"></a></h2>
+<pre class="highlight"><code class="language-python">scv.pl.velocity_embedding_stream(adata, basis='umap', color='batch', 
+                                 legend_loc='right margin')</code></pre>
+<pre class="highlight"><code class="language-python">scv.pl.velocity_embedding_grid(adata, basis='umap', color='batch', 
+                          legend_loc='right margin')</code></pre>
+<h2 id="interprete-the-velocities">Interprete the velocities<a class="headerlink" href="#interprete-the-velocities" title="Permanent link"></a></h2>
+<p>See the gif <a href="https://user-images.githubusercontent.com/31883718/80227452-eb822480-864d-11ea-9399-56886c5e2785.gif">here</a> to get an idea of how to interpret a spliced vs. unspliced phase portrait. Gene activity is orchestrated by transcriptional regulation. Transcriptional induction for a particular gene results in an <strong>increase of (newly transcribed) precursor unspliced mRNAs</strong> while, conversely, repression or absence of transcription results in a <strong>decrease of unspliced mRNAs</strong>. Spliced mRNAs is produced from unspliced mRNA and follows the same trend with a time lag. Time is a hidden/latent variable. Thus, the dynamics needs to be inferred from what is actually measured: spliced and unspliced mRNAs as displayed in the phase portrait.</p>
+<pre class="highlight"><code class="language-python">adata</code></pre>
+<pre class="highlight"><code class="language-python">df = scv.get_df(adata, 'rank_genes_groups/names')
+df.head(10)</code></pre>
+<pre class="highlight"><code class="language-python">scv.pl.velocity(adata, ['AC090498.1',  'HLA-B', 'PHLDA2', 'FBXO32', 'IFIT2','EEEF1A1'], color='batch')</code></pre>
+<h2 id="identify-important-genes">Identify important genes<a class="headerlink" href="#identify-important-genes" title="Permanent link"></a></h2>
+<ul>
+<li><strong>By Condition</strong></li>
+</ul>
+<pre class="highlight"><code class="language-python">scv.tl.rank_velocity_genes(adata, groupby='batch', min_corr=.3)
+
+df = scv.DataFrame(adata.uns['rank_velocity_genes']['names'])
+df.head(30)</code></pre>
+<pre class="highlight"><code class="language-python">for condition in ['SS001', 'SS002', 'SS003', 'SS004']:
+    scv.pl.scatter(adata, df[condition][:5], ylabel=condition, color='batch', wspace=.6)</code></pre>
+<h2 id="speed-and-coherence">Speed and coherence<a class="headerlink" href="#speed-and-coherence" title="Permanent link"></a></h2>
+<p>Two more useful stats: - The speed or rate of differentiation is given by the length of the velocity vector. - The coherence of the vector field (i.e., how a velocity vector correlates with its neighboring velocities) provides a measure of confidence.</p>
+<pre class="highlight"><code class="language-python">scv.tl.velocity_confidence(adata)
+keys = 'velocity_length', 'velocity_confidence'
+scv.pl.scatter(adata, c=keys, cmap='coolwarm', perc=[5, 95])</code></pre>
+<pre class="highlight"><code class="language-python">df = adata.obs.groupby('batch')[keys].mean().T
+df.style.background_gradient(cmap='coolwarm', axis=1)</code></pre>
+<h2 id="velocity-graph-and-pseudotime">Velocity graph and pseudotime<a class="headerlink" href="#velocity-graph-and-pseudotime" title="Permanent link"></a></h2>
+<p>We can visualize the velocity graph to portray all velocity-inferred cell-to-cell connections/transitions. It can be confined to high-probability transitions by setting a threshold. </p>
+<pre class="highlight"><code class="language-python">scv.pl.velocity_graph(adata, threshold=.9, color='batch', 
+                          legend_loc='right margin')</code></pre>
+<pre class="highlight"><code class="language-python">#x, y = scv.utils.get_cell_transitions(adata, basis='umap', n_neighbors=10, starting_cell=70)
+#ax = scv.pl.velocity_graph(adata, c='lightgrey', edge_width=.05, show=False)
+#ax = scv.pl.scatter(adata, x=x, y=y, s=120, c='ascending', cmap='gnuplot', ax=ax)</code></pre>
+<p>Finally, based on the velocity graph, a velocity pseudotime can be computed. After inferring a distribution over root cells from the graph, it measures the average number of steps it takes to reach a cell after walking along the graph starting from the root cells.</p>
+<pre class="highlight"><code class="language-python">scv.tl.velocity_pseudotime(adata)
+scv.pl.scatter(adata, color='velocity_pseudotime', cmap='gnuplot')</code></pre>
+<h2 id="paga-velocity-graph">PAGA velocity graph<a class="headerlink" href="#paga-velocity-graph" title="Permanent link"></a></h2>
+<p>PAGA graph abstraction has benchmarked as top-performing method for trajectory inference. It provides a graph-like map of the data topology with weighted edges corresponding to the connectivity between two clusters. Here, PAGA is extended by velocity-inferred directionality.</p>
+<pre class="highlight"><code class="language-python">adata</code></pre>
+<pre class="highlight"><code class="language-python"># PAGA requires to install igraph, if not done yet.
+!pip install python-igraph --upgrade --quiet</code></pre>
+<pre class="highlight"><code class="language-python"># this is needed due to a current bug - bugfix is coming soon.
+adata.uns['neighbors']['distances'] = adata.obsp['distances']
+adata.uns['neighbors']['connectivities'] = adata.obsp['connectivities']
+
+scv.tl.paga(adata, groups='batch', use_time_prior=False)
+df = scv.get_df(adata, 'paga/transitions_confidence', precision=2).T
+df.style.background_gradient(cmap='Blues').format('{:.2g}')</code></pre>
+<p>This reads from left/row to right/column, thus e.g. assigning a confident transition from Merkel sells to Basophils.</p>
+<p>This table can be summarized by a directed graph superimposed onto the UMAP embedding.</p>
+<pre class="highlight"><code class="language-python">scv.pl.paga(adata, basis='umap', size=50, alpha=.2, 
+            min_edge_width=2, node_size_scale=1)</code></pre>
+<pre class="highlight"><code class="language-python">scv.pl.velocity_embedding_stream(adata, basis='umap', color='batch', 
+                                 legend_loc='right margin', ncols=1)</code></pre>
+<p>Here we observb <strong>2</strong> main velocity direction, one in <strong>Gamma delta T cells and Monocytes</strong>. </p>
+<pre class="highlight"><code class="language-python">results_file = '/path/file&amp;DynVelo.h5ad'  
+adata.write(results_file)</code></pre>
+<h2 id="some-more-analysis-for-dynamical-mode">Some more analysis for dynamical mode<a class="headerlink" href="#some-more-analysis-for-dynamical-mode" title="Permanent link"></a></h2>
+<h3 id="kinetic-rate-paramters">Kinetic rate paramters<a class="headerlink" href="#kinetic-rate-paramters" title="Permanent link"></a></h3>
+<p>The rates of RNA transcription, splicing and degradation are estimated without the need of any experimental data.</p>
+<p>They can be useful to better understand the cell identity and phenotypic heterogeneity.</p>
+<pre class="highlight"><code class="language-python">df = adata.var
+df = df[(df['fit_likelihood'] &gt; .1) &amp; df['velocity_genes'] == True]
+
+kwargs = dict(xscale='log', fontsize=16)
+with scv.GridSpec(ncols=3) as pl:
+    pl.hist(df['fit_alpha'], xlabel='transcription rate', **kwargs)
+    pl.hist(df['fit_beta'] * df['fit_scaling'], xlabel='splicing rate', xticks=[.1, .4, 1], **kwargs)
+    pl.hist(df['fit_gamma'], xlabel='degradation rate', xticks=[.1, .4, 1], **kwargs)
+
+scv.get_df(adata, 'fit*', dropna=True).head()</code></pre>
+<p>The estimated gene-specific parameters comprise rates of transription (fit_alpha), splicing (fit_beta), degradation (fit_gamma), switching time point (fit_t_), a scaling parameter to adjust for under-represented unspliced reads (fit_scaling), standard deviation of unspliced and spliced reads (fit_std_u, fit_std_s), the gene likelihood (fit_likelihood), inferred steady-state levels (fit_steady_u, fit_steady_s) with their corresponding p-values (fit_pval_steady_u, fit_pval_steady_s), the overall model variance (fit_variance), and a scaling factor to align the gene-wise latent times to a universal, gene-shared latent time (fit_alignment_scaling).</p>
+<h3 id="latent-time">Latent time<a class="headerlink" href="#latent-time" title="Permanent link"></a></h3>
+<p>The dynamical model recovers the latent time of the underlying cellular processes. This latent time represents the cell’s internal clock and approximates the real time experienced by cells as they differentiate, based only on its transcriptional dynamics.</p>
+<pre class="highlight"><code class="language-python">scv.tl.latent_time(adata)
+scv.pl.scatter(adata, color='latent_time', color_map='gnuplot', size=80)</code></pre>
+<pre class="highlight"><code class="language-python">top_genes = adata.var['fit_likelihood'].sort_values(ascending=False).index[:300]
+scv.pl.heatmap(adata, var_names=top_genes, sortby='latent_time', col_color='batch', n_convolve=100)</code></pre>
+<h3 id="top-likelihood-genes">Top-likelihood genes<a class="headerlink" href="#top-likelihood-genes" title="Permanent link"></a></h3>
+<p>Driver genes display pronounced dynamic behavior and are systematically detected via their characterization by high likelihoods in the dynamic model.</p>
+<pre class="highlight"><code class="language-python">top_genes = adata.var['fit_likelihood'].sort_values(ascending=False).index
+scv.pl.scatter(adata, basis=top_genes[:15], ncols=5, frameon=False, color='batch')</code></pre>
+<h3 id="cluster-specific-top-likelihood-genes">Cluster-specific top-likelihood genes<a class="headerlink" href="#cluster-specific-top-likelihood-genes" title="Permanent link"></a></h3>
+<p>Moreover, partial gene likelihoods can be computed for a each cluster of cells to enable cluster-specific identification of potential drivers.</p>
+<pre class="highlight"><code class="language-python">scv.tl.rank_dynamical_genes(adata, groupby='batch')
+df = scv.get_df(adata, 'rank_dynamical_genes/names')
+df.head(30)</code></pre>
+<pre class="highlight"><code class="language-python">for condition in ['SS001', 'SS002', 'SS003', 'SS004', 'SS005', 'SS006', 'SS007', 'SS008' ]:
+    scv.pl.scatter(adata, df[condition][:5], ylabel=condition, color='batch', wspace=.6)</code></pre>
+<pre class="highlight"><code class="language-python"></code></pre>
+<pre class="highlight"><code class="language-python">session_info.show()</code></pre>
+<details>
+<summary>Click to view session information</summary>
+<pre>
+-----
+anndata             0.10.4
+igraph              0.11.3
+loompy              3.0.6
+matplotlib          3.7.3
+numpy               1.23.2
+pandas              1.4.1
+scanpy              1.9.6
+scvelo              0.2.5
+session_info        1.0.0
+-----
+</pre>
+<details>
+<summary>Click to view modules imported as dependencies</summary>
+<pre>
+PIL                         10.2.0
+anyio                       NA
+appnope                     0.1.3
+asttokens                   NA
+attr                        23.1.0
+attrs                       23.1.0
+babel                       2.11.0
+brotli                      1.0.9
+certifi                     2023.11.17
+cffi                        1.16.0
+charset_normalizer          2.0.4
+comm                        0.2.1
+cycler                      0.12.1
+cython_runtime              NA
+dateutil                    2.8.2
+debugpy                     1.6.7
+decorator                   5.1.1
+defusedxml                  0.7.1
+executing                   2.0.1
+fastjsonschema              NA
+h5py                        3.10.0
+idna                        3.4
+importlib_metadata          NA
+ipykernel                   6.29.0
+jedi                        0.19.1
+jinja2                      3.1.2
+joblib                      1.3.2
+json5                       NA
+jsonschema                  4.19.2
+jsonschema_specifications   NA
+jupyter_events              0.8.0
+jupyter_server              2.10.0
+jupyterlab_server           2.25.1
+kiwisolver                  1.4.5
+leidenalg                   0.10.2
+llvmlite                    0.41.1
+markupsafe                  2.1.3
+matplotlib_inline           0.1.6
+mpl_toolkits                NA
+natsort                     8.4.0
+nbformat                    5.9.2
+numba                       0.58.1
+numpy_groupies              0.10.2
+overrides                   NA
+packaging                   23.2
+parso                       0.8.3
+pexpect                     4.8.0
+pickleshare                 0.7.5
+pkg_resources               NA
+platformdirs                4.1.0
+prometheus_client           NA
+prompt_toolkit              3.0.42
+psutil                      5.9.0
+ptyprocess                  0.7.0
+pure_eval                   0.2.2
+pycparser                   2.21
+pydev_ipython               NA
+pydevconsole                NA
+pydevd                      2.9.5
+pydevd_file_utils           NA
+pydevd_plugins              NA
+pydevd_tracing              NA
+pygments                    2.17.2
+pyparsing                   3.1.1
+pythonjsonlogger            NA
+pytz                        2023.3.post1
+referencing                 NA
+requests                    2.31.0
+rfc3339_validator           0.1.4
+rfc3986_validator           0.1.1
+rpds                        NA
+scipy                       1.12.0
+send2trash                  NA
+six                         1.16.0
+sklearn                     1.4.0
+sniffio                     1.3.0
+socks                       1.7.1
+stack_data                  0.6.2
+texttable                   1.7.0
+threadpoolctl               3.2.0
+tornado                     6.3.3
+traitlets                   5.14.1
+typing_extensions           NA
+urllib3                     1.26.18
+wcwidth                     0.2.13
+websocket                   0.58.0
+yaml                        6.0.1
+zipp                        NA
+zmq                         25.1.2
+</pre>
+</details> <!-- seems like this ends pre, so might as well be explicit -->
+<pre>
+-----
+IPython             8.20.0
+jupyter_client      8.6.0
+jupyter_core        5.5.0
+jupyterlab          4.0.8
+notebook            7.0.6
+-----
+Python 3.11.7 | packaged by conda-forge | (main, Dec 23 2023, 14:38:07) [Clang 16.0.6 ]
+macOS-14.2.1-arm64-arm-64bit
+-----
+Session information updated at 2024-01-30 14:58
+</pre>
+</details>
+
+<pre class="highlight"><code class="language-python"></code></pre></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+                <p>Copyright &copy; 2024 <a href="https://twitter.com/ltoure_officiel">Lamine TOURE</a>, Maintained by <a href="https://github.com/LamineTourelab">Lamine TOURE</a>.</p>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../../../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../../../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
