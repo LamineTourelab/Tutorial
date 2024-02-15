@@ -13,4 +13,6 @@ pip install python-markdown-math
 pip install markdown-callouts
 pip install mdx-gh-links
 pip install mkdocs-click
+
+mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 ```
