@@ -1,0 +1,69 @@
+site_name: Tutorial web pages
+site_url: https://LamineTourelab.github.io/Tutorial
+site_author: Lamine TOURE
+site_description: A repository dedicated for education. Lets learn together 
+
+repo_url: https://github.com/LamineTourelab/Tutorial
+repo_name: GitHub
+edit_uri: https://github.com/LamineTourelab/Tutorial/tree/main/docs
+
+# docs_dir: sources
+#theme:
+#    name: null
+#    custom_dir: 'custom_theme/'
+
+nav:
+  - Home: index.md
+  - Notebook page: notebook.ipynb
+  - Getting Started: getting-started.md
+  - User Guide: 
+    - USER_GUIDE_INDEX.md
+    - user-guide/
+    - Bioinformatics:
+      - user-guide/Bioinformatics/SingleCellData/RNA_Velocity_analysis_scVelo.md
+      - user-guide/Bioinformatics/SingleCellData/SingleCellData_Preprocessing_with_scanpy.md
+      - user-guide/Bioinformatics/SingleCellData/Trajectory_inference_With_CellRank/Trajectory_inference_With_CellRank.md
+      - user-guide/Bioinformatics/SingleCellData/Readme.md
+    - Machine learning:
+      - user-guide/Machine learning/Autoencoder/Autoencoder.md
+      - user-guide/Machine learning/DecisionTrees_using_iris_dataset/DecisionTrees_using_iris_dataset.md
+      - user-guide/Machine learning/Transfer_learning_using_VGG16/Transfer_learning_using_VGG16.md
+      - user-guide/Machine learning/tensorflow_API_tutorial/tensorflow_API_tutorial.md
+    - ExplainabilityAI:
+      - user-guide/ExplainabilityAI/explainability_shap&lime.md
+    - DataViz:
+      - user-guide/DataViz/EDA_matplotlib_Dashboard_Dataviz/EDA_matplotlib_Dashboard_Dataviz.md
+  - About:
+    - Release Notes: about/release-notes.md
+    - Contributing: about/contributing.md
+    - License: about/license.md
+
+extra_css:
+  - css/extra.css
+
+exclude_docs: |
+  *.py
+
+markdown_extensions:
+  - tables
+  - fenced_code
+  - mdx_math:
+      enable_dollar_delimiter: True 
+  - toc:
+      permalink: 
+  - attr_list
+  - def_list
+  - tables
+  - pymdownx.highlight:
+      use_pygments: false
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - callouts
+  - mdx_gh_links:
+      user: mkdocs
+      repo: mkdocs
+  - mkdocs-click
+plugins:
+  - mkdocs-jupyter:
+      execute: True
+copyright: Copyright &copy; 2024 <a href="https://twitter.com/ltoure_officiel">Lamine TOURE</a>, Maintained by <a href="https://github.com/LamineTourelab">Lamine TOURE</a>.
