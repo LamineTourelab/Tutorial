@@ -75,7 +75,7 @@ tf.test.is_gpu_available()
 
 
 ```python
-metabric_X = "https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data/metabric_test.csv"
+metabric_X = "https://raw.githubusercontent.com/SalvatoreRa/explanaibleAI/main/tabular_methods/Data/metabric_test.csv"
 df = pd.read_csv(metabric_X)
 df.head(5)
 ```
@@ -517,7 +517,7 @@ df.describe()
 
 
 ```python
-metabric_y = "https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data/metabric_clin.csv"
+metabric_y = "https://raw.githubusercontent.com/SalvatoreRa/explanaibleAI/main/tabular_methods/Data/metabric_clin.csv"
 metadata = pd.read_csv(metabric_y)
 metadata.head(5)
 ```
@@ -846,6 +846,8 @@ plt.show()
 ![png](output_19_0.png)
     
 
+
+### Label encoding
 
 
 ```python
@@ -1186,7 +1188,7 @@ keras.utils.plot_model(model, show_shapes=True)
 
 
     
-![png](output_37_0.png)
+![png](output_38_0.png)
     
 
 
@@ -1338,7 +1340,7 @@ plt.show()
 
 
     
-![png](output_41_0.png)
+![png](output_42_0.png)
     
 
 
@@ -1476,39 +1478,41 @@ plot_importance_features(Features=shap_importance_class5, top=10, title='shap im
 
 
     
-![png](output_56_0.png)
+![png](output_57_0.png)
     
 
 
 
     
-![png](output_56_1.png)
+![png](output_57_1.png)
     
 
 
 
     
-![png](output_56_2.png)
+![png](output_57_2.png)
     
 
 
 
     
-![png](output_56_3.png)
+![png](output_57_3.png)
     
 
 
 
     
-![png](output_56_4.png)
+![png](output_57_4.png)
     
 
 
 
     
-![png](output_56_5.png)
+![png](output_57_5.png)
     
 
+
+### We can select shap summary importance features 
 
 
 ```python
@@ -1518,7 +1522,7 @@ shap.summary_plot(shap_values, X_test, plot_type="bar", max_display=10)
 
 
     
-![png](output_57_0.png)
+![png](output_59_0.png)
     
 
 
@@ -1529,7 +1533,7 @@ shap.summary_plot(shap_values[0], features=X_train.values[:sample_size], feature
 
 
     
-![png](output_58_0.png)
+![png](output_60_0.png)
     
 
 
@@ -1647,7 +1651,7 @@ plot_importance_features(Features=weights_importance, top=10, title="Weights imp
 
 
     
-![png](output_62_0.png)
+![png](output_64_0.png)
     
 
 
