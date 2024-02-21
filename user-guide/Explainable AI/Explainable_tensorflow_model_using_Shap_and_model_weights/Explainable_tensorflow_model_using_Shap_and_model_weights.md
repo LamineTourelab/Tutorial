@@ -1,4 +1,4 @@
-# Explain tensorflow model using Shap and Model Weights on METABRIC data
+# Explain tensorflow model using Shap and model Weights on METABRIC data
 
 
 ```python
@@ -28,6 +28,8 @@ from tensorflow import keras
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.models import Sequential
+from keras import regularizers
+import shap
 
 # Check for TensorFlow GPU access
 print(f"TensorFlow has access to the following devices:\n{tf.config.list_physical_devices()}")
@@ -46,16 +48,8 @@ print(f"TensorFlow version: {tf.__version__}")
 tf.test.is_gpu_available()
 ```
 
-    WARNING:tensorflow:From /var/folders/r6/gdf2rxfj40dc6v2l0101z47m0000gn/T/ipykernel_38703/337460670.py:1: is_gpu_available (from tensorflow.python.framework.test_util) is deprecated and will be removed in a future version.
-    Instructions for updating:
-    Use `tf.config.list_physical_devices('GPU')` instead.
-
-
-    2024-02-19 13:40:35.802602: I metal_plugin/src/device/metal_device.cc:1154] Metal device set to: Apple M3 Max
-    2024-02-19 13:40:35.802618: I metal_plugin/src/device/metal_device.cc:296] systemMemory: 128.00 GB
-    2024-02-19 13:40:35.802622: I metal_plugin/src/device/metal_device.cc:313] maxCacheSize: 48.00 GB
-    2024-02-19 13:40:35.802646: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:303] Could not identify NUMA node of platform GPU ID 0, defaulting to 0. Your kernel may not have been built with NUMA support.
-    2024-02-19 13:40:35.802662: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:269] Created TensorFlow device (/device:GPU:0 with 0 MB memory) -> physical PluggableDevice (device: 0, name: METAL, pci bus id: <undefined>)
+    2024-02-21 14:06:44.743687: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:303] Could not identify NUMA node of platform GPU ID 0, defaulting to 0. Your kernel may not have been built with NUMA support.
+    2024-02-21 14:06:44.743733: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:269] Created TensorFlow device (/device:GPU:0 with 0 MB memory) -> physical PluggableDevice (device: 0, name: METAL, pci bus id: <undefined>)
 
 
 
@@ -65,13 +59,14 @@ tf.test.is_gpu_available()
 
 
 
-# Data load and preprocessing 
+# Data loading and preprocessing 
 
 ## Expression data
 
 
 ```python
-df = pd.read_csv("/Users/lamine/Explainqble AI /metabric_test.csv")
+metabric_X = "https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data/metabric_test.csv"
+df = pd.read_csv(metabric_X)
 df.head(5)
 ```
 
@@ -508,11 +503,12 @@ df.describe()
 
 
 
-## label data 
+## Label data 
 
 
 ```python
-metadata = pd.read_csv("/Users/lamine/Explainqble AI /metabric_clin.csv")
+metabric_y = "https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data/metabric_clin.csv"
+metadata = pd.read_csv(metabric_y)
 metadata.head(5)
 ```
 
@@ -973,7 +969,7 @@ print('Labels counts in Outcome Yes and No respectively:', np.bincount(Outcome['
     Labels counts in Outcome Yes and No respectively: [1501  396]
 
 
-here we clearly dealing with class imbalance.
+here we are clearly dealing with class imbalance.
 
 
 ```python
@@ -1042,7 +1038,6 @@ Outcome.head()
 
 
 
-here we clearly dealing with class imbalance.
 ### Class imbalance correct using imblearn
 
 
@@ -1137,8 +1132,22 @@ print(f"x_test_scaled.shape = {x_test_scaled.shape}")
 
 
 ```python
-# y_train = np.asarray(Y_train).astype('float32').reshape((-1,1))
+y_train = np.asarray(y_train).astype('float32').reshape((-1,1))
+y_train
 ```
+
+
+
+
+    array([[1.],
+           [0.],
+           [0.],
+           ...,
+           [1.],
+           [1.],
+           [0.]], dtype=float32)
+
+
 
 # Model
 
@@ -1151,11 +1160,13 @@ DROPOUT = 0.3
 
 
 ```python
-# The model hyperparatmeter was defined with gridSearchCV using scikeras.wrappers below.
+# The model hyperparatmeter was defined with gridSearchCV using scikeras.wrappers, see below at the end of this notebook.
 model = Sequential()
-model.add(Dense(10, input_shape=x_train_scaled.shape[1:], activation = 'relu', name='dense_layer'))
+model.add(Dense(20, input_shape=x_train_scaled.shape[1:], activation = 'relu', name='dense_layer'))
 model.add(Dropout(DROPOUT))
-model.add(Dense(10, activation = 'relu', name='dense_layer_2'))
+model.add(Dense(10, activation = 'relu', name='dense_layer_2',
+                     kernel_regularizer=regularizers.L1(0.01),
+                     activity_regularizer=regularizers.L2(0.01)))
 model.add(Dropout(DROPOUT))
 model.add(Dense(NB_CLASSES, activation= "sigmoid", name='dense_layer_4'))                              
 ```
@@ -1165,23 +1176,23 @@ model.add(Dense(NB_CLASSES, activation= "sigmoid", name='dense_layer_4'))
 model.summary()
 ```
 
-    Model: "sequential_96"
+    Model: "sequential_7"
     _________________________________________________________________
      Layer (type)                Output Shape              Param #   
     =================================================================
-     dense_layer (Dense)         (None, 10)                2960      
+     dense_layer (Dense)         (None, 20)                5920      
                                                                      
-     dropout_56 (Dropout)        (None, 10)                0         
+     dropout_14 (Dropout)        (None, 20)                0         
                                                                      
-     dense_layer_2 (Dense)       (None, 10)                110       
+     dense_layer_2 (Dense)       (None, 10)                210       
                                                                      
-     dropout_57 (Dropout)        (None, 10)                0         
+     dropout_15 (Dropout)        (None, 10)                0         
                                                                      
      dense_layer_4 (Dense)       (None, 1)                 11        
                                                                      
     =================================================================
-    Total params: 3081 (12.04 KB)
-    Trainable params: 3081 (12.04 KB)
+    Total params: 6141 (23.99 KB)
+    Trainable params: 6141 (23.99 KB)
     Non-trainable params: 0 (0.00 Byte)
     _________________________________________________________________
 
@@ -1226,115 +1237,115 @@ results = model.fit(x_train_scaled, y_train, epochs=EPOCHS,
 ```
 
     Epoch 1/50
+     1/50 [..............................] - ETA: 16s - loss: 1.8349 - accuracy: 0.3438
+
+    2024-02-21 13:24:19.384159: I tensorflow/core/grappler/optimizers/custom_graph_optimizer_registry.cc:114] Plugin optimizer for device_type GPU is enabled.
 
 
-    2024-02-20 12:33:46.256299: I tensorflow/core/grappler/optimizers/custom_graph_optimizer_registry.cc:114] Plugin optimizer for device_type GPU is enabled.
-
-
-    50/50 [==============================] - ETA: 0s - loss: 0.6839 - accuracy: 0.5829
-
-    2024-02-20 12:33:47.283473: I tensorflow/core/grappler/optimizers/custom_graph_optimizer_registry.cc:114] Plugin optimizer for device_type GPU is enabled.
-
-
-    50/50 [==============================] - 2s 21ms/step - loss: 0.6839 - accuracy: 0.5829 - val_loss: 0.5990 - val_accuracy: 0.6768
+    50/50 [==============================] - 1s 15ms/step - loss: 1.3913 - accuracy: 0.5213 - val_loss: 1.0835 - val_accuracy: 0.6939
     Epoch 2/50
-    50/50 [==============================] - 0s 8ms/step - loss: 0.6034 - accuracy: 0.6819 - val_loss: 0.5764 - val_accuracy: 0.6977
+
+
+    2024-02-21 13:24:20.105497: I tensorflow/core/grappler/optimizers/custom_graph_optimizer_registry.cc:114] Plugin optimizer for device_type GPU is enabled.
+
+
+    50/50 [==============================] - 1s 11ms/step - loss: 1.2134 - accuracy: 0.6070 - val_loss: 1.0067 - val_accuracy: 0.7281
     Epoch 3/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.6008 - accuracy: 0.6832 - val_loss: 0.5729 - val_accuracy: 0.6996
+    50/50 [==============================] - 1s 10ms/step - loss: 1.1318 - accuracy: 0.6438 - val_loss: 0.9373 - val_accuracy: 0.7414
     Epoch 4/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5981 - accuracy: 0.6902 - val_loss: 0.5348 - val_accuracy: 0.7643
+    50/50 [==============================] - 1s 10ms/step - loss: 1.0318 - accuracy: 0.6838 - val_loss: 0.8786 - val_accuracy: 0.7452
     Epoch 5/50
-    50/50 [==============================] - 0s 8ms/step - loss: 0.5814 - accuracy: 0.6952 - val_loss: 0.5215 - val_accuracy: 0.7586
+    50/50 [==============================] - 1s 10ms/step - loss: 0.9836 - accuracy: 0.6863 - val_loss: 0.8317 - val_accuracy: 0.7548
     Epoch 6/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5875 - accuracy: 0.7079 - val_loss: 0.5359 - val_accuracy: 0.7510
+    50/50 [==============================] - 1s 11ms/step - loss: 0.8729 - accuracy: 0.7257 - val_loss: 0.7855 - val_accuracy: 0.7605
     Epoch 7/50
-    50/50 [==============================] - 0s 8ms/step - loss: 0.5721 - accuracy: 0.7130 - val_loss: 0.5277 - val_accuracy: 0.7624
+    50/50 [==============================] - 1s 11ms/step - loss: 0.8293 - accuracy: 0.7149 - val_loss: 0.7438 - val_accuracy: 0.7624
     Epoch 8/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5721 - accuracy: 0.7067 - val_loss: 0.5178 - val_accuracy: 0.7681
+    50/50 [==============================] - 1s 10ms/step - loss: 0.7853 - accuracy: 0.7422 - val_loss: 0.7088 - val_accuracy: 0.7624
     Epoch 9/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5685 - accuracy: 0.7168 - val_loss: 0.5195 - val_accuracy: 0.7700
+    50/50 [==============================] - 1s 11ms/step - loss: 0.7416 - accuracy: 0.7416 - val_loss: 0.6783 - val_accuracy: 0.7624
     Epoch 10/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5573 - accuracy: 0.7187 - val_loss: 0.5153 - val_accuracy: 0.7700
+    50/50 [==============================] - 1s 10ms/step - loss: 0.7064 - accuracy: 0.7460 - val_loss: 0.6627 - val_accuracy: 0.7529
     Epoch 11/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5385 - accuracy: 0.7429 - val_loss: 0.5108 - val_accuracy: 0.7738
+    50/50 [==============================] - 1s 10ms/step - loss: 0.6734 - accuracy: 0.7543 - val_loss: 0.6347 - val_accuracy: 0.7643
     Epoch 12/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5352 - accuracy: 0.7384 - val_loss: 0.5133 - val_accuracy: 0.7700
+    50/50 [==============================] - 1s 10ms/step - loss: 0.6524 - accuracy: 0.7581 - val_loss: 0.6396 - val_accuracy: 0.7376
     Epoch 13/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5305 - accuracy: 0.7613 - val_loss: 0.4998 - val_accuracy: 0.7681
+    50/50 [==============================] - 1s 10ms/step - loss: 0.6322 - accuracy: 0.7606 - val_loss: 0.6078 - val_accuracy: 0.7662
     Epoch 14/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5362 - accuracy: 0.7371 - val_loss: 0.5041 - val_accuracy: 0.7776
+    50/50 [==============================] - 1s 10ms/step - loss: 0.6250 - accuracy: 0.7638 - val_loss: 0.5963 - val_accuracy: 0.7852
     Epoch 15/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5301 - accuracy: 0.7454 - val_loss: 0.4948 - val_accuracy: 0.7795
+    50/50 [==============================] - 1s 10ms/step - loss: 0.6061 - accuracy: 0.7600 - val_loss: 0.5883 - val_accuracy: 0.7738
     Epoch 16/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5179 - accuracy: 0.7549 - val_loss: 0.4999 - val_accuracy: 0.7928
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5981 - accuracy: 0.7790 - val_loss: 0.5958 - val_accuracy: 0.7471
     Epoch 17/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5247 - accuracy: 0.7505 - val_loss: 0.4913 - val_accuracy: 0.7795
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5931 - accuracy: 0.7695 - val_loss: 0.5864 - val_accuracy: 0.7529
     Epoch 18/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5123 - accuracy: 0.7530 - val_loss: 0.4837 - val_accuracy: 0.7738
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5850 - accuracy: 0.7683 - val_loss: 0.5733 - val_accuracy: 0.7776
     Epoch 19/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5074 - accuracy: 0.7587 - val_loss: 0.4936 - val_accuracy: 0.7928
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5831 - accuracy: 0.7708 - val_loss: 0.5731 - val_accuracy: 0.7605
     Epoch 20/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.5051 - accuracy: 0.7638 - val_loss: 0.4838 - val_accuracy: 0.7890
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5710 - accuracy: 0.7778 - val_loss: 0.5601 - val_accuracy: 0.8004
     Epoch 21/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4838 - accuracy: 0.7822 - val_loss: 0.4797 - val_accuracy: 0.7833
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5670 - accuracy: 0.7746 - val_loss: 0.5532 - val_accuracy: 0.7795
     Epoch 22/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4927 - accuracy: 0.7644 - val_loss: 0.4762 - val_accuracy: 0.7871
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5594 - accuracy: 0.7854 - val_loss: 0.5508 - val_accuracy: 0.7909
     Epoch 23/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4893 - accuracy: 0.7714 - val_loss: 0.4777 - val_accuracy: 0.7890
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5434 - accuracy: 0.7898 - val_loss: 0.5430 - val_accuracy: 0.8023
     Epoch 24/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4911 - accuracy: 0.7790 - val_loss: 0.4736 - val_accuracy: 0.7947
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5484 - accuracy: 0.7714 - val_loss: 0.5388 - val_accuracy: 0.7928
     Epoch 25/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4717 - accuracy: 0.7892 - val_loss: 0.4719 - val_accuracy: 0.7909
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5373 - accuracy: 0.7835 - val_loss: 0.5358 - val_accuracy: 0.7909
     Epoch 26/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4769 - accuracy: 0.7740 - val_loss: 0.4697 - val_accuracy: 0.7947
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5299 - accuracy: 0.7867 - val_loss: 0.5334 - val_accuracy: 0.7985
     Epoch 27/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4737 - accuracy: 0.7898 - val_loss: 0.4725 - val_accuracy: 0.7909
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5288 - accuracy: 0.8006 - val_loss: 0.5296 - val_accuracy: 0.8004
     Epoch 28/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4718 - accuracy: 0.7829 - val_loss: 0.4868 - val_accuracy: 0.7871
+    50/50 [==============================] - 1s 11ms/step - loss: 0.5275 - accuracy: 0.8038 - val_loss: 0.5288 - val_accuracy: 0.8042
     Epoch 29/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4696 - accuracy: 0.7822 - val_loss: 0.4720 - val_accuracy: 0.7928
+    50/50 [==============================] - 1s 11ms/step - loss: 0.5140 - accuracy: 0.8070 - val_loss: 0.5283 - val_accuracy: 0.7985
     Epoch 30/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4648 - accuracy: 0.7829 - val_loss: 0.4690 - val_accuracy: 0.7909
+    50/50 [==============================] - 1s 10ms/step - loss: 0.5121 - accuracy: 0.8083 - val_loss: 0.5249 - val_accuracy: 0.8061
     Epoch 31/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4632 - accuracy: 0.7854 - val_loss: 0.4757 - val_accuracy: 0.7947
+    50/50 [==============================] - 1s 11ms/step - loss: 0.5249 - accuracy: 0.7873 - val_loss: 0.5189 - val_accuracy: 0.8080
     Epoch 32/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4689 - accuracy: 0.7854 - val_loss: 0.4712 - val_accuracy: 0.7928
+    50/50 [==============================] - 1s 11ms/step - loss: 0.5142 - accuracy: 0.8063 - val_loss: 0.5157 - val_accuracy: 0.8118
     Epoch 33/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4624 - accuracy: 0.7835 - val_loss: 0.4626 - val_accuracy: 0.8061
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4996 - accuracy: 0.8140 - val_loss: 0.5171 - val_accuracy: 0.8156
     Epoch 34/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4500 - accuracy: 0.7937 - val_loss: 0.4670 - val_accuracy: 0.8061
+    50/50 [==============================] - 1s 11ms/step - loss: 0.5088 - accuracy: 0.8038 - val_loss: 0.5152 - val_accuracy: 0.8137
     Epoch 35/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4550 - accuracy: 0.7873 - val_loss: 0.4656 - val_accuracy: 0.8061
+    50/50 [==============================] - 1s 11ms/step - loss: 0.5053 - accuracy: 0.8076 - val_loss: 0.5087 - val_accuracy: 0.8194
     Epoch 36/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4462 - accuracy: 0.7956 - val_loss: 0.4596 - val_accuracy: 0.8080
+    50/50 [==============================] - 1s 11ms/step - loss: 0.4938 - accuracy: 0.8159 - val_loss: 0.5094 - val_accuracy: 0.8137
     Epoch 37/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4534 - accuracy: 0.7956 - val_loss: 0.4705 - val_accuracy: 0.7966
+    50/50 [==============================] - 1s 12ms/step - loss: 0.4895 - accuracy: 0.8159 - val_loss: 0.5018 - val_accuracy: 0.8194
     Epoch 38/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4310 - accuracy: 0.8089 - val_loss: 0.4583 - val_accuracy: 0.8156
+    50/50 [==============================] - 1s 12ms/step - loss: 0.4831 - accuracy: 0.8184 - val_loss: 0.5098 - val_accuracy: 0.8080
     Epoch 39/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4392 - accuracy: 0.8133 - val_loss: 0.4636 - val_accuracy: 0.8099
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4847 - accuracy: 0.8248 - val_loss: 0.5049 - val_accuracy: 0.8270
     Epoch 40/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4394 - accuracy: 0.8076 - val_loss: 0.4653 - val_accuracy: 0.8099
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4944 - accuracy: 0.8165 - val_loss: 0.4978 - val_accuracy: 0.8194
     Epoch 41/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4476 - accuracy: 0.8159 - val_loss: 0.4631 - val_accuracy: 0.8099
+    50/50 [==============================] - 1s 11ms/step - loss: 0.4819 - accuracy: 0.8260 - val_loss: 0.4957 - val_accuracy: 0.8137
     Epoch 42/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4445 - accuracy: 0.8057 - val_loss: 0.4573 - val_accuracy: 0.8118
+    50/50 [==============================] - 1s 11ms/step - loss: 0.4716 - accuracy: 0.8140 - val_loss: 0.4952 - val_accuracy: 0.8213
     Epoch 43/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4390 - accuracy: 0.8210 - val_loss: 0.4580 - val_accuracy: 0.8061
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4745 - accuracy: 0.8317 - val_loss: 0.4968 - val_accuracy: 0.8156
     Epoch 44/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4605 - accuracy: 0.7879 - val_loss: 0.4565 - val_accuracy: 0.8137
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4653 - accuracy: 0.8356 - val_loss: 0.4997 - val_accuracy: 0.8175
     Epoch 45/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4306 - accuracy: 0.8089 - val_loss: 0.4627 - val_accuracy: 0.8099
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4777 - accuracy: 0.8324 - val_loss: 0.4920 - val_accuracy: 0.8156
     Epoch 46/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4416 - accuracy: 0.8038 - val_loss: 0.4683 - val_accuracy: 0.8061
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4689 - accuracy: 0.8279 - val_loss: 0.4885 - val_accuracy: 0.8194
     Epoch 47/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4374 - accuracy: 0.8057 - val_loss: 0.4647 - val_accuracy: 0.8118
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4715 - accuracy: 0.8190 - val_loss: 0.5085 - val_accuracy: 0.8023
     Epoch 48/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4227 - accuracy: 0.8197 - val_loss: 0.4644 - val_accuracy: 0.8099
+    50/50 [==============================] - 1s 11ms/step - loss: 0.4647 - accuracy: 0.8286 - val_loss: 0.4928 - val_accuracy: 0.8137
     Epoch 49/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4077 - accuracy: 0.8267 - val_loss: 0.4804 - val_accuracy: 0.8042
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4521 - accuracy: 0.8400 - val_loss: 0.4929 - val_accuracy: 0.8137
     Epoch 50/50
-    50/50 [==============================] - 0s 7ms/step - loss: 0.4276 - accuracy: 0.8159 - val_loss: 0.4603 - val_accuracy: 0.8156
+    50/50 [==============================] - 1s 10ms/step - loss: 0.4719 - accuracy: 0.8254 - val_loss: 0.4839 - val_accuracy: 0.8232
 
 
 
@@ -1358,8 +1369,8 @@ test_loss, test_acc = model.evaluate(x_test_scaled, Y_test)
 print('Test accuracy:', test_acc)
 ```
 
-    29/29 [==============================] - 0s 5ms/step - loss: 0.4471 - accuracy: 0.8069
-    Test accuracy: 0.8068812489509583
+    29/29 [==============================] - 0s 10ms/step - loss: 0.4760 - accuracy: 0.8113
+    Test accuracy: 0.8113207817077637
 
 
 
@@ -1368,7 +1379,10 @@ print('Test accuracy:', test_acc)
 predictions = model.predict(X_test)
 ```
 
-    29/29 [==============================] - 0s 1ms/step
+    29/29 [==============================] - 0s 2ms/step
+
+
+    2024-02-21 13:24:46.547168: I tensorflow/core/grappler/optimizers/custom_graph_optimizer_registry.cc:114] Plugin optimizer for device_type GPU is enabled.
 
 
 
@@ -1384,7 +1398,7 @@ displ.plot()
 
 
 
-    <sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x49b9a3820>
+    <sklearn.metrics._plot.confusion_matrix.ConfusionMatrixDisplay at 0x3363f3580>
 
 
 
@@ -1418,7 +1432,7 @@ shap_values = explainer.shap_values(X_train.values[:sample_size], ranked_outputs
 ```
 
     `tf.keras.backend.set_learning_phase` is deprecated and will be removed after 2020-10-11. To update it, simply pass a True/False value to the `training` argument of the `__call__` method of your layer or model.
-    2024-02-20 12:35:40.755383: I tensorflow/core/grappler/optimizers/custom_graph_optimizer_registry.cc:114] Plugin optimizer for device_type GPU is enabled.
+    2024-02-21 13:26:40.355386: I tensorflow/core/grappler/optimizers/custom_graph_optimizer_registry.cc:114] Plugin optimizer for device_type GPU is enabled.
 
 
 
@@ -1429,20 +1443,28 @@ shap_values
 
 
 
-    [array([[-1.28761018e-02,  2.61684251e-03,  1.22101256e-03, ...,
-              8.43746180e-04, -1.53695641e-03,  6.51940797e-03],
-            [ 7.81806372e-03,  4.66133794e-03, -3.80936824e-02, ...,
-             -3.02560464e-03, -3.34495748e-03,  2.56811804e-03],
-            [ 4.50713374e-03, -5.79754077e-03,  1.47271063e-02, ...,
-              3.39945336e-03,  4.03275434e-03, -4.77008102e-03],
+    [array([[-6.13931217e-04,  5.79104235e-04,  1.21821380e-04, ...,
+              3.32532691e-05,  5.89004019e-04,  2.54693348e-03],
+            [ 1.22798362e-03,  1.75002951e-03, -6.65651402e-04, ...,
+              9.90149798e-04,  1.52458099e-03,  1.27402262e-03],
+            [ 2.40881299e-03, -6.52628345e-03,  9.89748398e-04, ...,
+             -9.38840210e-04, -2.61786184e-03, -5.97110670e-03],
             ...,
-            [-3.10847047e-03,  3.97476554e-03, -1.40036177e-02, ...,
-              1.44137791e-03,  7.17193168e-03,  2.29408732e-03],
-            [ 1.69399404e-03,  1.97411259e-03,  1.24843428e-02, ...,
-             -1.57582830e-03, -2.14419863e-03,  7.04625854e-05],
-            [-7.05904374e-03,  2.57816073e-03, -1.22835450e-02, ...,
-             -3.26953549e-03, -1.49948173e-03,  3.01212166e-03]])]
+            [ 4.05412196e-04,  1.70486758e-03, -2.36380190e-04, ...,
+              3.85903375e-04, -2.11221166e-03,  2.30341917e-03],
+            [ 7.42328644e-04,  7.09563727e-04,  1.07669597e-03, ...,
+             -4.93239932e-05,  9.01810999e-04, -3.41807390e-05],
+            [-1.20005244e-03,  1.12299132e-03, -7.52978318e-04, ...,
+              2.85379556e-05,  7.02320656e-04,  9.09106282e-04]])]
 
+
+
+
+```python
+print(" The shap values length is egal to the number of the model's output:", len(shap_values))
+```
+
+     The shap values length is egal to the number of the model's output: 1
 
 
 
@@ -1454,9 +1476,9 @@ shap_values
 
 
 ```python
-def get_fetaure_importnace(shap_values, features):
+def get_fetaure_importnace(shap_values, features, num=0):
     "Features is the  X_train.columns names"
-    vals = np.abs(pd.DataFrame(shap_values[0]).values).mean(0)
+    vals = np.abs(pd.DataFrame(shap_values[num]).values).mean(0)
     shap_importance = pd.DataFrame(list(zip(features, vals)), columns=['col_name', 'feature_importance_vals'])
     shap_importance.sort_values(by=['feature_importance_vals'], ascending=False, inplace=True)
     shap_importance.loc[shap_importance['feature_importance_vals']>0]
@@ -1465,7 +1487,7 @@ def get_fetaure_importnace(shap_values, features):
 
 
 ```python
-shap_importance = get_fetaure_importnace(shap_values, features=X_train.columns)
+shap_importance = get_fetaure_importnace(shap_values, features=X_train.columns, num=0)
 shap_importance
 ```
 
@@ -1498,27 +1520,27 @@ shap_importance
     <tr>
       <th>131</th>
       <td>ESR1</td>
-      <td>0.084175</td>
-    </tr>
-    <tr>
-      <th>245</th>
-      <td>BEX1</td>
-      <td>0.031682</td>
+      <td>0.010920</td>
     </tr>
     <tr>
       <th>279</th>
       <td>FOSB</td>
-      <td>0.029250</td>
+      <td>0.007193</td>
+    </tr>
+    <tr>
+      <th>280</th>
+      <td>CLEC3A</td>
+      <td>0.006748</td>
+    </tr>
+    <tr>
+      <th>245</th>
+      <td>BEX1</td>
+      <td>0.006334</td>
     </tr>
     <tr>
       <th>110</th>
       <td>IGJ</td>
-      <td>0.029118</td>
-    </tr>
-    <tr>
-      <th>271</th>
-      <td>FABP7</td>
-      <td>0.027046</td>
+      <td>0.005912</td>
     </tr>
     <tr>
       <th>...</th>
@@ -1526,29 +1548,29 @@ shap_importance
       <td>...</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>TAT</td>
-      <td>0.000288</td>
+      <th>156</th>
+      <td>RPL14</td>
+      <td>0.000166</td>
     </tr>
     <tr>
-      <th>241</th>
-      <td>CHGB</td>
-      <td>0.000264</td>
+      <th>212</th>
+      <td>PRODH</td>
+      <td>0.000164</td>
     </tr>
     <tr>
-      <th>152</th>
-      <td>FOLR1</td>
-      <td>0.000237</td>
+      <th>125</th>
+      <td>TGFBR3</td>
+      <td>0.000143</td>
     </tr>
     <tr>
-      <th>198</th>
-      <td>PVALB</td>
-      <td>0.000217</td>
+      <th>220</th>
+      <td>IRX2</td>
+      <td>0.000127</td>
     </tr>
     <tr>
-      <th>72</th>
-      <td>S100P</td>
-      <td>0.000185</td>
+      <th>158</th>
+      <td>CD79A</td>
+      <td>0.000042</td>
     </tr>
   </tbody>
 </table>
@@ -1560,7 +1582,8 @@ shap_importance
 
 ```python
 def plot_importance_features(Features, top=10, title=" "):
-    " Features is a 2 colunm dataframe with features names and weights"
+    
+    " Features are a 2 colunms dataframe with features names and weights"
     
     fig, ax = plt.subplots(figsize =(5, 5))
     top_features = Features.iloc[:top]
@@ -1581,7 +1604,7 @@ plot_importance_features(Features=shap_importance, top=10, title="Shap importanc
 
 
     
-![png](output_61_0.png)
+![png](output_62_0.png)
     
 
 
@@ -1593,18 +1616,18 @@ shap.summary_plot(shap_values[0], X_test, plot_type="bar", max_display=10)
 
 
     
-![png](output_62_0.png)
+![png](output_63_0.png)
     
 
 
 
 ```python
-shap.summary_plot(shap_values[0], features=X_train.values[:sample_size], feature_names=features, show=False, plot_type="dot", max_display=10)
+shap.summary_plot(shap_values[0], features=X_train.values[:sample_size], feature_names=X_train.columns, show=False, plot_type="dot", max_display=10)
 ```
 
 
     
-![png](output_63_0.png)
+![png](output_64_0.png)
     
 
 
@@ -1613,8 +1636,8 @@ shap.summary_plot(shap_values[0], features=X_train.values[:sample_size], feature
 
 ```python
 def get_weights_importnace(model, features, num=0):
-    "Features is the  X_train.columns names"
-    vals_weights = np.abs(model.layers[num].get_weights()[num].T).mean(num)
+    "Features are the  X_train.columns names"
+    vals_weights = np.abs(model.layers[num].get_weights()[0].T).mean(0)
     weights_importance = pd.DataFrame(list(zip(features, vals_weights)), columns=['col_name', 'feature_importance_vals'])
     weights_importance.sort_values(by=['feature_importance_vals'], ascending=False, inplace=True)
     weights_importance.loc[weights_importance['feature_importance_vals']>0] 
@@ -1656,27 +1679,27 @@ weights_importance
     <tr>
       <th>131</th>
       <td>ESR1</td>
-      <td>0.190406</td>
+      <td>0.156979</td>
     </tr>
     <tr>
-      <th>16</th>
-      <td>AGTR1</td>
-      <td>0.136717</td>
+      <th>228</th>
+      <td>GRIA2</td>
+      <td>0.142732</td>
     </tr>
     <tr>
-      <th>182</th>
-      <td>DCD</td>
-      <td>0.136054</td>
+      <th>271</th>
+      <td>FABP7</td>
+      <td>0.133380</td>
     </tr>
     <tr>
-      <th>121</th>
-      <td>KLK5</td>
-      <td>0.135646</td>
+      <th>124</th>
+      <td>NTN4</td>
+      <td>0.129271</td>
     </tr>
     <tr>
-      <th>110</th>
-      <td>IGJ</td>
-      <td>0.134122</td>
+      <th>70</th>
+      <td>HOXB5</td>
+      <td>0.127729</td>
     </tr>
     <tr>
       <th>...</th>
@@ -1684,29 +1707,29 @@ weights_importance
       <td>...</td>
     </tr>
     <tr>
-      <th>212</th>
-      <td>PRODH</td>
-      <td>0.045159</td>
+      <th>146</th>
+      <td>KRT7</td>
+      <td>0.049167</td>
     </tr>
     <tr>
-      <th>194</th>
-      <td>AKR1C2</td>
-      <td>0.044727</td>
+      <th>115</th>
+      <td>MFAP4</td>
+      <td>0.048581</td>
     </tr>
     <tr>
-      <th>176</th>
-      <td>ACTG2</td>
-      <td>0.044115</td>
+      <th>34</th>
+      <td>C19orf33</td>
+      <td>0.046389</td>
     </tr>
     <tr>
-      <th>91</th>
-      <td>SLPI</td>
-      <td>0.042295</td>
+      <th>208</th>
+      <td>TPSAB1</td>
+      <td>0.046116</td>
     </tr>
     <tr>
-      <th>198</th>
-      <td>PVALB</td>
-      <td>0.033221</td>
+      <th>174</th>
+      <td>ZG16B</td>
+      <td>0.043745</td>
     </tr>
   </tbody>
 </table>
@@ -1722,7 +1745,7 @@ plot_importance_features(Features=weights_importance, top=10, title="Weights imp
 
 
     
-![png](output_67_0.png)
+![png](output_68_0.png)
     
 
 
