@@ -28,7 +28,6 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 - [RNA Velocity analysis scVelo](https://github.com/LamineTourelab/Tutorial/blob/main/Bioinformatics/SingleCellData_Tutorial/RNA_Velocity_analysis_scVelo.ipynb)
 - [SingleCell Data Preprocessing with scanpy](https://github.com/LamineTourelab/Tutorial/blob/main/Bioinformatics/SingleCellData_Tutorial/SingleCellData_Preprocessing_with_scanpy.ipynb)
 - [Trajectory inference With CellRank](https://github.com/LamineTourelab/Tutorial/blob/main/Bioinformatics/SingleCellData_Tutorial/Trajectory_inference_With_CellRank.ipynb)
-- [Readme](user-guide/Bioinformatics/SingleCellData/Readme.md)
 
 ## `Machine learning`
 - [Introduction to Autoencoder](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Autoencoder.ipynb)
