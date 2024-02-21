@@ -29,7 +29,7 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 - [Readme](user-guide/Bioinformatics/SingleCellData/Readme.md)
 
 ## `Machine learning`
-- [Autoencoder](user-guide/Machine learning/Autoencoder/Autoencoder.m)
+- [Autoencoder](user-guide/Machine learning/Autoencoder/Autoencoder.md)
 - [DecisionTrees_using_iris_dataset](user-guide/Machine learning/DecisionTrees_using_iris_dataset/DecisionTrees_using_iris_dataset.md)
 - [Transfer_learning_using_VGG16](user-guide/Machine learning/Transfer_learning_using_VGG16/Transfer_learning_using_VGG16.md)
 - [tensorflow_API_tutorial](user-guide/Machine learning/tensorflow_API_tutorial/tensorflow_API_tutorial.md)
