@@ -39,4 +39,4 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 ## `Explainable AI`
 
 - [explainable xgboot model using shap and lime](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/explainability_shap%26lime.ipynb)
-- [Explainable_tensorflow_model_Shap](user-guide/Explainable AI/Explainable_tensorflow_model_Shap/Explainable_tensorflow_model_Shap.md)
+- [Explain tensorflow model using Shap and Model Weights ](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Explainable_tensorflow_model_Shap.ipynb)
