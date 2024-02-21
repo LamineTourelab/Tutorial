@@ -35,6 +35,7 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 - [Decision Trees using iris dataset](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/DecisionTrees_using_iris_dataset.ipynb)
 - [Transfer learning using VGG16](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Transfer_learning_using_VGG16.ipynb)
 - [Introductio to tensorflow API tutorial](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/tensorflow_API_tutorial.ipynb)
+- [Introductio to tensor basics operation](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/tensor_basics_operation.ipynb)
 
 ## `Explainable AI`
 
