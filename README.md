@@ -38,5 +38,5 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 
 ## `Explainable AI`
 
-- [explainability_shap&lime](user-guide/Explainable AI/explainability_shap&lime/explainability_shap&lime.md)
+- [explainable xgboot model using shap and lime](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/explainability_shap%26lime.ipynb)
 - [Explainable_tensorflow_model_Shap](user-guide/Explainable AI/Explainable_tensorflow_model_Shap/Explainable_tensorflow_model_Shap.md)
