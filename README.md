@@ -25,7 +25,7 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 
 ## `Bioinformatics`
 
-- [RNA_Velocity_analysis_scVelo](user-guide/Bioinformatics/SingleCellData/RNA_Velocity_analysis_scVelo.md)
+- [RNA Velocity analysis_scVelo](https://github.com/LamineTourelab/Tutorial/blob/main/Bioinformatics/SingleCellData_Tutorial/RNA_Velocity_analysis_scVelo.ipynb)
 - [SingleCellData_Preprocessing_with_scanpy](user-guide/Bioinformatics/SingleCellData/SingleCellData_Preprocessing_with_scanpy.md)
 - [Trajectory_inference_With_CellRank](user-guide/Bioinformatics/SingleCellData/Trajectory_inference_With_CellRank/Trajectory_inference_With_CellRank.md)
 - [Readme](user-guide/Bioinformatics/SingleCellData/Readme.md)
