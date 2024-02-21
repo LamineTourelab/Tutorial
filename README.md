@@ -31,9 +31,9 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 - [Readme](user-guide/Bioinformatics/SingleCellData/Readme.md)
 
 ## `Machine learning`
-- [Introductio to Autoencoder](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Autoencoder.ipynb)
+- [Introduction to Autoencoder](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Autoencoder.ipynb)
 - [Decision Trees using iris dataset](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/DecisionTrees_using_iris_dataset.ipynb)
-- [Transfer_learning_using_VGG16](user-guide/Machine learning/Transfer_learning_using_VGG16/Transfer_learning_using_VGG16.md)
+- [Transfer learning using VGG16](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Transfer_learning_using_VGG16.ipynb)
 - [tensorflow_API_tutorial](user-guide/Machine learning/tensorflow_API_tutorial/tensorflow_API_tutorial.md)
 
 ## `Explainable AI`
