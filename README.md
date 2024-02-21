@@ -35,7 +35,7 @@ mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 - [Transfer_learning_using_VGG16](user-guide/Machine learning/Transfer_learning_using_VGG16/Transfer_learning_using_VGG16.md)
 - [tensorflow_API_tutorial](user-guide/Machine learning/tensorflow_API_tutorial/tensorflow_API_tutorial.md)
 
-## `ExplainabilityAI`
+## `Explainable AI`
 
 - [explainability_shap&lime](user-guide/Explainable AI/explainability_shap&lime/explainability_shap&lime.md)
 - [Explainable_tensorflow_model_Shap](user-guide/Explainable AI/Explainable_tensorflow_model_Shap/Explainable_tensorflow_model_Shap.md)
