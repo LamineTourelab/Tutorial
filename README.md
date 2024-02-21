@@ -8,6 +8,7 @@ The repository is divided into differents sections where each section contains t
 This tutorial is available on my github page:
 
 [https://laminetourelab.github.io/](https://laminetourelab.github.io/)
+
 ```
 conda create -n mkdoc python=3.11  
 pip install -U mkdocs
