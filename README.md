@@ -9,8 +9,7 @@ The repository is divided into differents sections where each section contains t
 
 - Documentation: https://laminetourelab.github.io
 - Contributing: https://laminetourelab.github.io/about/contributing/
-- Questions? Check out the GitHub Discussions board
-  
+
 The Mkdocs was used for the creation of the website.
 
 # Publish your Markdown docs on GitHub Pages
