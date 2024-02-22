@@ -14,9 +14,7 @@ The Mkdocs was used for the creation of the website.
 # Publish your Markdown docs on GitHub Pages
 
 
-First install mkdocs with pip:
-```pip install mkdocs```
-
+First install mkdocs tools with pip:
 ```
 conda create -n mkdoc python=3.11  
 pip install -U mkdocs
@@ -25,9 +23,12 @@ pip install python-markdown-math
 pip install markdown-callouts
 pip install mdx-gh-links
 pip install mkdocs-click
+```
+
+```mkdocs new GITHUB_USERNAME```
 
 mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
-```
+
 
 # User Guide Index
 
