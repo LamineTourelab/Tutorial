@@ -12,6 +12,9 @@ This tutorial is available on my github page:
 # Publish your Markdown docs on GitHub Pages
 
 The Mkdocs was used for the creation of the website.
+First install mkdocs with pip:
+```pip install mkdocs```
+
 ```
 conda create -n mkdoc python=3.11  
 pip install -U mkdocs
