@@ -8,14 +8,9 @@ The repository is divided into differents sections where each section contains t
 # Links
 
 - Documentation: https://laminetourelab.github.io
-PyPI: https://pypi.python.org/pypi/mlxtend
-Changelog: https://rasbt.github.io/mlxtend/CHANGELOG
-Contributing: https://rasbt.github.io/mlxtend/CONTRIBUTING
-Questions? Check out the GitHub Discussions board
-This tutorial is available on my github page:
-
-[https://laminetourelab.github.io/](https://laminetourelab.github.io/)
-
+- Contributing: https://laminetourelab.github.io/about/contributing/
+- Questions? Check out the GitHub Discussions board
+  
 The Mkdocs was used for the creation of the website.
 
 # Publish your Markdown docs on GitHub Pages
