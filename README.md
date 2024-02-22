@@ -16,7 +16,8 @@ The Mkdocs was used for the creation of the website.
 
 First install mkdocs tools with pip:
 ```
-conda create -n mkdoc python=3.11  
+conda create -n mkdoc python=3.11
+conda activate mkdoc
 pip install -U mkdocs
 pip install mkdocs-jupyter
 pip install python-markdown-math
@@ -24,7 +25,6 @@ pip install markdown-callouts
 pip install mdx-gh-links
 pip install mkdocs-click
 ```
-
 ```mkdocs new GITHUB_USERNAME```
 
 mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
