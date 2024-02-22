@@ -9,6 +9,7 @@ This tutorial is available on my github page:
 
 [https://laminetourelab.github.io/](https://laminetourelab.github.io/)
 
+The Mkdocs was used for the creation of the website.
 ```
 conda create -n mkdoc python=3.11  
 pip install -U mkdocs
