@@ -35,8 +35,11 @@ Now if you go at this repo you will fine these files:
 -- docs/
 -- mkdocs.yml
 ```
-Run ```mkdocs serve``` to test your serve
-mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
+Run ```mkdocs serve``` to test your browser.
+
+The deployment can be done inside your github.io repository as follow:
+
+```mkdocs gh-deploy --config-file ../GITHUB_repo/mkdocs.yml --remote-branch main```
 
 
 # User Guide Index
