@@ -41,6 +41,7 @@ The deployment can be done inside your github.io repository as follow:
 
 ```mkdocs gh-deploy --config-file ../GITHUB_repo/mkdocs.yml --remote-branch main```
 
+For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 
 # User Guide Index
 
