@@ -25,7 +25,9 @@ pip install markdown-callouts
 pip install mdx-gh-links
 pip install mkdocs-click
 ```
-```mkdocs new GITHUB_USERNAME```
+To create your docs source project, you will need the repository source:
+
+```mkdocs new GITHUB_repo```
 
 mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 
