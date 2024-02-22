@@ -28,13 +28,14 @@ pip install mkdocs-click
 To create your docs source project, you will need the repository source cloned:
 
 ```mkdocs new GITHUB_repo```
-Now if you go at this repo you will fine:
+Now if you go at this repo you will fine these files:
+
 ```
 ./
 -- docs/
 -- mkdocs.yml
 ```
-
+Run ```mkdocs serve``` to test your serve
 mkdocs gh-deploy --config-file mkdocs.yml --remote-branch main
 
 
