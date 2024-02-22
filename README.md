@@ -9,6 +9,8 @@ This tutorial is available on my github page:
 
 [https://laminetourelab.github.io/](https://laminetourelab.github.io/)
 
+# Publish your Markdown docs on GitHub Pages
+
 The Mkdocs was used for the creation of the website.
 ```
 conda create -n mkdoc python=3.11  
