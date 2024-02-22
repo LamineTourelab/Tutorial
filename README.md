@@ -8,7 +8,7 @@ The repository is divided into differents sections where each section contains t
 # Links
 
 - Documentation: https://laminetourelab.github.io
-- Contributing: https://laminetourelab.github.io/about/contributing/
+- Contributing: https://github.com/LamineTourelab/Tutorial/graphs/contributors
 
 The Mkdocs was used for the creation of the website.
 
