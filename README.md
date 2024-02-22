@@ -9,9 +9,11 @@ This tutorial is available on my github page:
 
 [https://laminetourelab.github.io/](https://laminetourelab.github.io/)
 
+The Mkdocs was used for the creation of the website.
+
 # Publish your Markdown docs on GitHub Pages
 
-The Mkdocs was used for the creation of the website.
+
 First install mkdocs with pip:
 ```pip install mkdocs```
 
