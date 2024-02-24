@@ -7,6 +7,7 @@ In this repository you will fine explainability of machine learning models.
 + [Christophm book](https://christophm.github.io/interpretable-ml-book/preface-by-the-author.html)
 + [Awesome Interpretable Machine Learning](https://github.com/lopusz/awesome-interpretable-machine-learning/blob/master/README.org)
 + [Interpretable AI - Building Explainable Machine Learning Systems](https://github.com/thampiman/interpretable-ai-book)
++ [Interpretable Machine Learning with Python](https://github.com/PacktPublishing/Interpretable-Machine-Learning-with-Python)
 
 # `Tools`
 
