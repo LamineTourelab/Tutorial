@@ -11,9 +11,9 @@ In this repository you will fine explainability of machine learning models.
 # `Tools`
 
 + [Shap](https://github.com/slundberg/shap)
-+ [Explainer Dashboard](https://explainerdashboard.readthedocs.io/en/latest/)
 + [LIME in Python](https://github.com/marcotcr/lime)
 + [LIME in R](https://github.com/thomasp85/lime)
++ [Explainer Dashboard](https://explainerdashboard.readthedocs.io/en/latest/)
 + [Shapash](https://github.com/MAIF/shapash)
   
 # `Open Courses`
