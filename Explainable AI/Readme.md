@@ -8,6 +8,7 @@ In this repository you will fine explainability of machine learning models.
 + [Awesome Interpretable Machine Learning](https://github.com/lopusz/awesome-interpretable-machine-learning/blob/master/README.org)
 + [Interpretable AI - Building Explainable Machine Learning Systems](https://github.com/thampiman/interpretable-ai-book)
 + [Interpretable Machine Learning with Python](https://github.com/PacktPublishing/Interpretable-Machine-Learning-with-Python)
++ [Hands On Explainable AI XAI with Python](https://github.com/PacktPublishing/Hands-On-Explainable-AI-XAI-with-Python/tree/master)
 
 # `Tools`
 
