@@ -1,4 +1,4 @@
-# `Explanability-of-ML-models`
+# `Explanability of machine learning models`
 
 In this repository you will fine explainability of machine learning models.
 
