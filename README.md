@@ -52,6 +52,8 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 - [SingleCell Data Preprocessing with scanpy](https://github.com/LamineTourelab/Tutorial/blob/main/Bioinformatics/SingleCellData_Tutorial/SingleCellData_Preprocessing_with_scanpy.ipynb)
 - [Trajectory inference With CellRank](https://github.com/LamineTourelab/Tutorial/blob/main/Bioinformatics/SingleCellData_Tutorial/Trajectory_inference_With_CellRank.ipynb)
 
+## ` Medical Image Analysis`
+- [Chest X Ray Images classification with DenseNet121 and explain with GradCam](
 ## `Machine learning`
 - [Introduction to Autoencoder](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Autoencoder.ipynb)
 - [Decision Trees using iris dataset](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/DecisionTrees_using_iris_dataset.ipynb)
