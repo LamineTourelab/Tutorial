@@ -53,7 +53,7 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 - [Trajectory inference With CellRank](https://github.com/LamineTourelab/Tutorial/blob/main/Bioinformatics/SingleCellData_Tutorial/Trajectory_inference_With_CellRank.ipynb)
 
 ## ` Medical Image Analysis`
-- [Chest X Ray Images classification with DenseNet121 and explain with GradCam](https://github.com/LamineTourelab/Tutorial/blob/main/Images/Xray_classification_with_densenet121_and_gradcam.ipynb)
+- [Chest X Ray Images classification with DenseNet121 and explain with GradCam on tensorflow 2](https://github.com/LamineTourelab/Tutorial/blob/main/Images/Xray_classification_with_densenet121_and_gradcam.ipynb)
 ## `Machine learning`
 - [Introduction to Autoencoder](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Autoencoder.ipynb)
 - [Decision Trees using iris dataset](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/DecisionTrees_using_iris_dataset.ipynb)
@@ -66,7 +66,7 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 - [Explainable xgboot model using shap and lime](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/explainability_shap%26lime.ipynb)
 - [Explain tensorflow model using Shap and Model Weights ](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Explainable_tensorflow_model_Shap.ipynb)
 - [Explainable tensorflow multiclass model using Shap and model weights](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Explainable_tensorflow_multiclass_model_using_Shap_and_model_weights.ipynb)
-- [Chest X Ray Images classification with DenseNet121 and explain with GradCam](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Xray_classification_with_densenet121_and_gradcam.ipynb)
+- [Chest X Ray Images classification with DenseNet121 and explain with GradCam on tensorflow 2](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Xray_classification_with_densenet121_and_gradcam.ipynb)
 
 ## `Data visualization`
 - [Exploratory data analysis using matplotlib plotly express and Dash](https://github.com/LamineTourelab/Tutorial/blob/main/DataViz/EDA_matplotlib_Dashboard_Dataviz.ipynb)
