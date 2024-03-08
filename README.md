@@ -72,4 +72,3 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 - [Exploratory data analysis using matplotlib plotly express and Dash](https://github.com/LamineTourelab/Tutorial/blob/main/DataViz/EDA_matplotlib_Dashboard_Dataviz.ipynb)
 - cc
 - bb
-- bm
