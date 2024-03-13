@@ -54,6 +54,7 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 
 ## ` Medical Image Analysis`
 - [Chest X Ray Images classification with DenseNet121 and explain with GradCam on tensorflow 2](https://github.com/LamineTourelab/Tutorial/blob/main/Images/Xray_classification_with_densenet121_and_gradcam.ipynb)
+  
 ## `Machine learning`
 - [Introduction to Autoencoder](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/Autoencoder.ipynb)
 - [Decision Trees using iris dataset](https://github.com/LamineTourelab/Tutorial/blob/main/machine%20learning/DecisionTrees_using_iris_dataset.ipynb)
