@@ -2,9 +2,23 @@ library(shiny)
 library(shinydashboard)
 library(shinyjs)
 library(ggplot2)
+library(ggrepel)
+library(plotly)
+library(tidyverse)
+library(dplyr)
+library(factoextra)
+library(FactoMineR)
+library(enrichR)
 
 
 data(diamonds, package = 'ggplot2')
+
+listEnrichrSites()
+setEnrichrSite("Enrichr")
+websiteLive <- TRUE
+
+dbs <- listEnrichrDbs()
+
 
 
 # Ui
@@ -13,13 +27,23 @@ dashHeader = dashboardHeader(title = 'Simple Shinydashboard')
 dashsidebar = dashboardSidebar(
   sidebarMenu(
     menuItem(
-      text = 'home', 
+      text = 'Home', 
       tabName = 'hometab',
       icon = icon('dashboard', style = "color:#E87722")),
     
     menuItem(
       text = 'Graphs',
       tabName = 'Graphstab',
+      icon = icon('chart-column', style = "color:#E87722")),
+    
+    menuItem(
+      text = 'Statistics',
+      tabName = 'Statistics',
+      icon = icon('chart-column', style = "color:#E87722")),
+    
+    menuItem(
+      text = 'DEA',
+      tabName = 'diffexp',
       icon = icon('chart-column', style = "color:#E87722")),
     
     menuItem(
@@ -54,14 +78,14 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
-                  selectInput("dataset", "Choose a dataset:", choices = c("test-data", "own")),
-                  fileInput(inputId = 'file1', 'ID, logFC, Pvalue',
+                  selectInput("datasetgraph", "Choose a dataset:", choices = c("test-data", "own")),
+                  fileInput(inputId = 'filegraph', 'Please upload a matrix file',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
-                  selectInput('Vartoplot', 
-                              label = 'choose a variable',
-                              choices = c('carat', 'depth', 'table', 'price'),
-                              selected = 'price'),
+                  fluidRow(
+                    column(6, selectInput(inputId = 'Vartoplot', label = 'Waiting for data', choices = NULL)),
+                    column(6, selectInput(inputId='VarColor',label = 'Waiting for data Color', choices = NULL))
+                  ),
                   # Choose number of bins
                   sliderInput(inputId='histbins',
                               label = 'please select a number of bins',
@@ -70,30 +94,12 @@ dashbody <- dashboardBody(
               tabBox(width = 10,
                      tabPanel(title='Histogram',
                               #Placeholder for plot
-                              plotOutput(outputId='Histplot'),
-                              h4("Exporting the ggVolcanoR plot"),
-                              fluidRow(
-                                
-                                column(3,numericInput("width", "Width of PDF", value=10)),
-                                column(3,numericInput("height", "Height of PDF", value=8)),
-                                column(3),
-                                column(3,style = "margin-top: 25px;",downloadButton('downloadPlot','Download PDF'))
-                              ),
-                              
-                              fluidRow(
-                                column(3,numericInput("width_png","Width of PNG", value = 1600)),
-                                column(3,numericInput("height_png","Height of PNG", value = 1200)),
-                                column(3,numericInput("resolution_PNG","Resolution of PNG", value = 144)),
-                                column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG','Download PNG'))
-                              )
-                     ),
-                     tabPanel(title='Volvano plot',
-                              plotOutput(outputId = 'Volcanoplot'),
-                              
-                              ),
-                     
-                     tabPanel(title='Density',
-                              plotOutput(outputId='density')
+                              plotlyOutput(outputId='Histplot')
+                             # plotlyOutput(outputId='density')
+                        ),
+                     tabPanel(title='Box Plot',
+                              plotlyOutput(outputId='boxplot'),
+                              plotlyOutput(outputId='corrplot')
                      ),
                      tabPanel(title='Table',
                               DT::dataTableOutput(outputId = 'thetable')
@@ -103,6 +109,86 @@ dashbody <- dashboardBody(
               )
             )
     ),
+    
+    # Statistical Analysis.
+    tabItem(tabName = 'Statistics',
+            fluidRow(
+              box(width = 2, height = 1170,
+                  collapsible = TRUE,
+                  title = 'Side bar',
+                  status = 'primary', solidHeader = TRUE,
+                  selectInput("dataset1", "Choose a dataset:", choices = c("test-data", "own")),
+                  fileInput(inputId = 'fileuploadstats', 'Please upload a matrix file',
+                            accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                  # Placeholder for input selection
+                  fluidRow(
+                    column(6, selectInput(inputId='Vartoplot1',label = 'Waiting for data',choices = NULL )),
+                    column(6, selectInput(inputId='VarColor1',label = 'Waiting for data Color',choices = NULL ))
+                  ),
+                  # Choose number of bins
+                  sliderInput(inputId='histbins1',
+                              label = 'please select a number of bins',
+                              min = 5, max = 50, value = 30)
+              ),
+              tabBox( width = 10,
+                      tabPanel(title='PCA',
+                               #Placeholder for plot
+                               plotlyOutput(outputId='pca'),
+                      ),
+                      tabPanel(title='Test',
+                               #Placeholder for plot
+                               plotlyOutput(outputId='stattest'),
+                      ),
+                      tabPanel(title='Heatmap',
+                               #Placeholder for plot
+                               plotlyOutput(outputId='heatmap'),
+                      ),
+                      tabPanel(title='Correlation plot',
+                               #Placeholder for plot
+                               plotlyOutput(outputId='Corrplot')
+                      )
+                  )
+              )
+      
+    ),
+    # Differential expression Analysis.
+    tabItem(tabName = 'diffexp',
+            fluidRow(
+              box(width = 2, height = 1170,
+                  collapsible = TRUE,
+                  title = 'Side bar',
+                  status = 'primary', solidHeader = TRUE,
+                  selectInput("datasetdiff", "Choose a dataset:", choices = c("test-data", "own")),
+                  fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
+                            accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                  # Placeholder for input selection
+                  fluidRow(
+                    column(6, selectInput(inputId='Vartoplotdiff',label = 'Waiting for data plot',choices = NULL )),
+                    column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = dbs$libraryName ))
+                  )
+              ),
+              tabBox( width = 10,
+                      tabPanel(title='Volcano plot',
+                               textOutput("number_of_points"),
+                               plotlyOutput(outputId = 'Volcanoplot')
+                      ),
+                      tabPanel(title='Summary Table',
+                               #Placeholder for plot
+                               h2("Data table:"),
+                               DT::dataTableOutput(outputId = 'summarytable'),
+                               h2("The summary count table:"),
+                               DT::dataTableOutput(outputId = 'summarytablecount')
+                      ),
+                      tabPanel(title='Gene Set Enrichment',
+                               #Placeholder for plot
+                               textInput(inputId = 'textinputdiff', label = 'Paste a gene list'),
+                               plotlyOutput(outputId='gsea'),
+                      )
+              )
+            )
+            
+    ),
+    # Exploring file
     tabItem(
       tabName ='FileExplore',
       fileInput(
@@ -187,32 +273,119 @@ ui <- dashboardPage(
 
 server <- shinyServer(function(input, output, session)
 {
-  output$Histplot <- renderPlot({
-    ggplot(diamonds, aes_string(x=input$Vartoplot)) +  geom_histogram(bins = input$histbins)
-  })
+  # ============================================= Graph part results ====================================================== #
   
-  Datav <- reactive({
-    if(is.null(input$file1)){
+  Datagraph <- reactive({
+    if(is.null(input$filegraph)){
       return(NULL)
     }
-    readr::read_csv(input$file1$datapath)
+    readr::read_csv(input$filegraph$datapath)
+  
   })
   
-  output$Volcanoplot <- renderPlot({
+  observe({
+    updateSelectInput(
+      inputId = 'Vartoplot',
+      session = session,
+      label = 'Please choose a variable',
+      choices = names(Datagraph())
+    )
+  })
+  
+  observe({
+    updateSelectInput(
+      inputId = 'VarColor',
+      session = session,
+      label = 'Please choose a variable',
+      choices = names(Datagraph())
+    )
+  })
+  
+  output$Histplot <- renderPlotly({
+    Hist <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_histogram(bins = input$histbins)
+    Hist %>% 
+      ggplotly(tooltip = 'all')
+  })
+  
+  output$density <- renderPlotly({
+    Dens <- ggplot(Datagraph(), aes_string(x=input$Vartoplot)) +  geom_density(fill='grey50')
+    Dens %>% 
+      ggplotly(tooltip = 'all') %>%
+      layout(dragmode = "select")
+  })
+  
+  output$boxplot <- renderPlotly({
+    Boxp <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_boxplot()
+    Boxp %>% 
+      ggplotly(tooltip = 'all') 
+  })
+  
+  output$corrplot <- renderPlotly({
+    Corrp <-  ggplot(Datagraph()) + geom_point(aes_string(input$Vartoplot , input$VarColor), position = "jitter")
+    Corrp %>% 
+      ggplotly(tooltip = 'all') 
+  })
+  
+  
+  output$thetable <- DT::renderDataTable({
+    DT::datatable(Datagraph(), rownames = FALSE)
+  },
+  server = TRUE)
+  
+  # ============================================.  Differntial Part results ========================================= #
+  
+  Datadiff <- reactive({
+    if(is.null(input$filediff)){
+      return(NULL)
+    }
+    readr::read_csv(input$filediff$datapath)
+    
+  })
+  
+  observe({
+    updateSelectInput(
+      inputId = 'Vartoplotdiff',
+      session = session,
+      label = 'Please choose a variable',
+      choices = dbs$libraryName
+    )
+  })
+  
+  
+  output$number_of_points <- renderPrint({
+    dat <- data.frame(Datadiff())
+    dat$diffexpressed <- "NO"
+    dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
+    dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
+    dat$delabel <- NA
+    dat$delabel[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    dat <- dat[order(dat$Pvalue),]
+    dat$logP <- -log10(dat$Pvalue)
+    total <- as.numeric(dim(dat)[1])
+    totalDown <- as.numeric(dim(dat[dat$diffexpressed=='DOWN',])[1])
+    totalNO <- as.numeric(dim(dat[dat$diffexpressed=='NO',])[1])
+    totalUP <- as.numeric(dim(dat[dat$diffexpressed=='UP',])[1])
+    
+    cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none. ', 
+                      ' which represents ' ,round(totalNO/total*100,2),'% of the data',sep='')
+  })
+    
+  output$Volcanoplot <- renderPlotly({
+    
+    Datadiff = data.frame(Datadiff())
     # add a column of NAs
-    Datav = data.frame(Datav())
-    Datav$diffexpressed <- "NO"
+    Datadiff$diffexpressed <- "NO"
     # if log2Foldchange > 0.6 and pvalue < 0.05, set as "UP" 
-    Datav$diffexpressed[Datav$logFC > 0.6 & Datav$Pvalue < 0.05] <- "UP"
+    Datadiff$diffexpressed[Datadiff$logFC > 0.6 & Datadiff$Pvalue < 0.05] <- "UP"
     # if log2Foldchange < -0.6 and pvalue < 0.05, set as "DOWN"
-    Datav$diffexpressed[Datav$logFC < -0.6 & Datav$Pvalue < 0.05] <- "DOWN"
+    Datadiff$diffexpressed[Datadiff$logFC < -0.6 & Datadiff$Pvalue < 0.05] <- "DOWN"
     
     # Now write down the name of genes beside the points...
     # Create a new column "delabel" to de, that will contain the name of genes differentially expressed (NA in case they are not)
-    Datav$delabel <- NA
-    Datav$delabel[Datav$diffexpressed != "NO"] <- Datav$ID[Datav$diffexpressed != "NO"]
+    Datadiff$delabel <- NA
+    Datadiff$delabel[Datadiff$diffexpressed != "NO"] <- Datadiff$ID[Datadiff$diffexpressed != "NO"]
     
-    volcano_gplot <- ggplot(data=Datav, aes(x=logFC, y=-log10(Pvalue), col=diffexpressed, label=delabel)) + 
+    volcano_gplot <- ggplot(data=Datadiff, aes(x=logFC, y=-log10(Pvalue), col=diffexpressed, label=delabel)) + 
       geom_point() + 
       theme_minimal() +
       geom_text_repel() +
@@ -220,17 +393,61 @@ server <- shinyServer(function(input, output, session)
       # Add vertical lines for log2FoldChange thresholds, and one horizontal line for the p-value threshold 
       geom_vline(xintercept=c(-0.6, 0.6), col="red") +  
       geom_hline(yintercept=-log10(0.05), col="red")
-    volcano_gplot
+    volcano_gplot %>% 
+      ggplotly(tooltip = 'all') %>%
+      layout(dragmode = "select")
     })
   
-  output$density <- renderPlot({
-    ggplot(diamonds, aes_string(x=input$Vartoplot)) +  geom_density(fill='grey50')
+  output$summarytable <- DT::renderDataTable({
+    dat <- data.frame(Datadiff())
+    dat$diffexpressed <- "NO"
+    dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
+    dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
+    dat$delabel <- NA
+    dat$delabel[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    
+    dat <- DT::datatable(dat)
+    dat
   })
   
-  output$thetable <- DT::renderDataTable({
-    DT::datatable(diamonds, rownames = FALSE)
-  },
-  server = TRUE)
+  output$summarytablecount <- DT::renderDataTable({
+    dat <- data.frame(Datadiff())
+    dat$diffexpressed <- "NO"
+    dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
+    dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
+    dat$delabel <- NA
+    dat$delabel[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    dat <- dat %>% count(diffexpressed)
+    DT::datatable(dat)
+  })
+  
+  ##### Enrichment
+  
+  output$textinputdiff <- renderPrint({
+    input$textinputdiff
+  })
+  
+  output$gsea <- renderPlotly({
+    listEnrichrSites()
+    setEnrichrSite("Enrichr")
+    websiteLive <- TRUE
+    
+    dbs <- listEnrichrDbs()
+    dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015", 
+             "Reactome_2015", "Reactome_2016", "OMIM_Disease", "MSigDB_Oncogenic_Signatures", "KEGG_2015", 
+             "KEGG_2016", "GO_Biological_Process_2018", "Human_Phenotype_Ontology", "Cancer_Cell_Line_Encyclopedia",
+             "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
+    if (websiteLive) {
+      enriched <- enrichr(c("SFRP1", "RELN", "FLT1", "GPC3", "APOBEC3B", "CD47", "NTRK2", "TLR8", 
+                            "FGF10", "E2F1", "HBEGF", "SLC19A3", "DUSP6", "FOS", "GNG5"), input$Vardatabasediff)
+    }
+    
+    plotEnrich(enriched[[input$Vartoplotdiff]], showTerms = 20, numChar = 50,
+               y = "Count", orderBy = "P.value", title = "Enrichment analysis with selected Modules using KEGG", 
+               xlab = "Enriched pathways")
+  })
+  # ===================================================. Exploring file ==============================================#
+  
   
   theData <- reactive({
     if(is.null(input$fileupload)){
