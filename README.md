@@ -68,6 +68,9 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 - [Explainable tensorflow multiclass model using Shap and model weights](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Explainable_tensorflow_multiclass_model_using_Shap_and_model_weights.ipynb)
 - [Chest X Ray Images classification with DenseNet121 and explain with GradCam on tensorflow 2](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Xray_classification_with_densenet121_and_gradcam.ipynb)
 
+### Note: 
+There is an ongoing project in explainable AI applied to healthcare in collaboration with [Salvatore RAIELI](https://www.linkedin.com/in/salvatore-raieli/). The source code can be found at [https://github.com/SalvatoreRa/explanaibleAI](https://github.com/SalvatoreRa/explanaibleAI)
+
 ## `Data visualization`
 - [Exploratory data analysis using matplotlib plotly express and Dash](https://github.com/LamineTourelab/Tutorial/blob/main/DataViz/EDA_matplotlib_Dashboard_Dataviz.ipynb)
 - [Shiny App in R](https://github.com/LamineTourelab/Tutorial/blob/main/DataViz/app.R)
