@@ -29,4 +29,4 @@ In this repository you will fine explainability of machine learning models.
 - [Chest X Ray Images classification with DenseNet121 and explain with GradCam on tensorflow 2](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Xray_classification_with_densenet121_and_gradcam.ipynb)
 
   ### Note: 
-  There is an ongoing project in explainable AI applied to healthcare in collaboration with [Salvatore RAIELI](https://www.linkedin.com/in/salvatore-raieli/). The source code can be found at [https://github.com/SalvatoreRa/explanaibleAI](https://github.com/SalvatoreRa/explanaibleAI). Don't hesitate to reach out for collaboration or any question.
+  There is an ongoing project in explainable AI applied to healthcare in collaboration with `Salvatore RAIELI` (his [github](https://github.com/SalvatoreRa)). The source code can be found at [https://github.com/SalvatoreRa/explanaibleAI](https://github.com/SalvatoreRa/explanaibleAI). Don't hesitate to reach out for collaboration or any question.
