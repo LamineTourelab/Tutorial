@@ -4,26 +4,27 @@ library(shinyjs)
 library(ggplot2)
 library(ggrepel)
 library(plotly)
+library(tidyr)
 library(tidyverse)
 library(dplyr)
 library(factoextra)
 library(FactoMineR)
 library(enrichR)
+library(ggVolcanoR)
+library(gplots)
+library(corrplot)
+library(mixOmics)
 
-
+## ==================================================================== Datasets ============================================================================================##
 data(diamonds, package = 'ggplot2')
 
-listEnrichrSites()
-setEnrichrSite("Enrichr")
-websiteLive <- TRUE
+data(breast.TCGA)
+mRna = data.frame(breast.TCGA$data.train$mrna)
+mRna$subtype = breast.TCGA$data.train$subtype
 
-dbs <- listEnrichrDbs()
+# ======================================================================  Ui. =================================================================================================##
 
-
-
-# Ui
-
-dashHeader = dashboardHeader(title = 'Simple Shinydashboard')
+dashHeader = dashboardHeader(title = 'BioInfo HUB INEM ShinyApp')
 dashsidebar = dashboardSidebar(
   sidebarMenu(
     menuItem(
@@ -39,12 +40,12 @@ dashsidebar = dashboardSidebar(
     menuItem(
       text = 'Statistics',
       tabName = 'Statistics',
-      icon = icon('chart-column', style = "color:#E87722")),
+      icon = icon('chart-line', style = "color:#E87722")),
     
     menuItem(
       text = 'DEA',
       tabName = 'diffexp',
-      icon = icon('chart-column', style = "color:#E87722")),
+      icon = icon('dna', style = "color:#E87722")),
     
     menuItem(
       text = 'File Explore',
@@ -78,12 +79,13 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
+                  p("Here you can upload you own data by changing the mode test-data to own"),
                   selectInput("datasetgraph", "Choose a dataset:", choices = c("test-data", "own")),
-                  fileInput(inputId = 'filegraph', 'Please upload a matrix file',
-                            accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                  fileInput(inputId = 'filegraph', 'Please upload a matrix file'),
+                  p("Here you can choose a variable to plot and for coloring. By default you can select the cancer subtype (the last variable of the color list) for color variable."),
                   # Placeholder for input selection
                   fluidRow(
-                    column(6, selectInput(inputId = 'Vartoplot', label = 'Waiting for data', choices = NULL)),
+                    column(6, selectInput(inputId ='Vartoplot', label = 'Waiting for data', choices = NULL)),
                     column(6, selectInput(inputId='VarColor',label = 'Waiting for data Color', choices = NULL))
                   ),
                   # Choose number of bins
@@ -117,13 +119,13 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
-                  selectInput("dataset1", "Choose a dataset:", choices = c("test-data", "own")),
-                  fileInput(inputId = 'fileuploadstats', 'Please upload a matrix file',
+                  selectInput("datasetstats", "Choose a dataset:", choices = c("test-data", "own")),
+                  fileInput(inputId = 'filestats', 'Please upload a matrix file',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
                   fluidRow(
-                    column(6, selectInput(inputId='Vartoplot1',label = 'Waiting for data',choices = NULL )),
-                    column(6, selectInput(inputId='VarColor1',label = 'Waiting for data Color',choices = NULL ))
+                    column(6, selectInput(inputId='Vartoplotstats',label = 'Waiting for data',choices = NULL )),
+                    column(6, selectInput(inputId='VarColorstats',label = 'Waiting for data Color',choices = NULL ))
                   ),
                   # Choose number of bins
                   sliderInput(inputId='histbins1',
@@ -134,6 +136,8 @@ dashbody <- dashboardBody(
                       tabPanel(title='PCA',
                                #Placeholder for plot
                                plotlyOutput(outputId='pca'),
+                               plotOutput(outputId='pcacomp'),
+                               plotlyOutput(outputId='variableimp')
                       ),
                       tabPanel(title='Test',
                                #Placeholder for plot
@@ -141,7 +145,7 @@ dashbody <- dashboardBody(
                       ),
                       tabPanel(title='Heatmap',
                                #Placeholder for plot
-                               plotlyOutput(outputId='heatmap'),
+                               plotOutput(outputId='heatmap'),
                       ),
                       tabPanel(title='Correlation plot',
                                #Placeholder for plot
@@ -159,12 +163,13 @@ dashbody <- dashboardBody(
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
                   selectInput("datasetdiff", "Choose a dataset:", choices = c("test-data", "own")),
+                  p("Here you can upload you own data by changing the mode test-data to own. The data should be in the format :ID, logFC, Pvalue."),
                   fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
                   fluidRow(
                     column(6, selectInput(inputId='Vartoplotdiff',label = 'Waiting for data plot',choices = NULL )),
-                    column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = dbs$libraryName ))
+                    column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
                   )
               ),
               tabBox( width = 10,
@@ -269,25 +274,31 @@ ui <- dashboardPage(
   skin = 'blue'
 )
 
-# Server
+ # ======================================================================  Server =================================================================================================##
 
 server <- shinyServer(function(input, output, session)
 {
-  # ============================================= Graph part results ====================================================== #
+     ## ============================================= Graph panel results ====================================================== ##
   
-  Datagraph <- reactive({
+  Datagraph <- reactive({switch(input$datasetgraph,"test-data" = test.data.graph(),"own" = own.data.graph())})
+  
+  test.data.graph <- reactive ({ mRna
+  })
+  
+  own.data.graph <- reactive({
     if(is.null(input$filegraph)){
       return(NULL)
     }
-    readr::read_csv(input$filegraph$datapath)
-  
+    dataframe = readr::read_csv(input$filegraph$datapath)
+    
   })
+  
   
   observe({
     updateSelectInput(
       inputId = 'Vartoplot',
       session = session,
-      label = 'Please choose a variable',
+      label = 'Please choose a variable to plot',
       choices = names(Datagraph())
     )
   })
@@ -296,8 +307,9 @@ server <- shinyServer(function(input, output, session)
     updateSelectInput(
       inputId = 'VarColor',
       session = session,
-      label = 'Please choose a variable',
-      choices = names(Datagraph())
+      label = 'Please choose a variable for color',
+      choices = names(Datagraph()),
+      
     )
   })
   
@@ -332,33 +344,39 @@ server <- shinyServer(function(input, output, session)
   },
   server = TRUE)
   
-  # ============================================.  Differntial Part results ========================================= #
+      ## =========================================================================.  Differntial Panel results.  =============================================================================== #
   
-  Datadiff <- reactive({
+  Datadiff <- reactive({switch(input$datasetdiff,"test-data" = test.data(),"own" = own.data())})
+  
+  test.data <- reactive({
+    dataframe = read.csv(system.file("extdata","Proteomics data.csv",package = "ggVolcanoR"),header = T)
+  })
+  own.data <- reactive({
     if(is.null(input$filediff)){
       return(NULL)
     }
-    readr::read_csv(input$filediff$datapath)
+    dataframe = readr::read_csv(input$filediff$datapath)
     
   })
   
-  observe({
-    updateSelectInput(
-      inputId = 'Vartoplotdiff',
-      session = session,
-      label = 'Please choose a variable',
-      choices = dbs$libraryName
-    )
-  })
+  # 
+  # observe({
+  #   updateSelectInput(
+  #     inputId = 'Vartoplotdiff',
+  #     session = session,
+  #     label = 'Please choose a variable',
+  #     choices = dbs$libraryName
+  #   )
+  # })
   
   
   output$number_of_points <- renderPrint({
-    dat <- data.frame(Datadiff())
+    dat <- as.data.frame(Datadiff())
     dat$diffexpressed <- "NO"
     dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
     dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
-    dat$delabel <- NA
-    dat$delabel[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    dat$gene_name <- NA
+    dat$gene_name[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
     dat <- dat[order(dat$Pvalue),]
     dat$logP <- -log10(dat$Pvalue)
     total <- as.numeric(dim(dat)[1])
@@ -381,11 +399,11 @@ server <- shinyServer(function(input, output, session)
     Datadiff$diffexpressed[Datadiff$logFC < -0.6 & Datadiff$Pvalue < 0.05] <- "DOWN"
     
     # Now write down the name of genes beside the points...
-    # Create a new column "delabel" to de, that will contain the name of genes differentially expressed (NA in case they are not)
-    Datadiff$delabel <- NA
-    Datadiff$delabel[Datadiff$diffexpressed != "NO"] <- Datadiff$ID[Datadiff$diffexpressed != "NO"]
+    # Create a new column "gene_name" to de, that will contain the name of genes differentially expressed (NA in case they are not)
+    Datadiff$gene_name <- NA
+    Datadiff$gene_name[Datadiff$diffexpressed != "NO"] <- Datadiff$ID[Datadiff$diffexpressed != "NO"]
     
-    volcano_gplot <- ggplot(data=Datadiff, aes(x=logFC, y=-log10(Pvalue), col=diffexpressed, label=delabel)) + 
+    volcano_gplot <- ggplot(data=Datadiff, aes(x=logFC, y=-log10(Pvalue), col=diffexpressed, label=gene_name)) + 
       geom_point() + 
       theme_minimal() +
       geom_text_repel() +
@@ -394,8 +412,7 @@ server <- shinyServer(function(input, output, session)
       geom_vline(xintercept=c(-0.6, 0.6), col="red") +  
       geom_hline(yintercept=-log10(0.05), col="red")
     volcano_gplot %>% 
-      ggplotly(tooltip = 'all') %>%
-      layout(dragmode = "select")
+      ggplotly(tooltip = 'all') 
     })
   
   output$summarytable <- DT::renderDataTable({
@@ -403,8 +420,8 @@ server <- shinyServer(function(input, output, session)
     dat$diffexpressed <- "NO"
     dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
     dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
-    dat$delabel <- NA
-    dat$delabel[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    dat$gene_name <- NA
+    dat$gene_name[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
     
     dat <- DT::datatable(dat)
     dat
@@ -415,38 +432,89 @@ server <- shinyServer(function(input, output, session)
     dat$diffexpressed <- "NO"
     dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
     dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
-    dat$delabel <- NA
-    dat$delabel[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
-    dat <- dat %>% count(diffexpressed)
+    dat$gene_name <- NA
+    dat$gene_name[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    dat <- dat %>% dplyr::count(diffexpressed)
     DT::datatable(dat)
   })
   
   ##### Enrichment
   
-  output$textinputdiff <- renderPrint({
-    input$textinputdiff
+  # output$textinputdiff <- renderPrint({
+  #   input$textinputdiff
+  # })
+  # 
+  # output$gsea <- renderPlotly({
+  #   listEnrichrSites()
+  #   setEnrichrSite("Enrichr")
+  #   websiteLive <- TRUE
+  #   
+  #   dbs <- listEnrichrDbs()
+  #   dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015", 
+  #            "Reactome_2015", "Reactome_2016", "OMIM_Disease", "MSigDB_Oncogenic_Signatures", "KEGG_2015", 
+  #            "KEGG_2016", "GO_Biological_Process_2018", "Human_Phenotype_Ontology", "Cancer_Cell_Line_Encyclopedia",
+  #            "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
+  #   if (websiteLive) {
+  #     enriched <- enrichr(c("SFRP1", "RELN", "FLT1", "GPC3", "APOBEC3B", "CD47", "NTRK2", "TLR8", 
+  #                           "FGF10", "E2F1", "HBEGF", "SLC19A3", "DUSP6", "FOS", "GNG5"), input$Vardatabasediff)
+  #   }
+  #   
+  #   plotEnrich(enriched[[input$Vartoplotdiff]], showTerms = 20, numChar = 50,
+  #              y = "Count", orderBy = "P.value", title = "Enrichment analysis with selected Modules using KEGG", 
+  #              xlab = "Enriched pathways")
+  # })
+  
+    ## =========================================================================.  Statistical Panel results.  =============================================================================== #
+  
+  Datastats <- reactive({switch(input$datasetstats,"test-data" = test.data.stats(),"own" = own.data.stats())})
+  
+  test.data.stats <- reactive ({ 
+    mRna = data.frame(breast.TCGA$data.train$mrna)
   })
   
-  output$gsea <- renderPlotly({
-    listEnrichrSites()
-    setEnrichrSite("Enrichr")
-    websiteLive <- TRUE
-    
-    dbs <- listEnrichrDbs()
-    dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015", 
-             "Reactome_2015", "Reactome_2016", "OMIM_Disease", "MSigDB_Oncogenic_Signatures", "KEGG_2015", 
-             "KEGG_2016", "GO_Biological_Process_2018", "Human_Phenotype_Ontology", "Cancer_Cell_Line_Encyclopedia",
-             "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
-    if (websiteLive) {
-      enriched <- enrichr(c("SFRP1", "RELN", "FLT1", "GPC3", "APOBEC3B", "CD47", "NTRK2", "TLR8", 
-                            "FGF10", "E2F1", "HBEGF", "SLC19A3", "DUSP6", "FOS", "GNG5"), input$Vardatabasediff)
+  own.data.stats <- reactive({
+    if(is.null(input$filestats)){
+      return(NULL)
     }
+    dataframe = readr::read_csv(input$filestats$datapath)
     
-    plotEnrich(enriched[[input$Vartoplotdiff]], showTerms = 20, numChar = 50,
-               y = "Count", orderBy = "P.value", title = "Enrichment analysis with selected Modules using KEGG", 
-               xlab = "Enriched pathways")
   })
-  # ===================================================. Exploring file ==============================================#
+  
+  output$heatmap <- renderPlot({
+    Datastats <- as.matrix(Datastats())
+    heatmap.2(Datastats, col = greenred(256), scale="column", margins=c(5,10), density="density", xlab = "Gene Names", 
+              ylab= "Samples ID", main = " ",breaks=seq(-1.5,1.5,length.out=257))
+  })
+  
+  
+  
+  output$pca <- renderPlotly({
+    pca =PCA(data.frame(Datastats()), scale.unit=T, graph=F)
+    
+    fviz_pca_ind(pca, fill.ind = breast.TCGA$data.train$subtype , geom.ind = "point", 
+                 pointshape=21,addEllipses = F,pointsize=4 )
+  })
+  
+  output$pcacomp <- renderPlot({
+  
+    fviz_eig(pca)
+  })
+  
+  output$variableimp <- renderPlotly({
+    loadings <- data.frame(pca$var$coord[1:10,1:5])
+    loadings$Symbol <- row.names(loadings)
+    loadings <- gather(loadings, 'Component', 'Weight',
+                       -Symbol)
+   pcavar <- ggplot(loadings, aes(x=Symbol, y=Weight)) +
+      geom_bar(stat='identity', aes(colour = factor(sign(Weight)))) +
+      facet_grid(Component ~
+                   ., scales='free_y')
+   pcavar %>% 
+     ggplotly(tooltip = 'all') 
+  })
+
+  
+      ## ==================================================================. Exploring file.   =================================================================================#
   
   
   theData <- reactive({
@@ -496,5 +564,8 @@ server <- shinyServer(function(input, output, session)
   
 })
 
-# App
+# =======================================================================================. App. ============================================================================================================#
+
 shinyApp(ui = ui, server = server)
+
+# =======================================================================================. End. ============================================================================================================#
