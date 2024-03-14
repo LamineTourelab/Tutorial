@@ -74,4 +74,4 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 
 ## `Data visualization`
 - [Exploratory data analysis using matplotlib plotly express and Dash](https://github.com/LamineTourelab/Tutorial/blob/main/Data%20Visualization/EDA_matplotlib_Dashboard_Dataviz.ipynb)
-- [Shiny App in R]()
+- [Shiny App in R](https://github.com/LamineTourelab/Tutorial/blob/main/Data%20Visualization/Shiny%20App%20in%20genomics/app.R)
