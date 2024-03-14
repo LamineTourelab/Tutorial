@@ -16,12 +16,11 @@ library(corrplot)
 library(mixOmics)
 
 ## ==================================================================== Datasets ============================================================================================##
-data(diamonds, package = 'ggplot2')
 
-data(breast.TCGA)
+data(breast.TCGA) # from the mixomics package.
 mRna = data.frame(breast.TCGA$data.train$mrna)
 mRna$subtype = breast.TCGA$data.train$subtype
-
+Proteomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Proteomics%20data.csv")
 # ======================================================================  Ui. =================================================================================================##
 
 dashHeader = dashboardHeader(title = 'BioInfo HUB INEM ShinyApp')
@@ -96,12 +95,18 @@ dashbody <- dashboardBody(
               tabBox(width = 10,
                      tabPanel(title='Histogram',
                               #Placeholder for plot
-                              plotlyOutput(outputId='Histplot')
-                             # plotlyOutput(outputId='density')
+                              fluidRow(
+                              column(6, plotlyOutput(outputId='Histplot')),
+                              column(6, plotlyOutput(outputId='density'))
+                              )
                         ),
                      tabPanel(title='Box Plot',
-                              plotlyOutput(outputId='boxplot'),
-                              plotlyOutput(outputId='corrplot')
+                              fluidRow(
+                                column(6, plotlyOutput(outputId='boxplot')),
+                                column(6, plotlyOutput(outputId='corrplot'))
+                              )
+                              #plotlyOutput(outputId='boxplot'),
+                             # plotlyOutput(outputId='corrplot')
                      ),
                      tabPanel(title='Table',
                               DT::dataTableOutput(outputId = 'thetable')
@@ -320,20 +325,20 @@ server <- shinyServer(function(input, output, session)
   })
   
   output$density <- renderPlotly({
-    Dens <- ggplot(Datagraph(), aes_string(x=input$Vartoplot)) +  geom_density(fill='grey50')
+    Dens <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_density(fill='grey50')
     Dens %>% 
       ggplotly(tooltip = 'all') %>%
       layout(dragmode = "select")
   })
   
   output$boxplot <- renderPlotly({
-    Boxp <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_boxplot()
+    Boxp <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_boxplot() + facet_grid(. ~ input$VarColor, scales = "free", space = "free")
     Boxp %>% 
       ggplotly(tooltip = 'all') 
   })
   
   output$corrplot <- renderPlotly({
-    Corrp <-  ggplot(Datagraph()) + geom_point(aes_string(input$Vartoplot , input$VarColor), position = "jitter")
+    Corrp <-  ggplot(Datagraph()) + geom_point(aes_string(input$VarColor, input$Vartoplot , fill=input$VarColor), position = "jitter")
     Corrp %>% 
       ggplotly(tooltip = 'all') 
   })
@@ -349,7 +354,8 @@ server <- shinyServer(function(input, output, session)
   Datadiff <- reactive({switch(input$datasetdiff,"test-data" = test.data(),"own" = own.data())})
   
   test.data <- reactive({
-    dataframe = read.csv(system.file("extdata","Proteomics data.csv",package = "ggVolcanoR"),header = T)
+   # dataframe = read.csv(system.file("extdata","Proteomics data.csv",package = "ggVolcanoR"),header = T)
+    Proteomics_data
   })
   own.data <- reactive({
     if(is.null(input$filediff)){
