@@ -7,12 +7,13 @@ library(plotly)
 library(tidyr)
 library(tidyverse)
 library(dplyr)
-library(factoextra)
-library(FactoMineR)
+library(factoextra) # for pca visualization 
+library(FactoMineR)  # PCA
 library(enrichR)
-library(gplots)
+library(gplots) # Use heatmap.2
 library(corrplot)
-library(mixOmics)
+library(mixOmics) # for the breast cancer dataset
+library(Amelia) # for missing values visualization
 
 ## ==================================================================== Datasets ============================================================================================##
 
@@ -156,11 +157,16 @@ dashbody <- dashboardBody(
                       ),
                       tabPanel(title='Heatmap',
                                #Placeholder for plot
+                               plotOutput(outputId = 'missmap'),
                                plotOutput(outputId='heatmap'),
                       ),
                       tabPanel(title='Correlation plot',
                                #Placeholder for plot
                                plotlyOutput(outputId='Corrplot')
+                      ),
+                      tabPanel(title='Data Table',
+                               DT::dataTableOutput(outputId = 'thetablestats')
+                               
                       )
                   )
               )
@@ -321,7 +327,7 @@ server <- shinyServer(function(input, output, session)
       session = session,
       label = 'Please choose a variable for color',
       choices = names(Datagraph()),
-      
+      selected = 'subtype'
     )
   })
   
@@ -491,18 +497,17 @@ server <- shinyServer(function(input, output, session)
     dataframe = readr::read_csv(input$filestats$datapath)
     
   })
+  #### def Metadata test
+  subtype = data.frame(breast.TCGA$data.train$subtype)
+  colnames(subtype) = 'subtype'
+  rownames(subtype) = rownames(breast.TCGA$data.train$mrna)
+  ####
   
   Metadastats <- reactive({switch(input$datasetstatsmetd,"test-metadata" = test.data.stats.metd(),"own-metadata" = own.data.stats.metd())})
   
-  ####
-  subtype = data.frame(breast.TCGA$data.train$subtype)
-  colnames(subtype) = 'subtype'
-  subtype$cancer_subtype = subtype$subtype
-  subtype$cancer_type = subtype$subtype
-  rownames(subtype) = rownames(breast.TCGA$data.train$mrna)
-  ####
+ 
   test.data.stats.metd <- reactive({
-    subtype = data.frame(breast.TCGA$data.train$subtype)
+    subtype = data.frame(subtype)
   })
   own.data.stats.metd <- reactive({
     if(is.null(input$filestatsmetd)){
@@ -527,23 +532,22 @@ server <- shinyServer(function(input, output, session)
               ylab= "Samples ID", main = " ",breaks=seq(-1.5,1.5,length.out=257))
   })
   
-  metd <- reactive({
-    req(input$Vartoplotstats)
-    metd = Metadastats() %>% dplyr::select(input$Vartoplotstats)
+  output$missmap <- renderPlot({
+    missmap(Datastats())
   })
   
   output$pca <- renderPlotly({
     Datastats <- as.matrix(Datastats())
-
+    metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
     pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
     
-    fviz_pca_ind(pca, fill.ind = Metadastats(), geom.ind = "point", 
+    fviz_pca_ind(pca, fill.ind = metadata[,1], geom.ind = "point", 
                  pointshape=21,addEllipses = F,pointsize=4 )
   })
   
   output$pcabiplot <- renderPlotly({
-    
-    fviz_pca_biplot(pca, fill.ind = Metadastats(), geom.ind = "point", 
+    metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
+    fviz_pca_biplot(pca, fill.ind = metadata[,1], geom.ind = "point", 
                   pointshape=10,addEllipses = T,pointsize=2)
   })
   
@@ -575,7 +579,11 @@ server <- shinyServer(function(input, output, session)
    pcavar %>% 
      ggplotly(tooltip = 'all') 
   })
-
+  
+  output$thetablestats <- DT::renderDataTable({
+    DT::datatable(Datastats())
+  },
+  server = TRUE)
       ## ==================================================================. Exploring file.   =================================================================================#
   
   
