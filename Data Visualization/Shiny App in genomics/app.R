@@ -10,7 +10,6 @@ library(dplyr)
 library(factoextra)
 library(FactoMineR)
 library(enrichR)
-library(ggVolcanoR)
 library(gplots)
 library(corrplot)
 library(mixOmics)
@@ -103,7 +102,7 @@ dashbody <- dashboardBody(
                      tabPanel(title='Box Plot',
                               fluidRow(
                                 column(6, plotlyOutput(outputId='boxplot')),
-                                column(6, plotlyOutput(outputId='corrplot'))
+                                column(6, plotlyOutput(outputId='linearplot'))
                               )
                               #plotlyOutput(outputId='boxplot'),
                              # plotlyOutput(outputId='corrplot')
@@ -124,25 +123,32 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
+                  p("Here you can upload you own data by changing the mode test-data to own"),
                   selectInput("datasetstats", "Choose a dataset:", choices = c("test-data", "own")),
+                  p("The uploading data should be a matrix without any factor column"),
                   fileInput(inputId = 'filestats', 'Please upload a matrix file',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                  
+                  p("Here you can upload you own metadata by changing the mode test-metadata to own-metadata"),
+                  selectInput("datasetstatsmetd", "Choose a dataset:", choices = c("test-metadata", "own-metadata")),
+                  p("The uploading data should be a file with factor column as metadata file."),
+                  fileInput(inputId = 'filestatsmetd', 'Please upload a matrix file',
+                            accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
-                  fluidRow(
-                    column(6, selectInput(inputId='Vartoplotstats',label = 'Waiting for data',choices = NULL )),
-                    column(6, selectInput(inputId='VarColorstats',label = 'Waiting for data Color',choices = NULL ))
-                  ),
-                  # Choose number of bins
-                  sliderInput(inputId='histbins1',
-                              label = 'please select a number of bins',
-                              min = 5, max = 50, value = 30)
+                  selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL )
+                  
               ),
               tabBox( width = 10,
                       tabPanel(title='PCA',
                                #Placeholder for plot
-                               plotlyOutput(outputId='pca'),
-                               plotOutput(outputId='pcacomp'),
-                               plotlyOutput(outputId='variableimp')
+                               fluidRow(
+                                 column(6, plotlyOutput(outputId='pca')),
+                                 column(6, plotlyOutput(outputId='pcabiplot'))
+                               ),
+                               fluidRow(
+                                 column(6, plotlyOutput(outputId='pcacomp')),
+                                 column(6, plotlyOutput(outputId='variableimp'))
+                               )
                       ),
                       tabPanel(title='Test',
                                #Placeholder for plot
@@ -167,8 +173,9 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
+                  p("Here you can upload you own data by changing the mode test-data to own"),
                   selectInput("datasetdiff", "Choose a dataset:", choices = c("test-data", "own")),
-                  p("Here you can upload you own data by changing the mode test-data to own. The data should be in the format :ID, logFC, Pvalue."),
+                  p("The uploading data should be in the format :ID, logFC, Pvalue."),
                   fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
@@ -337,7 +344,7 @@ server <- shinyServer(function(input, output, session)
       ggplotly(tooltip = 'all') 
   })
   
-  output$corrplot <- renderPlotly({
+  output$linearplot <- renderPlotly({
     Corrp <-  ggplot(Datagraph()) + geom_point(aes_string(input$VarColor, input$Vartoplot , fill=input$VarColor), position = "jitter")
     Corrp %>% 
       ggplotly(tooltip = 'all') 
@@ -351,18 +358,17 @@ server <- shinyServer(function(input, output, session)
   
       ## =========================================================================.  Differntial Panel results.  =============================================================================== #
   
-  Datadiff <- reactive({switch(input$datasetdiff,"test-data" = test.data(),"own" = own.data())})
+  Datadiff <- reactive({switch(input$datasetdiff,"test-data" = test.data.diff(),"own" = own.data.diff())})
   
-  test.data <- reactive({
+  test.data.diff <- reactive({
    # dataframe = read.csv(system.file("extdata","Proteomics data.csv",package = "ggVolcanoR"),header = T)
     Proteomics_data
   })
-  own.data <- reactive({
+  own.data.diff <- reactive({
     if(is.null(input$filediff)){
       return(NULL)
     }
     dataframe = readr::read_csv(input$filediff$datapath)
-    
   })
   
   # 
@@ -474,7 +480,7 @@ server <- shinyServer(function(input, output, session)
   
   Datastats <- reactive({switch(input$datasetstats,"test-data" = test.data.stats(),"own" = own.data.stats())})
   
-  test.data.stats <- reactive ({ 
+    test.data.stats <- reactive ({ 
     mRna = data.frame(breast.TCGA$data.train$mrna)
   })
   
@@ -486,40 +492,90 @@ server <- shinyServer(function(input, output, session)
     
   })
   
+  Metadastats <- reactive({switch(input$datasetstatsmetd,"test-metadata" = test.data.stats.metd(),"own-metadata" = own.data.stats.metd())})
+  
+  ####
+  subtype = data.frame(breast.TCGA$data.train$subtype)
+  colnames(subtype) = 'subtype'
+  subtype$cancer_subtype = subtype$subtype
+  subtype$cancer_type = subtype$subtype
+  rownames(subtype) = rownames(breast.TCGA$data.train$mrna)
+  ####
+  test.data.stats.metd <- reactive({
+    subtype = data.frame(breast.TCGA$data.train$subtype)
+  })
+  own.data.stats.metd <- reactive({
+    if(is.null(input$filestatsmetd)){
+      return(NULL)
+    }
+    dataframe = readr::read_csv(input$filestatsmetd$datapath)
+  })
+  
+  observe({
+    updateSelectInput(
+      inputId = 'Vartoplotstats',
+      session = session,
+      label = 'Please choose a metadata variable',
+      choices = names(Metadastats())
+    )
+  })
+  ##========== plot
+  
   output$heatmap <- renderPlot({
     Datastats <- as.matrix(Datastats())
     heatmap.2(Datastats, col = greenred(256), scale="column", margins=c(5,10), density="density", xlab = "Gene Names", 
               ylab= "Samples ID", main = " ",breaks=seq(-1.5,1.5,length.out=257))
   })
   
-  
+  metd <- reactive({
+    req(input$Vartoplotstats)
+    metd = Metadastats() %>% dplyr::select(input$Vartoplotstats)
+  })
   
   output$pca <- renderPlotly({
-    pca =PCA(data.frame(Datastats()), scale.unit=T, graph=F)
+    Datastats <- as.matrix(Datastats())
+
+    pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
     
-    fviz_pca_ind(pca, fill.ind = breast.TCGA$data.train$subtype , geom.ind = "point", 
+    fviz_pca_ind(pca, fill.ind = Metadastats(), geom.ind = "point", 
                  pointshape=21,addEllipses = F,pointsize=4 )
   })
   
-  output$pcacomp <- renderPlot({
+  output$pcabiplot <- renderPlotly({
+    
+    fviz_pca_biplot(pca, fill.ind = Metadastats(), geom.ind = "point", 
+                  pointshape=10,addEllipses = T,pointsize=2)
+  })
+  
+  output$pcacomp <- renderPlotly({
   
     fviz_eig(pca)
   })
+
   
   output$variableimp <- renderPlotly({
     loadings <- data.frame(pca$var$coord[1:10,1:5])
     loadings$Symbol <- row.names(loadings)
     loadings <- gather(loadings, 'Component', 'Weight',
                        -Symbol)
+    colors <- list()
+    for (i in 1:nrow(loadings)){
+      colors= ifelse(loadings$Weight > 0,'Positive','Negative')
+    }
    pcavar <- ggplot(loadings, aes(x=Symbol, y=Weight)) +
-      geom_bar(stat='identity', aes(colour = factor(sign(Weight)))) +
+      geom_bar(stat='identity', aes(fill = colors)) +
       facet_grid(Component ~
-                   ., scales='free_y')
+                   ., scales='free_y') +
+      labs(title = "Gene component association",
+        x = "Gene symbol",
+        y = "Gene weight for each component",
+        colour = "Up/Down") +
+     theme(axis.text.x = element_text(angle = 90))
+     theme(plot.title = element_text(hjust = 0.5))
    pcavar %>% 
      ggplotly(tooltip = 'all') 
   })
 
-  
       ## ==================================================================. Exploring file.   =================================================================================#
   
   
