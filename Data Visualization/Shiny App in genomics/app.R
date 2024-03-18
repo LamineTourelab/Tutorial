@@ -20,8 +20,12 @@ library(Amelia) # for missing values visualization
 data(breast.TCGA) # from the mixomics package.
 mRna = data.frame(breast.TCGA$data.train$mrna)
 mRna$subtype = breast.TCGA$data.train$subtype
-Proteomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Proteomics%20data.csv")
+Transcriptomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Transcriptomics%20data.csv")
+
+# ==================================================================== Options ===================================================================================================#
+options(shiny.maxRequestSize = 9*1024^2)
 # ======================================================================  Ui. =================================================================================================##
+
 
 dashHeader = dashboardHeader(title = 'BioInfo HUB INEM ShinyApp')
 dashsidebar = dashboardSidebar(
@@ -82,33 +86,41 @@ dashbody <- dashboardBody(
                   selectInput("datasetgraph", "Choose a dataset:", choices = c("test-data", "own")),
                   fileInput(inputId = 'filegraph', 'Please upload a matrix file'),
                   p("Here you can choose a variable to plot and for coloring. By default you can select the cancer subtype (the last variable of the color list) for color variable."),
+                  hr(style="border-color: blue;"),
                   # Placeholder for input selection
+                  h4(strong("Histogram and boxplot panel")),
                   fluidRow(
-                    column(6, selectInput(inputId ='Vartoplot', label = 'Waiting for data', choices = NULL)),
-                    column(6, selectInput(inputId='VarColor',label = 'Waiting for data Color', choices = NULL))
+                    column(4, selectInput(inputId ='Vartoplot', label = 'Waiting for data', choices = NULL)),
+                    column(4, selectInput(inputId='VarColor',label = 'Waiting for data Color', choices = NULL))
                   ),
                   # Choose number of bins
                   sliderInput(inputId='histbins',
                               label = 'please select a number of bins',
-                              min = 5, max = 50, value = 30)
+                              min = 5, max = 50, value = 30),
+                  hr(style="border-color: blue;"),
+                  h4(strong("Linear & density plot panel")),
+                  fluidRow(
+                    column(4, selectInput(inputId='VarColor1',label = 'Waiting for data Color', choices = NULL)),
+                    column(4, selectInput(inputId ='Vartoplot1', label = 'Waiting for data', choices = NULL)),
+                    column(4, selectInput(inputId ='Vartofill', label = 'Waiting for data', choices = NULL))
+                  )
               ),
               tabBox(width = 10,
-                     tabPanel(title='Histogram',
+                     tabPanel(title='Histogram & Boxplot',
                               #Placeholder for plot
                               fluidRow(
                               column(6, plotlyOutput(outputId='Histplot')),
-                              column(6, plotlyOutput(outputId='density'))
+                              column(6, plotlyOutput(outputId='boxplot')),
                               )
                         ),
-                     tabPanel(title='Box Plot',
+                     tabPanel(title='Linear & Density',
                               fluidRow(
-                                column(6, plotlyOutput(outputId='boxplot')),
-                                column(6, plotlyOutput(outputId='linearplot'))
+                                column(6, plotlyOutput(outputId='linearplot')),
+                                column(6, plotlyOutput(outputId='density'))
                               )
-                              #plotlyOutput(outputId='boxplot'),
-                             # plotlyOutput(outputId='corrplot')
+                          
                      ),
-                     tabPanel(title='Table',
+                     tabPanel(title='Data Table',
                               DT::dataTableOutput(outputId = 'thetable')
                               
                      )
@@ -124,19 +136,22 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
-                  p("Here you can upload you own data by changing the mode test-data to own"),
+                  p("Here you can upload you own data by changing the mode test-data to own.
+                    The should have as rownames the first column and the same rownames anddimension as the metadata file."),
                   selectInput("datasetstats", "Choose a dataset:", choices = c("test-data", "own")),
                   p("The uploading data should be a matrix without any factor column"),
                   fileInput(inputId = 'filestats', 'Please upload a matrix file',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   
-                  p("Here you can upload you own metadata by changing the mode test-metadata to own-metadata"),
-                  selectInput("datasetstatsmetd", "Choose a dataset:", choices = c("test-metadata", "own-metadata")),
+                  p("Here you can upload you own metadata by changing the mode test-metadata to own-metadata.
+                    The should have as rownames the first column and the same rownames and dimension as the dataset file above."),
+                  selectInput("datasetstatsmetd", "Choose a meta-dataset:", choices = c("test-metadata", "own-metadata")),
                   p("The uploading data should be a file with factor column as metadata file."),
                   fileInput(inputId = 'filestatsmetd', 'Please upload a matrix file',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
-                  selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL )
+                  selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL ),
+                  p("It  may take a little time for big dataset. Take a coffee!")
                   
               ),
               tabBox( width = 10,
@@ -331,6 +346,35 @@ server <- shinyServer(function(input, output, session)
     )
   })
   
+  observe({
+    updateSelectInput(
+      inputId = 'Vartoplot1',
+      session = session,
+      label = 'Please choose a variable y',
+      choices = names(Datagraph())
+    )
+  })
+  
+  observe({
+    updateSelectInput(
+      inputId = 'VarColor1',
+      session = session,
+      label = 'Please choose a variable x',
+      choices = names(Datagraph()),
+      selected = 'subtype'
+    )
+  })
+  
+  observe({
+    updateSelectInput(
+      inputId = 'Vartofill',
+      session = session,
+      label = 'Please choose a color',
+      choices = c('NULL',names(Datagraph())),
+      selected = 'subtype'
+    )
+  })
+  
   output$Histplot <- renderPlotly({
     Hist <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_histogram(bins = input$histbins)
     Hist %>% 
@@ -338,22 +382,29 @@ server <- shinyServer(function(input, output, session)
   })
   
   output$density <- renderPlotly({
-    Dens <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_density(fill='grey50')
+    Dens <- ggplot(Datagraph(), aes_string(x=input$Vartoplot1, fill=input$VarColor1)) +  geom_density(fill='grey50')
     Dens %>% 
       ggplotly(tooltip = 'all') %>%
       layout(dragmode = "select")
   })
   
   output$boxplot <- renderPlotly({
-    Boxp <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_boxplot() + facet_grid(. ~ input$VarColor, scales = "free", space = "free")
+    Boxp <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_boxplot() 
     Boxp %>% 
       ggplotly(tooltip = 'all') 
   })
   
   output$linearplot <- renderPlotly({
-    Corrp <-  ggplot(Datagraph()) + geom_point(aes_string(input$VarColor, input$Vartoplot , fill=input$VarColor), position = "jitter")
-    Corrp %>% 
-      ggplotly(tooltip = 'all') 
+    
+    if(!input$Vartofill == 'NULL'){
+      Corrp <-  ggplot(Datagraph(), aes_string(input$VarColor1, input$Vartoplot1 , fill=input$Vartofill)) + geom_point(position = "jitter") 
+      Corrp %>% 
+        ggplotly(tooltip = 'all')
+    }else{
+      Corrp <-  ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot)) + geom_point(position = "jitter") 
+      Corrp %>% 
+        ggplotly(tooltip = 'all')
+    }
   })
   
   
@@ -367,8 +418,7 @@ server <- shinyServer(function(input, output, session)
   Datadiff <- reactive({switch(input$datasetdiff,"test-data" = test.data.diff(),"own" = own.data.diff())})
   
   test.data.diff <- reactive({
-   # dataframe = read.csv(system.file("extdata","Proteomics data.csv",package = "ggVolcanoR"),header = T)
-    Proteomics_data
+    Transcriptomics_data 
   })
   own.data.diff <- reactive({
     if(is.null(input$filediff)){
@@ -390,19 +440,19 @@ server <- shinyServer(function(input, output, session)
   
   output$number_of_points <- renderPrint({
     dat <- as.data.frame(Datadiff())
-    dat$diffexpressed <- "NO"
-    dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
-    dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
+    dat$Direction <- "NO"
+    dat$Direction[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
+    dat$Direction[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
     dat$gene_name <- NA
-    dat$gene_name[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
     dat <- dat[order(dat$Pvalue),]
     dat$logP <- -log10(dat$Pvalue)
     total <- as.numeric(dim(dat)[1])
-    totalDown <- as.numeric(dim(dat[dat$diffexpressed=='DOWN',])[1])
-    totalNO <- as.numeric(dim(dat[dat$diffexpressed=='NO',])[1])
-    totalUP <- as.numeric(dim(dat[dat$diffexpressed=='UP',])[1])
+    totalDown <- as.numeric(dim(dat[dat$Direction=='DOWN',])[1])
+    totalNO <- as.numeric(dim(dat[dat$Direction=='NO',])[1])
+    totalUP <- as.numeric(dim(dat[dat$Direction=='UP',])[1])
     
-    cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none. ', 
+    cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none, ', 
                       ' which represents ' ,round(totalNO/total*100,2),'% of the data',sep='')
   })
     
@@ -410,18 +460,18 @@ server <- shinyServer(function(input, output, session)
     
     Datadiff = data.frame(Datadiff())
     # add a column of NAs
-    Datadiff$diffexpressed <- "NO"
+    Datadiff$Direction <- "NO"
     # if log2Foldchange > 0.6 and pvalue < 0.05, set as "UP" 
-    Datadiff$diffexpressed[Datadiff$logFC > 0.6 & Datadiff$Pvalue < 0.05] <- "UP"
+    Datadiff$Direction[Datadiff$logFC > 0.6 & Datadiff$Pvalue < 0.05] <- "UP"
     # if log2Foldchange < -0.6 and pvalue < 0.05, set as "DOWN"
-    Datadiff$diffexpressed[Datadiff$logFC < -0.6 & Datadiff$Pvalue < 0.05] <- "DOWN"
+    Datadiff$Direction[Datadiff$logFC < -0.6 & Datadiff$Pvalue < 0.05] <- "DOWN"
     
     # Now write down the name of genes beside the points...
     # Create a new column "gene_name" to de, that will contain the name of genes differentially expressed (NA in case they are not)
     Datadiff$gene_name <- NA
-    Datadiff$gene_name[Datadiff$diffexpressed != "NO"] <- Datadiff$ID[Datadiff$diffexpressed != "NO"]
+    Datadiff$gene_name[Datadiff$Direction != "NO"] <- Datadiff$ID[Datadiff$Direction != "NO"]
     
-    volcano_gplot <- ggplot(data=Datadiff, aes(x=logFC, y=-log10(Pvalue), col=diffexpressed, label=gene_name)) + 
+    volcano_gplot <- ggplot(data=Datadiff, aes(x=logFC, y=-log10(Pvalue), col=Direction, label=gene_name)) + 
       geom_point() + 
       theme_minimal() +
       geom_text_repel() +
@@ -435,11 +485,11 @@ server <- shinyServer(function(input, output, session)
   
   output$summarytable <- DT::renderDataTable({
     dat <- data.frame(Datadiff())
-    dat$diffexpressed <- "NO"
-    dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
-    dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
+    dat$Direction <- "NO"
+    dat$Direction[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
+    dat$Direction[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
     dat$gene_name <- NA
-    dat$gene_name[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
+    dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
     
     dat <- DT::datatable(dat)
     dat
@@ -447,12 +497,12 @@ server <- shinyServer(function(input, output, session)
   
   output$summarytablecount <- DT::renderDataTable({
     dat <- data.frame(Datadiff())
-    dat$diffexpressed <- "NO"
-    dat$diffexpressed[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
-    dat$diffexpressed[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
+    dat$Direction <- "NO"
+    dat$Direction[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
+    dat$Direction[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
     dat$gene_name <- NA
-    dat$gene_name[dat$diffexpressed != "NO"] <- dat$ID[dat$diffexpressed != "NO"]
-    dat <- dat %>% dplyr::count(diffexpressed)
+    dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
+    dat <- dat %>% dplyr::count(Direction)
     DT::datatable(dat)
   })
   
@@ -494,8 +544,8 @@ server <- shinyServer(function(input, output, session)
     if(is.null(input$filestats)){
       return(NULL)
     }
-    dataframe = readr::read_csv(input$filestats$datapath)
-    
+    dataframe = read.csv(input$filestats$datapath, row.names = 1)
+     
   })
   #### def Metadata test
   subtype = data.frame(breast.TCGA$data.train$subtype)
@@ -509,18 +559,19 @@ server <- shinyServer(function(input, output, session)
   test.data.stats.metd <- reactive({
     subtype = data.frame(subtype)
   })
+  
   own.data.stats.metd <- reactive({
     if(is.null(input$filestatsmetd)){
       return(NULL)
     }
-    dataframe = readr::read_csv(input$filestatsmetd$datapath)
+    dataframe = read.csv(input$filestatsmetd$datapath, row.names = 1)
   })
   
   observe({
     updateSelectInput(
       inputId = 'Vartoplotstats',
       session = session,
-      label = 'Please choose a metadata variable',
+      label = 'Please choose a metadata variable for annotations',
       choices = names(Metadastats())
     )
   })
@@ -541,23 +592,32 @@ server <- shinyServer(function(input, output, session)
     metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
     pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
     
-    fviz_pca_ind(pca, fill.ind = metadata[,1], geom.ind = "point", 
+    fviz_pca_ind(pca, fill.ind = metadata[,1],  geom.ind = "point", 
                  pointshape=21,addEllipses = F,pointsize=4 )
   })
   
   output$pcabiplot <- renderPlotly({
+    Datastats <- as.matrix(Datastats())
     metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
+    pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
+    
     fviz_pca_biplot(pca, fill.ind = metadata[,1], geom.ind = "point", 
                   pointshape=10,addEllipses = T,pointsize=2)
   })
   
   output$pcacomp <- renderPlotly({
-  
+    Datastats <- as.matrix(Datastats())
+    metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
+    pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
+    
     fviz_eig(pca)
   })
 
   
   output$variableimp <- renderPlotly({
+    Datastats <- as.matrix(Datastats())
+    pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
+    
     loadings <- data.frame(pca$var$coord[1:10,1:5])
     loadings$Symbol <- row.names(loadings)
     loadings <- gather(loadings, 'Component', 'Weight',
