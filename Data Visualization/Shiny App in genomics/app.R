@@ -23,7 +23,7 @@ mRna$subtype = breast.TCGA$data.train$subtype
 Transcriptomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Transcriptomics%20data.csv")
 
 # ==================================================================== Options ===================================================================================================#
-options(shiny.maxRequestSize = 9*1024^2)
+options(shiny.maxRequestSize = 50*1024^2)
 # ======================================================================  Ui. =================================================================================================##
 
 
