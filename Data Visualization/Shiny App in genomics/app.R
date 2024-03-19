@@ -14,6 +14,7 @@ library(gplots) # Use heatmap.2
 library(corrplot)
 library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
+library(igvShiny)
 
 ## ==================================================================== Datasets ============================================================================================##
 
@@ -21,7 +22,7 @@ data(breast.TCGA) # from the mixomics package.
 mRna = data.frame(breast.TCGA$data.train$mrna)
 mRna$subtype = breast.TCGA$data.train$subtype
 Transcriptomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Transcriptomics%20data.csv")
-
+stock.genomes <- sort(get_css_genomes())
 # ==================================================================== Options ===================================================================================================#
 options(shiny.maxRequestSize = 50*1024^2)
 # ======================================================================  Ui. =================================================================================================##
@@ -51,6 +52,11 @@ dashsidebar = dashboardSidebar(
       icon = icon('dna', style = "color:#E87722")),
     
     menuItem(
+      text = 'IGV',
+      tabName = 'igv',
+      icon = icon('dna', style = "color:#E87722")),
+    
+    menuItem(
       text = 'File Explore',
       tabName = 'FileExplore',
       icon = icon('file-text', style = "color:#E87722")),
@@ -63,6 +69,7 @@ dashsidebar = dashboardSidebar(
 
 dashbody <- dashboardBody(
   shinyjs::useShinyjs(),
+  # ================================================================================  Graph
   tabItems(
     tabItem(tabName = 'hometab',
             h1('Landing  page!'),
@@ -70,7 +77,6 @@ dashbody <- dashboardBody(
             em('This is a emphasize text')
     ),
     tabItem(tabName = 'Graphstab', 
-            h1('Graphs!'),
           #  fluidRow(
           #    box(
            #     width = 12,
@@ -78,7 +84,7 @@ dashbody <- dashboardBody(
             #  )
             #),
             fluidRow(
-              box(width = 2, height = 1170,
+              sidebarPanel(width = 2, height = 1170,
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
@@ -121,23 +127,23 @@ dashbody <- dashboardBody(
                           
                      ),
                      tabPanel(title='Data Table',
-                              DT::dataTableOutput(outputId = 'thetable')
-                              
+                              DT::dataTableOutput(outputId = 'thetable'),
+                              verbatimTextOutput("summarythetable")
                      )
                      
               )
             )
     ),
     
-    # Statistical Analysis.
+    # # ================================================================================  Statistical Analysis.
     tabItem(tabName = 'Statistics',
             fluidRow(
-              box(width = 2, height = 1170,
+              sidebarPanel(width = 2, height = 1170,
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
                   p("Here you can upload you own data by changing the mode test-data to own.
-                    The should have as rownames the first column and the same rownames anddimension as the metadata file."),
+                    The should have as rownames the first column and the same rownames and dimension as the metadata file."),
                   selectInput("datasetstats", "Choose a dataset:", choices = c("test-data", "own")),
                   p("The uploading data should be a matrix without any factor column"),
                   fileInput(inputId = 'filestats', 'Please upload a matrix file',
@@ -187,10 +193,10 @@ dashbody <- dashboardBody(
               )
       
     ),
-    # Differential expression Analysis.
+    # # ================================================================================  Differential expression Analysis.
     tabItem(tabName = 'diffexp',
             fluidRow(
-              box(width = 2, height = 1170,
+              sidebarPanel(width = 2, height = 1170,
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
@@ -226,7 +232,7 @@ dashbody <- dashboardBody(
             )
             
     ),
-    # Exploring file
+    # # ================================================================================  Exploring file
     tabItem(
       tabName ='FileExplore',
       fileInput(
@@ -251,6 +257,14 @@ dashbody <- dashboardBody(
         )
       )
     ),
+    # ================================================================================  IGV
+    tabItem(
+      tabName ='igv',
+        sidebarPanel(width = 2,
+          selectInput("genomeChooser", "Choose a igv genome:", stock.genomes, selected = "hg38")),
+      shinyUI(fluidPage(igvShinyOutput('igvShiny'), width = 10))
+    ),
+    # ================================================================================  JS
     tabItem(
       tabName = 'JS',
       fluidRow(
@@ -326,7 +340,6 @@ server <- shinyServer(function(input, output, session)
     
   })
   
-  
   observe({
     updateSelectInput(
       inputId = 'Vartoplot',
@@ -401,7 +414,7 @@ server <- shinyServer(function(input, output, session)
       Corrp %>% 
         ggplotly(tooltip = 'all')
     }else{
-      Corrp <-  ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot)) + geom_point(position = "jitter") 
+      Corrp <-  ggplot(Datagraph(), aes_string(input$VarColor1, input$Vartoplot1)) + geom_point(position = "jitter") 
       Corrp %>% 
         ggplotly(tooltip = 'all')
     }
@@ -412,6 +425,10 @@ server <- shinyServer(function(input, output, session)
     DT::datatable(Datagraph(), rownames = FALSE)
   },
   server = TRUE)
+  
+  output$summarythetable <- renderPrint({
+    summary(Datagraph())
+  })
   
       ## =========================================================================.  Differntial Panel results.  =============================================================================== #
   
@@ -436,7 +453,6 @@ server <- shinyServer(function(input, output, session)
   #     choices = dbs$libraryName
   #   )
   # })
-  
   
   output$number_of_points <- renderPrint({
     dat <- as.data.frame(Datadiff())
@@ -691,7 +707,22 @@ server <- shinyServer(function(input, output, session)
     #  chosen <- 
    # }
  # )
+  ## =======================================================================================. IGV =========================================================================================================#
+  observeEvent(input$genomeChooser, ignoreInit=FALSE, {
+    newGenome <- input$genomeChooser
+   # printf("new genome: %s", newGenome)
+    genomeSpec <- parseAndValidateGenomeSpec(genomeName=newGenome,  initialLocus="all")
+    output$igvShiny <- renderIgvShiny(
+      igvShiny(genomeSpec)
+    )
+  })
+  # output$igvShiny <- renderIgvShiny({
+  #   igvShiny(options)
+  # })
+  # 
   
+  ## =======================================================================================. IGV =========================================================================================================#
+ # This are for the server close
 })
 
 # =======================================================================================. App. ============================================================================================================#
