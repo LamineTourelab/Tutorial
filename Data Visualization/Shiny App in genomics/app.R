@@ -15,26 +15,57 @@ library(corrplot)
 library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
+library(shinymanager)
 
 ## ==================================================================== Datasets ============================================================================================##
-
 data(breast.TCGA) # from the mixomics package.
 mRna = data.frame(breast.TCGA$data.train$mrna)
 mRna$subtype = breast.TCGA$data.train$subtype
 Transcriptomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Transcriptomics%20data.csv")
 stock.genomes <- sort(get_css_genomes())
 # ==================================================================== Options ===================================================================================================#
-options(shiny.maxRequestSize = 50*1024^2)
+options(shiny.maxRequestSize = 50*1024^2) 
 # ======================================================================  Ui. =================================================================================================##
 
 
-dashHeader = dashboardHeader(title = 'BioInfo HUB INEM ShinyApp')
+dashHeader = dashboardHeader(title ="My Dashboard",
+                             tags$li(a(href = 'https://github.com/LamineTourelab',
+                                       icon("github"),
+                                       title = "Autor Github"),
+                                     class = "dropdown"),
+                             tags$li(a(href = 'https://www.linkedin.com/in/lamine-toure',
+                                       icon("linkedin"),
+                                       title = "Autor linkedin"),
+                                     class = "dropdown"),
+                             tags$li(a(href = 'https://laminetourelab.github.io/',
+                                       icon("blog"),
+                                       title = "Autor Website"),
+                                     class = "dropdown"),
+                             tags$li(a(href = 'https://github.com/LamineTourelab/Tutorial/blob/main/Data%20Visualization/Shiny%20App%20in%20genomics/app.R',
+                                       icon("code"),
+                                       title = "Source Code"),
+                                     class = "dropdown"),
+                             tags$li(a(href = 'http://shinyapps.company.com',
+                                       icon("power-off"),
+                                       title = "Back to Apps Home"),
+                                     class = "dropdown"),
+                             tags$li(a(href = 'https://www.institut-necker-enfants-malades.fr/',
+                                       img(src = 'inem.jpeg',
+                                           title = "Company Home", height = "30px"),
+                                       style = "padding-top:10px; padding-bottom:10px;"),
+                                     class = "dropdown"))
 dashsidebar = dashboardSidebar(
+  sidebarUserPanel("Lamine TOURE",
+                   subtitle = a(href = "#", icon("circle", class = "text-success"), "Online"),
+                   # Image file should be in www/ subdir
+                   image = "inem.jpeg"
+  ),
+ # sidebarSearchForm(label = "Enter a number", "searchText", "searchButton"),
   sidebarMenu(
     menuItem(
       text = 'Home', 
       tabName = 'hometab',
-      icon = icon('dashboard', style = "color:#E87722")),
+      icon = icon('home', style = "color:#E87722")),
     
     menuItem(
       text = 'Graphs',
@@ -73,6 +104,7 @@ dashbody <- dashboardBody(
   tabItems(
     tabItem(tabName = 'hometab',
             h1('Landing  page!'),
+            img(src = "inem.jpeg", height = 72, width = 72),
             p('This is a landing page for dashboard'),
             em('This is a emphasize text')
     ),
@@ -88,10 +120,12 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
-                  p("Here you can upload you own data by changing the mode test-data to own"),
+                  p(style="text-align: justify;",
+                    "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
                   selectInput("datasetgraph", "Choose a dataset:", choices = c("test-data", "own")),
                   fileInput(inputId = 'filegraph', 'Please upload a matrix file'),
-                  p("Here you can choose a variable to plot and for coloring. By default you can select the cancer subtype (the last variable of the color list) for color variable."),
+                  p(style="text-align: justify;",
+                    "Here you can choose a variable to plot and for coloring. By default you can select the cancer subtype (the last variable of the color list) for color variable."),
                   hr(style="border-color: blue;"),
                   # Placeholder for input selection
                   h4(strong("Histogram and boxplot panel")),
@@ -142,22 +176,24 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
-                  p("Here you can upload you own data by changing the mode test-data to own.
-                    The should have as rownames the first column and the same rownames and dimension as the metadata file."),
+                  p(style="text-align: justify;",
+                  "Here you can upload you own data by changing the mode test-data to own.
+                    The should have as rownames the first column and the same rownames and dimension as the metadata file.", 
+                  br(), "Maximum size = 50MB"),
                   selectInput("datasetstats", "Choose a dataset:", choices = c("test-data", "own")),
-                  p("The uploading data should be a matrix without any factor column"),
+                  p(style="text-align: justify;","The uploading data should be a matrix without any factor column"),
                   fileInput(inputId = 'filestats', 'Please upload a matrix file',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   
-                  p("Here you can upload you own metadata by changing the mode test-metadata to own-metadata.
-                    The should have as rownames the first column and the same rownames and dimension as the dataset file above."),
+                  p(style="text-align: justify;","Here you can upload you own metadata by changing the mode test-metadata to own-metadata.
+                    The should have as rownames the first column and the same rownames and dimension as the dataset file above.", br(), "Maximum size = 50MB"),
                   selectInput("datasetstatsmetd", "Choose a meta-dataset:", choices = c("test-metadata", "own-metadata")),
-                  p("The uploading data should be a file with factor column as metadata file."),
+                  p(style="text-align: justify;","The uploading data should be a file with factor column as metadata file."),
                   fileInput(inputId = 'filestatsmetd', 'Please upload a matrix file',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
                   selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL ),
-                  p("It  may take a little time for big dataset. Take a coffee!")
+                  p(style="text-align: justify;","It  may take a little time for big dataset. Take a coffee!")
                   
               ),
               tabBox( width = 10,
@@ -200,9 +236,10 @@ dashbody <- dashboardBody(
                   collapsible = TRUE,
                   title = 'Side bar',
                   status = 'primary', solidHeader = TRUE,
-                  p("Here you can upload you own data by changing the mode test-data to own"),
+                  p(style="text-align: justify;",
+                    "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
                   selectInput("datasetdiff", "Choose a dataset:", choices = c("test-data", "own")),
-                  p("The uploading data should be in the format :ID, logFC, Pvalue."),
+                  p(style="text-align: justify;","The uploading data should be in the format :ID, logFC, Pvalue."),
                   fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
                             accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
                   # Placeholder for input selection
@@ -329,7 +366,11 @@ server <- shinyServer(function(input, output, session)
   
   Datagraph <- reactive({switch(input$datasetgraph,"test-data" = test.data.graph(),"own" = own.data.graph())})
   
-  test.data.graph <- reactive ({ mRna
+  test.data.graph <- reactive ({ 
+    data(breast.TCGA) # from the mixomics package.
+    mRna = data.frame(breast.TCGA$data.train$mrna)
+    mRna$subtype = breast.TCGA$data.train$subtype
+    mRna
   })
   
   own.data.graph <- reactive({
