@@ -162,7 +162,7 @@ dashbody <- dashboardBody(
                      ),
                      tabPanel(title='Data Table',
                               DT::dataTableOutput(outputId = 'thetable'),
-                              verbatimTextOutput("summarythetable")
+                             # verbatimTextOutput("summarythetable")
                      )
                      
               )
@@ -262,7 +262,8 @@ dashbody <- dashboardBody(
                       ),
                       tabPanel(title='Gene Set Enrichment',
                                #Placeholder for plot
-                               textInput(inputId = 'textinputdiff', label = 'Paste a gene list'),
+                               textAreaInput(inputId = 'textinputdiff', label = 'Paste a gene list'),
+                               textOutput(outputId = 'textoutpoutdiff'),
                                plotlyOutput(outputId='gsea'),
                       )
               )
@@ -463,7 +464,7 @@ server <- shinyServer(function(input, output, session)
   
   
   output$thetable <- DT::renderDataTable({
-    DT::datatable(Datagraph(), rownames = FALSE)
+    DT::datatable(Datagraph(), rownames = TRUE, options = list(scrollX = TRUE))
   },
   server = TRUE)
   
@@ -548,7 +549,7 @@ server <- shinyServer(function(input, output, session)
     dat$gene_name <- NA
     dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
     
-    dat <- DT::datatable(dat)
+    dat <- DT::datatable(dat, options = list(scrollX = TRUE))
     dat
   })
   
@@ -560,34 +561,37 @@ server <- shinyServer(function(input, output, session)
     dat$gene_name <- NA
     dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
     dat <- dat %>% dplyr::count(Direction)
-    DT::datatable(dat)
+    DT::datatable(dat, options = list(scrollX = TRUE))
   })
   
   ##### Enrichment
+  my_text <- reactive({
+    input$textinputdiff
+  })
   
-  # output$textinputdiff <- renderPrint({
-  #   input$textinputdiff
-  # })
-  # 
-  # output$gsea <- renderPlotly({
-  #   listEnrichrSites()
-  #   setEnrichrSite("Enrichr")
-  #   websiteLive <- TRUE
-  #   
-  #   dbs <- listEnrichrDbs()
-  #   dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015", 
-  #            "Reactome_2015", "Reactome_2016", "OMIM_Disease", "MSigDB_Oncogenic_Signatures", "KEGG_2015", 
-  #            "KEGG_2016", "GO_Biological_Process_2018", "Human_Phenotype_Ontology", "Cancer_Cell_Line_Encyclopedia",
-  #            "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
-  #   if (websiteLive) {
-  #     enriched <- enrichr(c("SFRP1", "RELN", "FLT1", "GPC3", "APOBEC3B", "CD47", "NTRK2", "TLR8", 
-  #                           "FGF10", "E2F1", "HBEGF", "SLC19A3", "DUSP6", "FOS", "GNG5"), input$Vardatabasediff)
-  #   }
-  #   
-  #   plotEnrich(enriched[[input$Vartoplotdiff]], showTerms = 20, numChar = 50,
-  #              y = "Count", orderBy = "P.value", title = "Enrichment analysis with selected Modules using KEGG", 
-  #              xlab = "Enriched pathways")
-  # })
+  output$textoutpoutdiff <- renderText({
+    paste0(my_text(), collapse = ", ")
+  })
+  
+  output$gsea <- renderPlotly({
+    listEnrichrSites()
+    setEnrichrSite("Enrichr")
+    websiteLive <- TRUE
+
+    dbs <- listEnrichrDbs()
+    dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015",
+             "Reactome_2015", "Reactome_2016", "OMIM_Disease", "MSigDB_Oncogenic_Signatures", "KEGG_2015",
+             "KEGG_2016", "GO_Biological_Process_2018", "Human_Phenotype_Ontology", "Cancer_Cell_Line_Encyclopedia",
+             "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
+    if (websiteLive) {
+      enriched <- enrichr(c("SFRP1", "RELN", "FLT1", "GPC3", "APOBEC3B", "CD47", "NTRK2", "TLR8",
+                            "FGF10", "E2F1", "HBEGF", "SLC19A3", "DUSP6", "FOS", "GNG5"), dbs)
+    }
+
+    plotEnrich(enriched[["Reactome_2016"]], showTerms = 20, numChar = 50,
+               y = "Count", orderBy = "P.value", title = "Enrichment analysis",
+               xlab = "Enriched pathways")
+  })
   
     ## =========================================================================.  Statistical Panel results.  =============================================================================== #
   
@@ -698,7 +702,7 @@ server <- shinyServer(function(input, output, session)
   })
   
   output$thetablestats <- DT::renderDataTable({
-    DT::datatable(Datastats())
+    DT::datatable(Datastats(), options = list(scrollX = TRUE))
   },
   server = TRUE)
       ## ==================================================================. Exploring file.   =================================================================================#
@@ -722,7 +726,7 @@ server <- shinyServer(function(input, output, session)
   })
   
   output$FileTable <- DT::renderDataTable({
-    DT::datatable(theData()[,input$Colselection, drop=FALSE], rownames = FALSE)
+    DT::datatable(theData()[,input$Colselection, drop=FALSE], rownames = TRUE,options = list(scrollX = TRUE))
   },
   server = TRUE)
   observeEvent(input$SwapButton, {
