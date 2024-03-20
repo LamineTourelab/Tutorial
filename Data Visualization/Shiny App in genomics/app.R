@@ -28,7 +28,7 @@ options(shiny.maxRequestSize = 50*1024^2)
 # ======================================================================  Ui. =================================================================================================##
 
 
-dashHeader = dashboardHeader(title ="My Dashboard",
+dashHeader = dashboardHeader(title ="INEM HUB",
                              tags$li(a(href = 'https://github.com/LamineTourelab',
                                        icon("github"),
                                        title = "Autor Github"),
