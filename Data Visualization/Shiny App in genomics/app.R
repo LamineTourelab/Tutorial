@@ -16,6 +16,7 @@ library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
 library(shinymanager)
+library(hypeR)
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -28,7 +29,7 @@ options(shiny.maxRequestSize = 50*1024^2)
 # ======================================================================  Ui. =================================================================================================##
 
 
-dashHeader = dashboardHeader(title ="INEM HUB",
+dashHeader = dashboardHeader(title ="My Dashboard",
                              tags$li(a(href = 'https://github.com/LamineTourelab',
                                        icon("github"),
                                        title = "Autor Github"),
@@ -58,7 +59,7 @@ dashsidebar = dashboardSidebar(
   sidebarUserPanel("Lamine TOURE",
                    subtitle = a(href = "#", icon("circle", class = "text-success"), "Online"),
                    # Image file should be in www/ subdir
-                   image = "inem.jpeg"
+                   image = "logo.jpeg"
   ),
  # sidebarSearchForm(label = "Enter a number", "searchText", "searchButton"),
   sidebarMenu(
@@ -83,6 +84,11 @@ dashsidebar = dashboardSidebar(
       icon = icon('dna', style = "color:#E87722")),
     
     menuItem(
+      text = 'Enrichment',
+      tabName = 'enrich',
+      icon = icon('dna', style = "color:#E87722")),
+    
+    menuItem(
       text = 'IGV',
       tabName = 'igv',
       icon = icon('dna', style = "color:#E87722")),
@@ -103,18 +109,12 @@ dashbody <- dashboardBody(
   # ================================================================================  Graph
   tabItems(
     tabItem(tabName = 'hometab',
-            h1('Landing  page!'),
+            h1('Home  page!'),
             img(src = "inem.jpeg", height = 72, width = 72),
-            p('This is a landing page for dashboard'),
-            em('This is a emphasize text')
+            p('This is a home page for dashboard, it will be developped later.')
     ),
     tabItem(tabName = 'Graphstab', 
-          #  fluidRow(
-          #    box(
-           #     width = 12,
-           ##     downloadButton(outputId='Report', label = 'Generate report')
-            #  )
-            #),
+          
             fluidRow(
               sidebarPanel(width = 2, height = 1170,
                   collapsible = TRUE,
@@ -195,7 +195,7 @@ dashbody <- dashboardBody(
                   selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL ),
                   p(style="text-align: justify;","It  may take a little time for big dataset. Take a coffee!")
                   
-              ),
+              ), # sidebarPanel
               tabBox( width = 10,
                       tabPanel(title='PCA',
                                #Placeholder for plot
@@ -225,10 +225,10 @@ dashbody <- dashboardBody(
                                DT::dataTableOutput(outputId = 'thetablestats')
                                
                       )
-                  )
+                  ) # tabBox
               )
       
-    ),
+    ), # tabItem for statistics
     # # ================================================================================  Differential expression Analysis.
     tabItem(tabName = 'diffexp',
             fluidRow(
@@ -261,15 +261,12 @@ dashbody <- dashboardBody(
                                DT::dataTableOutput(outputId = 'summarytablecount')
                       ),
                       tabPanel(title='Gene Set Enrichment',
-                               #Placeholder for plot
-                               textAreaInput(inputId = 'textinputdiff', label = 'Paste a gene list'),
-                               textOutput(outputId = 'textoutpoutdiff'),
-                               plotlyOutput(outputId='gsea'),
+                               
                       )
               )
             )
             
-    ),
+    ), # tabItem for DEA
     # # ================================================================================  Exploring file
     tabItem(
       tabName ='FileExplore',
@@ -294,7 +291,7 @@ dashbody <- dashboardBody(
             
         )
       )
-    ),
+    ), #tabItem for DEA
     # ================================================================================  IGV
     tabItem(
       tabName ='igv',
@@ -302,6 +299,34 @@ dashbody <- dashboardBody(
           selectInput("genomeChooser", "Choose a igv genome:", stock.genomes, selected = "hg38")),
       shinyUI(fluidPage(igvShinyOutput('igvShiny'), width = 10))
     ),
+    # ================================================================================  Enrichment
+    tabItem(
+      tabName ='enrich',
+      fluidPage(
+        sidebarLayout(
+          sidebarPanel(
+            textAreaInput("genes", "Enter genes names (separed by a ',') :"),
+            actionButton("submit", "Submit"),
+            p(style="text-align: justify;",
+              "Here you can choose a database to see the results in data table format and/or plot."),
+            hr(style="border-color: blue;"),
+            selectInput("databaseenrich", "Choose a database:", choices = dbs)
+          ),
+          mainPanel(tabsetPanel(
+            tabPanel(title = 'Enrichment',
+                     #  verbatimTextOutput("results"),
+                     DT::dataTableOutput(outputId = 'thetableenrich'),
+            ),
+            tabPanel(title = 'Plot',
+                     plotlyOutput(outputId='gsea'),
+            )
+          )
+          ) # mainPanel
+          
+        )
+      ) # fluidPage
+      
+    ), #tabItem
     # ================================================================================  JS
     tabItem(
       tabName = 'JS',
@@ -565,32 +590,35 @@ server <- shinyServer(function(input, output, session)
   })
   
   ##### Enrichment
-  my_text <- reactive({
-    input$textinputdiff
-  })
-  
-  output$textoutpoutdiff <- renderText({
-    paste0(my_text(), collapse = ", ")
-  })
-  
-  output$gsea <- renderPlotly({
-    listEnrichrSites()
-    setEnrichrSite("Enrichr")
-    websiteLive <- TRUE
-
-    dbs <- listEnrichrDbs()
+  # Réagir lorsque l'utilisateur clique sur le bouton Soumettre
+  observeEvent(input$submit, {
+    # Extraire les gènes saisis par l'utilisateur et les séparer par des virgules
+    user_genes <- unlist(strsplit(input$genes, ","))
+    
     dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015",
              "Reactome_2015", "Reactome_2016", "OMIM_Disease", "MSigDB_Oncogenic_Signatures", "KEGG_2015",
              "KEGG_2016", "GO_Biological_Process_2018", "Human_Phenotype_Ontology", "Cancer_Cell_Line_Encyclopedia",
              "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
-    if (websiteLive) {
-      enriched <- enrichr(c("SFRP1", "RELN", "FLT1", "GPC3", "APOBEC3B", "CD47", "NTRK2", "TLR8",
-                            "FGF10", "E2F1", "HBEGF", "SLC19A3", "DUSP6", "FOS", "GNG5"), dbs)
-    }
-
-    plotEnrich(enriched[["Reactome_2016"]], showTerms = 20, numChar = 50,
-               y = "Count", orderBy = "P.value", title = "Enrichment analysis",
-               xlab = "Enriched pathways")
+    
+    # Exécuter l'analyse d'enrichissement de gènes avec enrichR
+    enrichment_result <- enrichr(user_genes, dbs)
+    
+    # Afficher les résultats dans la sortie
+    output$results <- renderPrint({
+      head(enrichment_result[[input$databaseenrich]])
+    })
+    
+    output$thetableenrich <- DT::renderDataTable({
+      DT::datatable(enrichment_result[[input$databaseenrich]], rownames = TRUE, options = list(scrollX = TRUE))
+    },
+    server = TRUE)
+    
+    output$gsea <- renderPlotly({
+      
+      plotEnrich(enrichment_result[[input$databaseenrich]], showTerms = 20, numChar = 50,
+                 y = "Count", orderBy = "P.value", title = "Enrichment analysis",
+                 xlab = "Enriched pathways")
+    })
   })
   
     ## =========================================================================.  Statistical Panel results.  =============================================================================== #
