@@ -106,8 +106,10 @@ dashbody <- dashboardBody(
   tabItems(
     tabItem(tabName = 'hometab',
             h1('Home  page!'),
-            img(src = "inem.jpeg", height = 72, width = 72),
-            p('This is a home page for dashboard, it will be developped later.')
+           # img(src = "inem.jpeg", height = 72, width = 72),
+            p(style="text-align: justify;", strong('shinyBio:'), 'a shiny web app to easily perform popular visualization analysis for omics data. This is under development
+              and you can see the new releases on this repository', a("LamineTourelab/Tutorial",href = "https://github.com/LamineTourelab/Tutorial" )
+              ),
     ),
     # ============================================================================================= Graph
     tabItem(tabName = 'Graphstab', 
