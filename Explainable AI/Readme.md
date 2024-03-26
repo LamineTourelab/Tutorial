@@ -17,6 +17,7 @@ In this repository you will fine explainability of machine learning models.
 + [LIME in R](https://github.com/thomasp85/lime)
 + [Explainer Dashboard](https://explainerdashboard.readthedocs.io/en/latest/)
 + [Shapash](https://github.com/MAIF/shapash)
++ [Pyreal](https://dtail.gitbook.io/pyreal/)
   
 # `Open Courses`
 [Interpretability and Explainability in Machine Learning Harvard](https://interpretable-ml-class.github.io/)

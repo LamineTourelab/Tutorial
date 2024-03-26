@@ -70,8 +70,8 @@ For more details visit the [mkdocs.org](https://www.mkdocs.org/) website.
 - [Chest X Ray Images classification with DenseNet121 and explain with GradCam on tensorflow 2](https://github.com/LamineTourelab/Tutorial/blob/main/Explainable%20AI/Xray_classification_with_densenet121_and_gradcam.ipynb)
 
   ### Note 
-  There is an ongoing project in explainable AI applied to healthcare in collaboration with `Salvatore RAIELI` (his [github](https://github.com/SalvatoreRa)). The source code can be found at [https://github.com/SalvatoreRa/explanaibleAI](https://github.com/SalvatoreRa/explanaibleAI). Don't hesitate to reach out for collaboration or any question.
+There is an ongoing project in explainable AI applied to healthcare in collaboration with `Salvatore RAIELI` (his [github](https://github.com/SalvatoreRa)). The source code can be found at [https://github.com/SalvatoreRa/explanaibleAI](https://github.com/SalvatoreRa/explanaibleAI). Don't hesitate to reach out for collaboration or any question.
 
 ## `Data visualization`
-- [Exploratory data analysis using matplotlib plotly express and Dash](https://github.com/LamineTourelab/Tutorial/blob/main/DataViz/EDA_matplotlib_Dashboard_Dataviz.ipynb)
-- [Shiny App in R](https://github.com/LamineTourelab/Tutorial/blob/main/DataViz/app.R)
+- [Exploratory data analysis using matplotlib plotly express and Dash](https://github.com/LamineTourelab/Tutorial/blob/main/Data%20Visualization/EDA_matplotlib_Dashboard_Dataviz.ipynb)
+- [Shiny R App for genomics data](https://github.com/LamineTourelab/Tutorial/blob/main/Data%20Visualization/Shiny%20App%20in%20genomics/app.R)

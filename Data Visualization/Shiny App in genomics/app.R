@@ -16,7 +16,10 @@ library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
 library(shinymanager)
+<<<<<<< HEAD
 library(hypeR)
+=======
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -29,7 +32,11 @@ options(shiny.maxRequestSize = 50*1024^2)
 # ======================================================================  Ui. =================================================================================================##
 
 
+<<<<<<< HEAD
 dashHeader = dashboardHeader(title ="My Dashboard",
+=======
+dashHeader = dashboardHeader(title ="INEM HUB",
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
                              tags$li(a(href = 'https://github.com/LamineTourelab',
                                        icon("github"),
                                        title = "Autor Github"),
@@ -59,7 +66,11 @@ dashsidebar = dashboardSidebar(
   sidebarUserPanel("Lamine TOURE",
                    subtitle = a(href = "#", icon("circle", class = "text-success"), "Online"),
                    # Image file should be in www/ subdir
+<<<<<<< HEAD
                    image = "logo.jpeg"
+=======
+                   image = "inem.jpeg"
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
   ),
  # sidebarSearchForm(label = "Enter a number", "searchText", "searchButton"),
   sidebarMenu(
@@ -84,11 +95,14 @@ dashsidebar = dashboardSidebar(
       icon = icon('dna', style = "color:#E87722")),
     
     menuItem(
+<<<<<<< HEAD
       text = 'Enrichment',
       tabName = 'enrich',
       icon = icon('dna', style = "color:#E87722")),
     
     menuItem(
+=======
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
       text = 'IGV',
       tabName = 'igv',
       icon = icon('dna', style = "color:#E87722")),
@@ -109,12 +123,27 @@ dashbody <- dashboardBody(
   # ================================================================================  Graph
   tabItems(
     tabItem(tabName = 'hometab',
+<<<<<<< HEAD
             h1('Home  page!'),
             img(src = "inem.jpeg", height = 72, width = 72),
             p('This is a home page for dashboard, it will be developped later.')
     ),
     tabItem(tabName = 'Graphstab', 
           
+=======
+            h1('Landing  page!'),
+            img(src = "inem.jpeg", height = 72, width = 72),
+            p('This is a landing page for dashboard'),
+            em('This is a emphasize text')
+    ),
+    tabItem(tabName = 'Graphstab', 
+          #  fluidRow(
+          #    box(
+           #     width = 12,
+           ##     downloadButton(outputId='Report', label = 'Generate report')
+            #  )
+            #),
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
             fluidRow(
               sidebarPanel(width = 2, height = 1170,
                   collapsible = TRUE,
@@ -195,7 +224,11 @@ dashbody <- dashboardBody(
                   selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL ),
                   p(style="text-align: justify;","It  may take a little time for big dataset. Take a coffee!")
                   
+<<<<<<< HEAD
               ), # sidebarPanel
+=======
+              ),
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
               tabBox( width = 10,
                       tabPanel(title='PCA',
                                #Placeholder for plot
@@ -228,7 +261,11 @@ dashbody <- dashboardBody(
                   ) # tabBox
               )
       
+<<<<<<< HEAD
     ), # tabItem for statistics
+=======
+    ),
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
     # # ================================================================================  Differential expression Analysis.
     tabItem(tabName = 'diffexp',
             fluidRow(
@@ -269,7 +306,11 @@ dashbody <- dashboardBody(
               )
             )
             
+<<<<<<< HEAD
     ), # tabItem for DEA
+=======
+    ),
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
     # # ================================================================================  Exploring file
     tabItem(
       tabName ='FileExplore',
@@ -302,6 +343,7 @@ dashbody <- dashboardBody(
           selectInput("genomeChooser", "Choose a igv genome:", stock.genomes, selected = "hg38")),
       shinyUI(fluidPage(igvShinyOutput('igvShiny'), width = 10))
     ),
+<<<<<<< HEAD
     # ================================================================================  Enrichment
     tabItem(
       tabName ='enrich',
@@ -327,6 +369,14 @@ dashbody <- dashboardBody(
         )
       )
       
+=======
+    # ================================================================================  IGV
+    tabItem(
+      tabName ='igv',
+        sidebarPanel(width = 2,
+          selectInput("genomeChooser", "Choose a igv genome:", stock.genomes, selected = "hg38")),
+      shinyUI(fluidPage(igvShinyOutput('igvShiny'), width = 10))
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
     ),
     # ================================================================================  JS
     tabItem(
@@ -618,6 +668,7 @@ server <- shinyServer(function(input, output, session)
                y = "Count", orderBy = "P.value", title = "Enrichment analysis",
                xlab = "Enriched pathways")
   })
+<<<<<<< HEAD
   
   genesets <- hypeR::genesets_Server("genesets")
   
@@ -643,6 +694,8 @@ server <- shinyServer(function(input, output, session)
   output$plot <- renderPlot({
     reactive_plot()
   })
+=======
+>>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
   
     ## =========================================================================.  Statistical Panel results.  =============================================================================== #
   
