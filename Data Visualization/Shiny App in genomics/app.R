@@ -16,14 +16,7 @@ library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
 library(shinymanager)
-<<<<<<< HEAD
-<<<<<<< HEAD
 library(hypeR)
-=======
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
-library(hypeR)
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -36,15 +29,7 @@ options(shiny.maxRequestSize = 50*1024^2)
 # ======================================================================  Ui. =================================================================================================##
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 dashHeader = dashboardHeader(title ="My Dashboard",
-=======
-dashHeader = dashboardHeader(title ="INEM HUB",
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
-dashHeader = dashboardHeader(title ="My Dashboard",
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
                              tags$li(a(href = 'https://github.com/LamineTourelab',
                                        icon("github"),
                                        title = "Autor Github"),
@@ -74,17 +59,9 @@ dashsidebar = dashboardSidebar(
   sidebarUserPanel("Lamine TOURE",
                    subtitle = a(href = "#", icon("circle", class = "text-success"), "Online"),
                    # Image file should be in www/ subdir
-<<<<<<< HEAD
-<<<<<<< HEAD
                    image = "logo.jpeg"
-=======
-                   image = "inem.jpeg"
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
-                   image = "logo.jpeg"
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
   ),
- # sidebarSearchForm(label = "Enter a number", "searchText", "searchButton"),
+  # sidebarSearchForm(label = "Enter a number", "searchText", "searchButton"),
   sidebarMenu(
     menuItem(
       text = 'Home', 
@@ -107,20 +84,11 @@ dashsidebar = dashboardSidebar(
       icon = icon('dna', style = "color:#E87722")),
     
     menuItem(
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
       text = 'Enrichment',
       tabName = 'enrich',
       icon = icon('dna', style = "color:#E87722")),
     
     menuItem(
-<<<<<<< HEAD
-=======
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
       text = 'IGV',
       tabName = 'igv',
       icon = icon('dna', style = "color:#E87722")),
@@ -141,82 +109,60 @@ dashbody <- dashboardBody(
   # ================================================================================  Graph
   tabItems(
     tabItem(tabName = 'hometab',
-<<<<<<< HEAD
-<<<<<<< HEAD
             h1('Home  page!'),
             img(src = "inem.jpeg", height = 72, width = 72),
             p('This is a home page for dashboard, it will be developped later.')
     ),
     tabItem(tabName = 'Graphstab', 
-          
-=======
-            h1('Landing  page!'),
-=======
-            h1('Home  page!'),
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
-            img(src = "inem.jpeg", height = 72, width = 72),
-            p('This is a home page for dashboard, it will be developped later.')
-    ),
-    tabItem(tabName = 'Graphstab', 
-<<<<<<< HEAD
-          #  fluidRow(
-          #    box(
-           #     width = 12,
-           ##     downloadButton(outputId='Report', label = 'Generate report')
-            #  )
-            #),
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
-          
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
+            
             fluidRow(
               sidebarPanel(width = 2, height = 1170,
-                  collapsible = TRUE,
-                  title = 'Side bar',
-                  status = 'primary', solidHeader = TRUE,
-                  p(style="text-align: justify;",
-                    "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
-                  selectInput("datasetgraph", "Choose a dataset:", choices = c("test-data", "own")),
-                  fileInput(inputId = 'filegraph', 'Please upload a matrix file'),
-                  p(style="text-align: justify;",
-                    "Here you can choose a variable to plot and for coloring. By default you can select the cancer subtype (the last variable of the color list) for color variable."),
-                  hr(style="border-color: blue;"),
-                  # Placeholder for input selection
-                  h4(strong("Histogram and boxplot panel")),
-                  fluidRow(
-                    column(4, selectInput(inputId ='Vartoplot', label = 'Waiting for data', choices = NULL)),
-                    column(4, selectInput(inputId='VarColor',label = 'Waiting for data Color', choices = NULL))
-                  ),
-                  # Choose number of bins
-                  sliderInput(inputId='histbins',
-                              label = 'please select a number of bins',
-                              min = 5, max = 50, value = 30),
-                  hr(style="border-color: blue;"),
-                  h4(strong("Linear & density plot panel")),
-                  fluidRow(
-                    column(4, selectInput(inputId='VarColor1',label = 'Waiting for data Color', choices = NULL)),
-                    column(4, selectInput(inputId ='Vartoplot1', label = 'Waiting for data', choices = NULL)),
-                    column(4, selectInput(inputId ='Vartofill', label = 'Waiting for data', choices = NULL))
-                  )
+                           collapsible = TRUE,
+                           title = 'Side bar',
+                           status = 'primary', solidHeader = TRUE,
+                           p(style="text-align: justify;",
+                             "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
+                           selectInput("datasetgraph", "Choose a dataset:", choices = c("test-data", "own")),
+                           fileInput(inputId = 'filegraph', 'Please upload a matrix file'),
+                           p(style="text-align: justify;",
+                             "Here you can choose a variable to plot and for coloring. By default you can select the cancer subtype (the last variable of the color list) for color variable."),
+                           hr(style="border-color: blue;"),
+                           # Placeholder for input selection
+                           h4(strong("Histogram and boxplot panel")),
+                           fluidRow(
+                             column(4, selectInput(inputId ='Vartoplot', label = 'Waiting for data', choices = NULL)),
+                             column(4, selectInput(inputId='VarColor',label = 'Waiting for data Color', choices = NULL))
+                           ),
+                           # Choose number of bins
+                           sliderInput(inputId='histbins',
+                                       label = 'please select a number of bins',
+                                       min = 5, max = 50, value = 30),
+                           hr(style="border-color: blue;"),
+                           h4(strong("Linear & density plot panel")),
+                           fluidRow(
+                             column(4, selectInput(inputId='VarColor1',label = 'Waiting for data Color', choices = NULL)),
+                             column(4, selectInput(inputId ='Vartoplot1', label = 'Waiting for data', choices = NULL)),
+                             column(4, selectInput(inputId ='Vartofill', label = 'Waiting for data', choices = NULL))
+                           )
               ),
               tabBox(width = 10,
                      tabPanel(title='Histogram & Boxplot',
                               #Placeholder for plot
                               fluidRow(
-                              column(6, plotlyOutput(outputId='Histplot')),
-                              column(6, plotlyOutput(outputId='boxplot')),
+                                column(6, plotlyOutput(outputId='Histplot')),
+                                column(6, plotlyOutput(outputId='boxplot')),
                               )
-                        ),
+                     ),
                      tabPanel(title='Linear & Density',
                               fluidRow(
                                 column(6, plotlyOutput(outputId='linearplot')),
                                 column(6, plotlyOutput(outputId='density'))
                               )
-                          
+                              
                      ),
                      tabPanel(title='Data Table',
                               DT::dataTableOutput(outputId = 'thetable'),
-                             # verbatimTextOutput("summarythetable")
+                              # verbatimTextOutput("summarythetable")
                      )
                      
               )
@@ -227,37 +173,29 @@ dashbody <- dashboardBody(
     tabItem(tabName = 'Statistics',
             fluidRow(
               sidebarPanel(width = 2, height = 1170,
-                  collapsible = TRUE,
-                  title = 'Side bar',
-                  status = 'primary', solidHeader = TRUE,
-                  p(style="text-align: justify;",
-                  "Here you can upload you own data by changing the mode test-data to own.
+                           collapsible = TRUE,
+                           title = 'Side bar',
+                           status = 'primary', solidHeader = TRUE,
+                           p(style="text-align: justify;",
+                             "Here you can upload you own data by changing the mode test-data to own.
                     The should have as rownames the first column and the same rownames and dimension as the metadata file.", 
-                  br(), "Maximum size = 50MB"),
-                  selectInput("datasetstats", "Choose a dataset:", choices = c("test-data", "own")),
-                  p(style="text-align: justify;","The uploading data should be a matrix without any factor column"),
-                  fileInput(inputId = 'filestats', 'Please upload a matrix file',
-                            accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
-                  
-                  p(style="text-align: justify;","Here you can upload you own metadata by changing the mode test-metadata to own-metadata.
+                             br(), "Maximum size = 50MB"),
+                           selectInput("datasetstats", "Choose a dataset:", choices = c("test-data", "own")),
+                           p(style="text-align: justify;","The uploading data should be a matrix without any factor column"),
+                           fileInput(inputId = 'filestats', 'Please upload a matrix file',
+                                     accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                           
+                           p(style="text-align: justify;","Here you can upload you own metadata by changing the mode test-metadata to own-metadata.
                     The should have as rownames the first column and the same rownames and dimension as the dataset file above.", br(), "Maximum size = 50MB"),
-                  selectInput("datasetstatsmetd", "Choose a meta-dataset:", choices = c("test-metadata", "own-metadata")),
-                  p(style="text-align: justify;","The uploading data should be a file with factor column as metadata file."),
-                  fileInput(inputId = 'filestatsmetd', 'Please upload a matrix file',
-                            accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
-                  # Placeholder for input selection
-                  selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL ),
-                  p(style="text-align: justify;","It  may take a little time for big dataset. Take a coffee!")
-                  
-<<<<<<< HEAD
-<<<<<<< HEAD
+                           selectInput("datasetstatsmetd", "Choose a meta-dataset:", choices = c("test-metadata", "own-metadata")),
+                           p(style="text-align: justify;","The uploading data should be a file with factor column as metadata file."),
+                           fileInput(inputId = 'filestatsmetd', 'Please upload a matrix file',
+                                     accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                           # Placeholder for input selection
+                           selectInput(inputId='Vartoplotstats',label = 'Waiting for metadata', choices = NULL ),
+                           p(style="text-align: justify;","It  may take a little time for big dataset. Take a coffee!")
+                           
               ), # sidebarPanel
-=======
-              ),
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
-              ), # sidebarPanel
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
               tabBox( width = 10,
                       tabPanel(title='PCA',
                                #Placeholder for plot
@@ -287,36 +225,28 @@ dashbody <- dashboardBody(
                                DT::dataTableOutput(outputId = 'thetablestats')
                                
                       )
-                  ) # tabBox
-              )
-      
-<<<<<<< HEAD
-<<<<<<< HEAD
+              ) # tabBox
+            )
+            
     ), # tabItem for statistics
-=======
-    ),
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
-    ), # tabItem for statistics
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
     # # ================================================================================  Differential expression Analysis.
     tabItem(tabName = 'diffexp',
             fluidRow(
               sidebarPanel(width = 2, height = 1170,
-                  collapsible = TRUE,
-                  title = 'Side bar',
-                  status = 'primary', solidHeader = TRUE,
-                  p(style="text-align: justify;",
-                    "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
-                  selectInput("datasetdiff", "Choose a dataset:", choices = c("test-data", "own")),
-                  p(style="text-align: justify;","The uploading data should be in the format :ID, logFC, Pvalue."),
-                  fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
-                            accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
-                  # Placeholder for input selection
-                  fluidRow(
-                    column(6, selectInput(inputId='Vartoplotdiff',label = 'Waiting for data plot',choices = NULL )),
-                    column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
-                  )
+                           collapsible = TRUE,
+                           title = 'Side bar',
+                           status = 'primary', solidHeader = TRUE,
+                           p(style="text-align: justify;",
+                             "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
+                           selectInput("datasetdiff", "Choose a dataset:", choices = c("test-data", "own")),
+                           p(style="text-align: justify;","The uploading data should be in the format :ID, logFC, Pvalue."),
+                           fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
+                                     accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                           # Placeholder for input selection
+                           fluidRow(
+                             column(6, selectInput(inputId='Vartoplotdiff',label = 'Waiting for data plot',choices = NULL )),
+                             column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
+                           )
               ),
               tabBox( width = 10,
                       tabPanel(title='Volcano plot',
@@ -336,15 +266,42 @@ dashbody <- dashboardBody(
               )
             )
             
-<<<<<<< HEAD
-<<<<<<< HEAD
     ), # tabItem for DEA
-=======
+    # ================================================================================  IGV
+    tabItem(
+      tabName ='igv',
+      sidebarPanel(width = 2,
+                   selectInput("genomeChooser", "Choose a igv genome:", stock.genomes, selected = "hg38")),
+      shinyUI(fluidPage(igvShinyOutput('igvShiny'), width = 10))
     ),
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-=======
-    ), # tabItem for DEA
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
+    # ================================================================================  Enrichment
+    tabItem(
+      tabName ='enrich',
+      fluidPage(
+        sidebarLayout(
+          sidebarPanel(
+            textAreaInput("genes", "Enter genes names (separed by a ',') :"),
+            actionButton("submit", "Submit"),
+            p(style="text-align: justify;",
+              "Here you can choose a database to see the results in data table format and/or plot."),
+            hr(style="border-color: blue;"),
+            selectInput("databaseenrich", "Choose a database:", choices = dbs)
+          ),
+          mainPanel(tabsetPanel(
+            tabPanel(title = 'Enrichment',
+                     #  verbatimTextOutput("results"),
+                     DT::dataTableOutput(outputId = 'thetableenrich'),
+            ),
+            tabPanel(title = 'Plot',
+                     plotlyOutput(outputId='gsea'),
+            )
+          )
+          ) # mainPanel
+          
+        )
+      ) # fluidPage
+      
+    ), #tabItem
     # # ================================================================================  Exploring file
     tabItem(
       tabName ='FileExplore',
@@ -370,76 +327,6 @@ dashbody <- dashboardBody(
         )
       )
     ), #tabItem for DEA
-    # ================================================================================  IGV
-    tabItem(
-      tabName ='igv',
-        sidebarPanel(width = 2,
-          selectInput("genomeChooser", "Choose a igv genome:", stock.genomes, selected = "hg38")),
-      shinyUI(fluidPage(igvShinyOutput('igvShiny'), width = 10))
-    ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
-    # ================================================================================  Enrichment
-    tabItem(
-      tabName ='enrich',
-      fluidPage(
-        sidebarLayout(
-          sidebarPanel(
-<<<<<<< HEAD
-            # Put your geneset selector module anywhere
-            hypeR::genesets_UI("genesets"),
-            
-            # Add components specific to your application
-            textAreaInput("signature", 
-                          label="Signature", 
-                          rows=5,
-                          placeholder="GENE1,GENE2,GENE3", 
-                          resize="vertical"),
-            
-            actionButton("enrichment", "Enrichment")
-          ),
-          mainPanel(
-            # Enrichment plot
-            plotOutput("plot")
-          )
-        )
-      )
-      
-=======
-    # ================================================================================  IGV
-    tabItem(
-      tabName ='igv',
-        sidebarPanel(width = 2,
-          selectInput("genomeChooser", "Choose a igv genome:", stock.genomes, selected = "hg38")),
-      shinyUI(fluidPage(igvShinyOutput('igvShiny'), width = 10))
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-    ),
-=======
-            textAreaInput("genes", "Enter genes names (separed by a ',') :"),
-            actionButton("submit", "Submit"),
-            p(style="text-align: justify;",
-              "Here you can choose a database to see the results in data table format and/or plot."),
-            hr(style="border-color: blue;"),
-            selectInput("databaseenrich", "Choose a database:", choices = dbs)
-          ),
-          mainPanel(tabsetPanel(
-            tabPanel(title = 'Enrichment',
-                     #  verbatimTextOutput("results"),
-                     DT::dataTableOutput(outputId = 'thetableenrich'),
-            ),
-            tabPanel(title = 'Plot',
-                     plotlyOutput(outputId='gsea'),
-            )
-          )
-          ) # mainPanel
-          
-        )
-      ) # fluidPage
-      
-    ), #tabItem
->>>>>>> 1980e245ae0266e4dd0944ae1b72d12d76322fdf
     # ================================================================================  JS
     tabItem(
       tabName = 'JS',
@@ -497,11 +384,11 @@ ui <- dashboardPage(
   skin = 'blue'
 )
 
- # ======================================================================  Server =================================================================================================##
+# ======================================================================  Server =================================================================================================##
 
 server <- shinyServer(function(input, output, session)
 {
-     ## ============================================= Graph panel results ====================================================== ##
+  ## ============================================= Graph panel results ====================================================== ##
   
   Datagraph <- reactive({switch(input$datasetgraph,"test-data" = test.data.graph(),"own" = own.data.graph())})
   
@@ -610,7 +497,7 @@ server <- shinyServer(function(input, output, session)
     summary(Datagraph())
   })
   
-      ## =========================================================================.  Differntial Panel results.  =============================================================================== #
+  ## =========================================================================.  Differntial Panel results.  =============================================================================== #
   
   Datadiff <- reactive({switch(input$datasetdiff,"test-data" = test.data.diff(),"own" = own.data.diff())})
   
@@ -649,9 +536,9 @@ server <- shinyServer(function(input, output, session)
     totalUP <- as.numeric(dim(dat[dat$Direction=='UP',])[1])
     
     cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none, ', 
-                      ' which represents ' ,round(totalNO/total*100,2),'% of the data',sep='')
+        ' which represents ' ,round(totalNO/total*100,2),'% of the data',sep='')
   })
-    
+  
   output$Volcanoplot <- renderPlotly({
     
     Datadiff = data.frame(Datadiff())
@@ -677,7 +564,7 @@ server <- shinyServer(function(input, output, session)
       geom_hline(yintercept=-log10(0.05), col="red")
     volcano_gplot %>% 
       ggplotly(tooltip = 'all') 
-    })
+  })
   
   output$summarytable <- DT::renderDataTable({
     dat <- data.frame(Datadiff())
@@ -733,40 +620,12 @@ server <- shinyServer(function(input, output, session)
                  xlab = "Enriched pathways")
     })
   })
-<<<<<<< HEAD
   
-  genesets <- hypeR::genesets_Server("genesets")
-  
-  # Your custom downstream functions
-  reactive_plot <- eventReactive(input$enrichment, {
-    
-    # Here are the fetched genesets
-    gsets <- genesets()
-    
-    # Process the signature into a character vector
-    signature <- input$signature %>%
-      stringr::str_split(pattern=",", simplify=TRUE) %>%
-      as.vector()
-    
-    # Run hypeR
-    hyp <- hypeR::hypeR(signature, gsets, test="hypergeometric")
-    p <- hypeR::hyp_dots(hyp, top=10, fdr=0.25)
-    
-    # These are just ggplot objects you could customize
-    p + theme(axis.text=element_text(size=12, face="bold"))
-  })
-  
-  output$plot <- renderPlot({
-    reactive_plot()
-  })
-=======
->>>>>>> a43cb69fa27e7dadd2183e25184ea1623fdfdf93
-  
-    ## =========================================================================.  Statistical Panel results.  =============================================================================== #
+  ## =========================================================================.  Statistical Panel results.  =============================================================================== #
   
   Datastats <- reactive({switch(input$datasetstats,"test-data" = test.data.stats(),"own" = own.data.stats())})
   
-    test.data.stats <- reactive ({ 
+  test.data.stats <- reactive ({ 
     mRna = data.frame(breast.TCGA$data.train$mrna)
   })
   
@@ -775,7 +634,7 @@ server <- shinyServer(function(input, output, session)
       return(NULL)
     }
     dataframe = read.csv(input$filestats$datapath, row.names = 1)
-     
+    
   })
   #### def Metadata test
   subtype = data.frame(breast.TCGA$data.train$subtype)
@@ -785,7 +644,7 @@ server <- shinyServer(function(input, output, session)
   
   Metadastats <- reactive({switch(input$datasetstatsmetd,"test-metadata" = test.data.stats.metd(),"own-metadata" = own.data.stats.metd())})
   
- 
+  
   test.data.stats.metd <- reactive({
     subtype = data.frame(subtype)
   })
@@ -832,7 +691,7 @@ server <- shinyServer(function(input, output, session)
     pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
     
     fviz_pca_biplot(pca, fill.ind = metadata[,1], geom.ind = "point", 
-                  pointshape=10,addEllipses = T,pointsize=2)
+                    pointshape=10,addEllipses = T,pointsize=2)
   })
   
   output$pcacomp <- renderPlotly({
@@ -842,7 +701,7 @@ server <- shinyServer(function(input, output, session)
     
     fviz_eig(pca)
   })
-
+  
   
   output$variableimp <- renderPlotly({
     Datastats <- as.matrix(Datastats())
@@ -856,25 +715,25 @@ server <- shinyServer(function(input, output, session)
     for (i in 1:nrow(loadings)){
       colors= ifelse(loadings$Weight > 0,'Positive','Negative')
     }
-   pcavar <- ggplot(loadings, aes(x=Symbol, y=Weight)) +
+    pcavar <- ggplot(loadings, aes(x=Symbol, y=Weight)) +
       geom_bar(stat='identity', aes(fill = colors)) +
       facet_grid(Component ~
                    ., scales='free_y') +
       labs(title = "Gene component association",
-        x = "Gene symbol",
-        y = "Gene weight for each component",
-        colour = "Up/Down") +
-     theme(axis.text.x = element_text(angle = 90))
-     theme(plot.title = element_text(hjust = 0.5))
-   pcavar %>% 
-     ggplotly(tooltip = 'all') 
+           x = "Gene symbol",
+           y = "Gene weight for each component",
+           colour = "Up/Down") +
+      theme(axis.text.x = element_text(angle = 90))
+    theme(plot.title = element_text(hjust = 0.5))
+    pcavar %>% 
+      ggplotly(tooltip = 'all') 
   })
   
   output$thetablestats <- DT::renderDataTable({
     DT::datatable(Datastats(), options = list(scrollX = TRUE))
   },
   server = TRUE)
-      ## ==================================================================. Exploring file.   =================================================================================#
+  ## ==================================================================. Exploring file.   =================================================================================#
   
   
   theData <- reactive({
@@ -914,29 +773,25 @@ server <- shinyServer(function(input, output, session)
   
   #output$Report <- downloadHandler(
   #  filename = 'Report.html',
-   # content = function(file){
-   #   tempfile = file.path(tempdir(), 'report.rmd')
- #     file.copy('report.Rmd', to= tempfile, overwrite = TRUE)
-   #   
-    #  chosen <- 
-   # }
- # )
+  # content = function(file){
+  #   tempfile = file.path(tempdir(), 'report.rmd')
+  #     file.copy('report.Rmd', to= tempfile, overwrite = TRUE)
+  #   
+  #  chosen <- 
+  # }
+  # )
   ## =======================================================================================. IGV =========================================================================================================#
   observeEvent(input$genomeChooser, ignoreInit=FALSE, {
     newGenome <- input$genomeChooser
-   # printf("new genome: %s", newGenome)
     genomeSpec <- parseAndValidateGenomeSpec(genomeName=newGenome,  initialLocus="all")
     output$igvShiny <- renderIgvShiny(
       igvShiny(genomeSpec)
     )
   })
-  # output$igvShiny <- renderIgvShiny({
-  #   igvShiny(options)
-  # })
-  # 
+  
   
   ## =======================================================================================. IGV =========================================================================================================#
- # This are for the server close
+  # This are for the server close
 })
 
 # =======================================================================================. App. ============================================================================================================#
