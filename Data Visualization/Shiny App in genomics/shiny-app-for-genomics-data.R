@@ -113,6 +113,7 @@ dashbody <- dashboardBody(
            h3("Graphical tool for gene visualization"),
            br(), img(src = "Histogram_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "Box_plot_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = " Violin_plot_2024-03-27.png", align = "center", width = "500", height = "339"),
            img(src = "Linear_plot_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "Density_plot_2024-03-26.png", align = "center", width = "500", height = "339"),
            h3("PCA Analysis for clustering"),
