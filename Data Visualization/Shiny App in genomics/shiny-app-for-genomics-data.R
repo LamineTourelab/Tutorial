@@ -191,6 +191,17 @@ dashbody <- dashboardBody(
                                        column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_boxplot','Download PNG'))
                                      )
                             ),
+                            tabPanel(title='Violin  plot',
+                                     #Placeholder for plot
+                                     plotlyOutput(outputId='violinplot',height = "600px"),
+                                     h4(strong("Exporting the Violin plot")),
+                                     fluidRow(
+                                       column(3,numericInput("width_png_violin","Width of PNG", value = 1600)),
+                                       column(3,numericInput("height_png_violin","Height of PNG", value = 1200)),
+                                       column(3,numericInput("resolution_PNG_violin","Resolution of PNG", value = 144)),
+                                       column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_violin','Download PNG'))
+                                     )
+                            ),
                             tabPanel(title='Linear plot',
                                      #Placeholder for plot
                                      plotlyOutput(outputId='linearplot',height = "600px"),
@@ -698,6 +709,25 @@ server <- shinyServer(function(input, output, session)
       
       png(file, width = input$width_png_boxplot, height = input$height_png_boxplot, res = input$resolution_PNG_boxplot)
       grid.arrange(vals$Boxp)
+      dev.off()}
+  )
+  #++++++++++++++++++++ Violin plot
+  output$violinplot <- renderPlotly({
+    Violin <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_violin() 
+    Violin1 = Violin %>% 
+      ggplotly(tooltip = 'all') 
+    vals$Violin = Violin
+  })
+  # downloading PNG -----
+  output$downloadPlotPNG_violin <- downloadHandler(
+    filename = function() {
+      x <- gsub(":", ".", Sys.Date())
+      paste("Box_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
+    },
+    content = function(file) {
+      
+      png(file, width = input$width_png_boxplot, height = input$height_png_boxplot, res = input$resolution_PNG_boxplot)
+      grid.arrange(vals$Violin)
       dev.off()}
   )
   #++++++++++++++++++++ Linear plot
