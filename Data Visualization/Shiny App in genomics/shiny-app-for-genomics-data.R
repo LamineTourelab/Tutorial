@@ -29,7 +29,7 @@ options(shiny.maxRequestSize = 50*1024^2)
 # ======================================================================  Ui. =================================================================================================##
 
 
-dashHeader = dashboardHeader(title ="My Dashboard",
+dashHeader = dashboardHeader(title ="Shiny Bio for genomics data",
                              tags$li(a(href = 'https://github.com/LamineTourelab',
                                        icon("github"),
                                        title = "Autor Github"),
@@ -105,11 +105,33 @@ dashbody <- dashboardBody(
   # =================================================================================================  Home
   tabItems(
     tabItem(tabName = 'hometab',
-            h1('Home  page!'),
+            h1('Shiny Bio for genomics data!'),
            # img(src = "inem.jpeg", height = 72, width = 72),
             p(style="text-align: justify;", strong('shinyBio:'), 'a shiny web app to easily perform popular visualization analysis for omics data. This is under development
-              and you can see the new releases on this repository', a("LamineTourelab/Tutorial",href = "https://github.com/LamineTourelab/Tutorial" )
+              and you can see the new releases on this repository', a("LamineTourelab/Tutorial",href = "https://github.com/LamineTourelab/Tutorial"), br(), "See some example of outputs below:" 
               ),
+           h3("Graphical tool for gene visualization"),
+           br(), img(src = "Histogram_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = "Box_plot_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = "Linear_plot_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = "Density_plot_2024-03-26.png", align = "center", width = "500", height = "339"),
+           h3("PCA Analysis for clustering"),
+           br(), img(src = "PCA_Component_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = "PCA_Individuals_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = "PCA_Importance_genes_2024-03-26.png", align = "center", width = "500", height = "339"),
+           h3("Kmeans clustring analysis"),
+           br(), img(src = "Kmeans_clusters_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = "Kmeans_clustrs_annotated_2024-03-26.png", align = "center", width = "500", height = "339"),
+           img(src = "Kmeans_Elbow_method_2024-03-26.png", align = "center", width = "500", height = "339"),
+           h3("Differential expression analysis"),
+           br(), img(src = "table_diff.png", align = "center", width = "500", height = "339"),
+           img(src = "Volcanoplot_2024-03-26.png", align = "center", width = "500", height = "339"),
+           h3("Graphical tool for gene enrichment analysis with Enrichr"),
+           br(), img(src = "Enrichment_Analysis_2024-03-26.png"),
+           img(src = "Enrichrdatabase.png"),
+           img(src = "Enrichment.png"),
+           h3("Integrative Genome Visualization"),
+           br(), img(src = "igv.png"),
     ),
     # ============================================================================================= Graph
     tabItem(tabName = 'Graphstab', 
@@ -754,7 +776,7 @@ server <- shinyServer(function(input, output, session)
     totalUP <- as.numeric(dim(dat[dat$Direction=='UP',])[1])
     
     cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none, ', 
-        ' which represents ' ,round(totalNO/total*100,2),'% of the data',sep='')
+        ' which represents ' ,round(totalNO/total*500,2),'% of the data',sep='')
   })
   
   output$Volcanoplot <- renderPlotly({
