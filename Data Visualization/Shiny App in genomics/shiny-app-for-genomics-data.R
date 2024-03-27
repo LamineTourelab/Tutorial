@@ -709,7 +709,7 @@ server <- shinyServer(function(input, output, session)
         ggplotly(tooltip = 'all')
       vals$linearplot = Corrp
     }else{
-      Corrp <-  ggplot(Datagraph(), aes_string(input$VarColor1, input$Vartoplot1, fill=input$Vartofill)) + geom_point(position = "jitter") + geom_smooth(method="lm", se = FALSE) 
+      Corrp <-  ggplot(Datagraph(), aes_string(input$VarColor1, input$Vartoplot1, fill=input$Vartofill)) + geom_point(position = "jitter") #+ geom_smooth(method="lm", se = FALSE) 
       Corrp1 = Corrp %>% 
         ggplotly(tooltip = 'all')
       vals$linearplot = Corrp
