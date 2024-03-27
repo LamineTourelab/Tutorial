@@ -127,7 +127,7 @@ dashbody <- dashboardBody(
            br(), img(src = "table_diff.png", align = "center", width = "500", height = "339"),
            img(src = "Volcanoplot_2024-03-26.png", align = "center", width = "500", height = "339"),
            h3("Graphical tool for gene enrichment analysis with Enrichr"),
-           br(), img(src = "Enrichment_Analysis_2024-03-26.png"),
+           br(), img(src = "Enrichment_Analysis_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "Enrichrdatabase.png"),
            img(src = "Enrichment.png"),
            h3("Integrative Genome Visualization"),
