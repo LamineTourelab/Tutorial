@@ -722,11 +722,11 @@ server <- shinyServer(function(input, output, session)
   output$downloadPlotPNG_violin <- downloadHandler(
     filename = function() {
       x <- gsub(":", ".", Sys.Date())
-      paste("Box_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
+      paste("Violin_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
       
-      png(file, width = input$width_png_boxplot, height = input$height_png_boxplot, res = input$resolution_PNG_boxplot)
+      png(file, width = input$width_png_violin, height = input$height_png_violin, res = input$resolution_PNG_violin)
       grid.arrange(vals$Violin)
       dev.off()}
   )
