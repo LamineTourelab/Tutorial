@@ -4,10 +4,13 @@ library(shinyjs)
 library(ggplot2)
 library(ggrepel)
 library(plotly)
+library(gridExtra)
 library(tidyr)
 library(tidyverse)
 library(dplyr)
 library(factoextra) # for pca visualization 
+library(ggpubr)
+library(NbClust) # Kmeans best cluster number
 library(FactoMineR)  # PCA
 library(enrichR)
 library(gplots) # Use heatmap.2
@@ -15,8 +18,10 @@ library(corrplot)
 library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
+library(GenomicAlignments)
+library(rtracklayer)
 library(shinymanager)
-library(hypeR)
+
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -24,6 +29,7 @@ mRna = data.frame(breast.TCGA$data.train$mrna)
 mRna$subtype = breast.TCGA$data.train$subtype
 Transcriptomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Transcriptomics%20data.csv")
 stock.genomes <- sort(get_css_genomes())
+#dbs <- listEnrichrDbs()
 # ==================================================================== Options ===================================================================================================#
 options(shiny.maxRequestSize = 50*1024^2) 
 # ======================================================================  Ui. =================================================================================================##
@@ -538,7 +544,8 @@ dashbody <- dashboardBody(
       fluidPage(
         sidebarLayout(
           sidebarPanel(
-            textAreaInput("genes", "Enter genes names (separed by a ',') :", placeholder = c('Enter a list of genes in this format : Gene1, Gene2, Gene3')),
+            textAreaInput("genes", "Enter genes names (separed by a ',') :", placeholder = c('Enter a list of genes in this format : Gene1, Gene2, Gene3'), 
+                          value = c('SFRP1, RELN, FLT1, GPC3, APOBEC3B, CD47, NTRK2, TLR8,FGF10, E2F1, HBEGF, SLC19A3, DUSP6, FOS, GNG5')),
             actionButton("submit", "Submit"),
             p(style="text-align: justify;",
               "Here you can choose a database to see the results in data table format and/or plot."),
@@ -657,8 +664,7 @@ server <- shinyServer(function(input, output, session)
   #++++++++++++++++++++ Histogram 
   output$Histplot <- renderPlotly({
     Hist <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_histogram(bins = input$histbins)
-    Hist1 = Hist %>% 
-      ggplotly(tooltip = 'all')
+    Hist1 = Hist %>% ggplotly(tooltip = 'all')
     vals$Hist = Hist
   })
   # downloading PNG -----
