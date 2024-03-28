@@ -29,7 +29,7 @@ mRna = data.frame(breast.TCGA$data.train$mrna)
 mRna$subtype = breast.TCGA$data.train$subtype
 Transcriptomics_data <- readr::read_csv("https://raw.githubusercontent.com/LamineTourelab/Tutorial/main/Data%20Visualization/Shiny%20App%20in%20genomics/Data/Transcriptomics%20data.csv")
 stock.genomes <- sort(get_css_genomes())
-#dbs <- listEnrichrDbs()
+dbs <- listEnrichrDbs()
 # ==================================================================== Options ===================================================================================================#
 options(shiny.maxRequestSize = 50*1024^2) 
 # ======================================================================  Ui. =================================================================================================##
