@@ -126,7 +126,7 @@ dashbody <- dashboardBody(
            br(), img(src = "PCA_Component_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "PCA_Individuals_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "PCA_Importance_genes_2024-03-26.png", align = "center", width = "500", height = "339"),
-           h3("Kmeans clustring analysis"),
+           h3("Kmeans clustring analysis and visualization"),
            br(), img(src = "Kmeans_clusters_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "Kmeans_clustrs_annotated_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "Kmeans_Elbow_method_2024-03-26.png", align = "center", width = "500", height = "339"),
