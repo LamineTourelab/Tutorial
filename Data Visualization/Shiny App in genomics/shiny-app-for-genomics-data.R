@@ -12,7 +12,7 @@ library(factoextra) # for pca visualization
 library(ggpubr)
 library(NbClust) # Kmeans best cluster number
 library(FactoMineR)  # PCA
-library(enrichR)
+library(enrichR) #Enrichment analysis
 library(gplots) # Use heatmap.2
 library(corrplot)
 library(mixOmics) # for the breast cancer dataset
