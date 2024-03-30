@@ -100,7 +100,16 @@ dashsidebar = dashboardSidebar(
     menuItem(
       text = 'IGV',
       tabName = 'igv',
-      icon = icon('dna', style = "color:#E87722"))
+      icon = icon('dna', style = "color:#E87722")),
+    
+    menuItem(
+      text = 'File Explore',
+      tabName = 'FileExplore',
+      icon = icon('file-text', style = "color:#E87722")),
+    
+    menuItem(text = 'Javascript',
+             tabName = 'JS',
+             icon = icon('code', style = "color:#E87722"))
     
     
   ) #sidebarMenu
