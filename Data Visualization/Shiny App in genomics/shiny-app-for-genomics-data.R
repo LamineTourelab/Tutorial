@@ -14,7 +14,7 @@ library(NbClust) # Kmeans best cluster number
 library(FactoMineR)  # PCA
 library(enrichR) #Enrichment analysis
 library(gplots) # Use heatmap.2
-library(corrplot)
+library(corrplot). # correlation plot
 library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
