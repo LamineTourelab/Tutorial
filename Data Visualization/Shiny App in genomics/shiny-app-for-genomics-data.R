@@ -14,7 +14,7 @@ library(NbClust) # Kmeans best cluster number
 library(FactoMineR)  # PCA
 library(enrichR) #Enrichment analysis
 library(gplots) # Use heatmap.2
-library(corrplot). # correlation plot
+library(corrplot) # correlation plot
 library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
@@ -100,16 +100,7 @@ dashsidebar = dashboardSidebar(
     menuItem(
       text = 'IGV',
       tabName = 'igv',
-      icon = icon('dna', style = "color:#E87722")),
-    
-    menuItem(
-      text = 'File Explore',
-      tabName = 'FileExplore',
-      icon = icon('file-text', style = "color:#E87722")),
-    
-    menuItem(text = 'Javascript',
-             tabName = 'JS',
-             icon = icon('code', style = "color:#E87722"))
+      icon = icon('dna', style = "color:#E87722"))
     
     
   ) #sidebarMenu
