@@ -12,9 +12,9 @@ library(factoextra) # for pca visualization
 library(ggpubr)
 library(NbClust) # Kmeans best cluster number
 library(FactoMineR)  # PCA
-library(enrichR) #Enrichment analysis
+library(enrichR) #Enrichment
 library(gplots) # Use heatmap.2
-library(corrplot) # correlation plot
+library(corrplot)
 library(mixOmics) # for the breast cancer dataset
 library(Amelia) # for missing values visualization
 library(igvShiny)
@@ -60,7 +60,8 @@ dashHeader = dashboardHeader(title ="Shiny Bio for genomics data",
                                        img(src = 'inem.jpeg',
                                            title = "Company Home", height = "30px"),
                                        style = "padding-top:10px; padding-bottom:10px;"),
-                                     class = "dropdown"))
+                                     class = "dropdown")
+                             )
 dashsidebar = dashboardSidebar(
   sidebarUserPanel("Lamine TOURE",
                    subtitle = a(href = "#", icon("circle", class = "text-success"), "Online"),
@@ -100,16 +101,7 @@ dashsidebar = dashboardSidebar(
     menuItem(
       text = 'IGV',
       tabName = 'igv',
-      icon = icon('dna', style = "color:#E87722")),
-    
-    menuItem(
-      text = 'File Explore',
-      tabName = 'FileExplore',
-      icon = icon('file-text', style = "color:#E87722")),
-    
-    menuItem(text = 'Javascript',
-             tabName = 'JS',
-             icon = icon('code', style = "color:#E87722"))
+      icon = icon('dna', style = "color:#E87722"))
     
     
   ) #sidebarMenu
@@ -135,7 +127,7 @@ dashbody <- dashboardBody(
            br(), img(src = "PCA_Component_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "PCA_Individuals_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "PCA_Importance_genes_2024-03-26.png", align = "center", width = "500", height = "339"),
-           h3("Kmeans clustring analysis and visualization"),
+           h3("Kmeans clustring analysis"),
            br(), img(src = "Kmeans_clusters_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "Kmeans_clustrs_annotated_2024-03-26.png", align = "center", width = "500", height = "339"),
            img(src = "Kmeans_Elbow_method_2024-03-26.png", align = "center", width = "500", height = "339"),
