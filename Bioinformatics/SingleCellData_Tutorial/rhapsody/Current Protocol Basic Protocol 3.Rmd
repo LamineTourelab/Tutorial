@@ -1,0 +1,515 @@
+---
+title: "Basic Protocol 3"
+author: "Wenyan Li"
+date: "2023-03-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Support script for basic protocol 3
+
+```{r}
+# load required packages
+library(rstudioapi)
+library(Seurat)
+library(patchwork)
+library(S4Vectors)
+library(tidyverse)
+library(ggplot2)
+
+# set a seed to re-produce pseudorandom numbers
+set.seed(99)
+
+# Obtain the path of this rmarkdown file and assign it to object "get_path"
+get_path <- dirname(rstudioapi::getSourceEditorContext()$path)
+
+# Set "get_path" as Working Directory
+setwd(get_path)
+
+# Save images and data to this folder
+saveTo <- "Protocol 3 output"
+
+
+```
+
+
+```{r}
+
+# Create a function to save output images
+
+func_save_images <- function(image.object, # plot objects
+                             image.name, # name of the plot
+                             image.path, # path to save image
+                             h = 8, # image height in inch
+                             w = 15, # image width in inch
+                             r = 80, # image resolution
+                             isHeatmap = F # check if image is a Seurat heatmap
+		){
+  
+  ifelse(!dir.exists(image.path), 
+         dir.create(image.path,
+                    recursive = T), 
+         FALSE)
+  
+  if(isHeatmap){
+    
+      for(i in seq_along(image.name)){
+        temp.path <- paste(image.path,
+			      image.name[i], 
+                           sep = "/")
+        
+        tiff(filename = paste(temp.path,
+                              "tiff",
+                              sep = "."),
+             width = w, 
+             height = h,
+             res = r, 
+             units = "in")
+        
+        image.object[[i]]
+        dev.off()
+      } # end of for 1st loop
+    
+  }else{
+    
+      for(i in seq_along(image.name)){
+        temp.path <- paste(image.path,
+                           image.name[i], 
+                           sep = "/")
+        
+        ggsave(filename = paste(temp.path,
+                                "tiff",
+                                sep = "."), 
+               plot = image.object[[i]],
+               width = w, 
+               height = h, 
+               units = "in", 
+               dpi = r, 
+               limitsize = FALSE)
+        
+      } # end of for 2nd loop
+    
+  } # end of if isHeatmap statement
+  
+}# end of func_save_images function
+
+
+```
+
+
+# 3.1 Load and read data
+
+```{r}
+# Choose a folder/experiment to analyse
+exp1 <- "BD-Demo-7Bridges-WTA_AbSeq_SMK"
+exp2 <- "BD-Demo-RhapTCRBCRdemo"
+
+# Load the Seurat objects as demo_seurat_1 and demo_seurat_2
+demo_seurat_1 <- readRDS(list.files(exp1, full.names = T))
+demo_seurat_2 <- readRDS(list.files(exp2, full.names = T))
+
+```
+
+# 3.2 Results: Load and read data
+
+```{r}
+demo_seurat_1
+```
+
+```{r}
+demo_seurat_2
+```
+# 3.3 Curate the Seurat objects
+
+This step can be skipped if AbSeq is not applicable.
+
+```{r}
+# Curate the Seurat objects
+# get AbSeq list
+AbSeq_list_1 <- rownames(demo_seurat_1)[grepl("pAbO", rownames(demo_seurat_1))]
+AbSeq_list_2 <- rownames(demo_seurat_2)[grepl("pAbO", rownames(demo_seurat_2))]
+
+# get RNA gene list
+RNA_list_1 <- rownames(demo_seurat_1)[!grepl("pAbO", rownames(demo_seurat_1))]
+RNA_list_2 <- rownames(demo_seurat_2)[!grepl("pAbO", rownames(demo_seurat_2))]
+
+# subset demo_seurat_1 and demo_seurat_2 by AbSeq and RNA gene lists
+demo_AbSeq_1 <- subset(demo_seurat_1,features=AbSeq_list_1)
+demo_AbSeq_2 <- subset(demo_seurat_2,features=AbSeq_list_2)
+
+demo_seurat_1 <- subset(demo_seurat_1,features=RNA_list_1)
+demo_seurat_2 <- subset(demo_seurat_2,features=RNA_list_2)
+
+# create new Seurat objects
+demo_seurat_1@assays[["AB"]] <- GetAssay(demo_AbSeq_1,assay = "RNA")
+demo_seurat_2@assays[["AB"]] <- GetAssay(demo_AbSeq_2,assay = "RNA")
+
+# change default assay to AB
+DefaultAssay(demo_seurat_1) <- "AB"
+demo_seurat_1$nCount_AB <- colSums(x = demo_seurat_1, slot = "counts")  # nCount_RNA
+demo_seurat_1$nFeature_AB <-  colSums(x = GetAssayData(object = demo_seurat_1, slot = "counts") > 0)
+
+DefaultAssay(demo_seurat_2) <- "AB"
+demo_seurat_2$nCount_AB <- colSums(x = demo_seurat_2, slot = "counts")  # nCount_RNA
+demo_seurat_2$nFeature_AB <-  colSums(x = GetAssayData(object = demo_seurat_2, slot = "counts") > 0)
+
+# remove demo_AbSeq_1 and demo_AbSeq_2
+remove(demo_AbSeq_1, demo_AbSeq_2)
+```
+
+For this protocol, the 'Sample_Name' cell annotation is duplicated as 'smk'. 
+This step can be skipped if sample tagging is not applicable.
+
+```{r}
+demo_seurat_1$smk <- demo_seurat_1$Sample_Name
+demo_seurat_2$smk <- demo_seurat_2$Sample_Name
+```
+
+
+# 3.4 Results: Curate the Seurat objects
+
+```{r}
+demo_seurat_1
+```
+
+```{r}
+demo_seurat_2
+```
+
+# 3.5 Data normalisation, scaling and finding clusters
+
+```{r}
+
+# Build function
+
+# The size of AbSeq panels varies, reduce the number 
+# for ab_pc_num if your panel is smaller than 10.
+func_quick_process <- function(demo_seurat,
+                               ab_pc_num = 10, # number of PCA components to use for protein
+                               rna_pc_num = 15, # number of PCA components to use for RNA
+                               ab_reduction_res = 0.8, # cluster resolution for protein
+                               rna_reduction_res = 0.8) # cluster resolution for RNA
+  
+     {
+  
+      # check if the Seurat object has protein assay
+      if("AB" %in% Seurat::Assays(demo_seurat))
+        
+          {  
+           Seurat::DefaultAssay(demo_seurat) <- 'AB'
+  
+           # Normalize and scale data
+           demo_seurat <- demo_seurat %>% 
+                          Seurat::NormalizeData()  %>% 
+                          Seurat::FindVariableFeatures() %>% 
+                          Seurat::ScaleData() 
+
+	  # perform PCA
+           demo_seurat <- Seurat::RunPCA(object = demo_seurat, 
+                                         reduction.name = 'apca')
+
+	  # perform UMAP
+           demo_seurat <- Seurat::RunUMAP(demo_seurat, 
+                                          reduction = 'apca', 
+                                          dims = 1:ab_pc_num, 
+                                          assay = 'AB', 
+                                          reduction.name = 'adt.umap',
+			               reduction.key = 'adtUMAP_')
+
+	  # Find clusters
+           demo_seurat <- Seurat::FindNeighbors(demo_seurat, 
+                                                reduction = "apca", 
+                                                dims = 1:ab_pc_num)
+
+           demo_seurat <- Seurat::FindClusters(demo_seurat, 
+                                               resolution = ab_reduction_res, 
+                                               graph.name = "AB_snn")
+
+           } # end of if statement
+  
+     # Change default assay to RNA
+     Seurat::DefaultAssay(demo_seurat) <- "RNA"
+
+     # Calculate percentages of mitochondrial gene expression for every cell. If it is a
+     #  targeted sequencing, then the output of this commend line is all zeros.
+     demo_seurat <- Seurat::PercentageFeatureSet(demo_seurat, 
+                                                 pattern = "^MT[-|.]", 
+                                                 col.name = "percent.mt") 
+
+     # find top most variant genes
+     demo_seurat <- demo_seurat %>% 
+                    Seurat::NormalizeData() %>% 
+	           Seurat::FindVariableFeatures(., 
+		                               selection.method = "vst")
+
+     # scale data
+     demo_seurat <- Seurat::ScaleData(demo_seurat, 
+                                      verbose = FALSE)
+
+     # perform PCA
+     demo_seurat <- Seurat::RunPCA(demo_seurat, 
+                                   npcs = rna_pc_num, 
+                                   verbose = FALSE)
+
+     # perform UMAP
+     demo_seurat <- Seurat::RunUMAP(demo_seurat, 
+                                    reduction = "pca", 
+                                    dims = 1:rna_pc_num)
+
+     # Find clusters
+     demo_seurat <- Seurat::FindNeighbors(demo_seurat, 
+                                          reduction = "pca", 
+                                          dims = 1:rna_pc_num)
+
+     demo_seurat <- Seurat::FindClusters(demo_seurat, 
+                                         resolution = rna_reduction_res)
+
+     demo_seurat <- Seurat::BuildClusterTree(demo_seurat)
+
+     # return Seurat object as output
+     return(demo_seurat)
+
+} # end of func_quick_process function
+
+# Use the above function to process the Seurat objects
+demo_seurat_1 <- func_quick_process(demo_seurat_1)
+
+demo_seurat_2 <- func_quick_process(demo_seurat_2)
+
+
+```
+
+
+Save raw Seurat object as R data
+
+```{r}
+# Create a folder called saveTo
+ifelse(!dir.exists(saveTo), 
+       dir.create(saveTo, 
+                  recursive = T), 
+       FALSE)
+
+# Save Seurat objects to local drive
+save(demo_seurat_1,
+     demo_seurat_2,
+     file = paste(saveTo, 
+                  "raw demo Seurat objects.RData", 
+                  sep = "/")
+    )
+
+
+```
+
+
+
+# 3.6 Results: Data normalization, scaling and finding clusters
+
+```{r}
+# QC plots – check mitochondrial gene percentages
+p1 <- Seurat::VlnPlot(demo_seurat_1, 
+                      features = "percent.mt", 
+              group.by = "seurat_clusters") + 
+              Seurat::NoLegend() + 
+              ggtitle("demo exp 1 - MT gene%")
+
+p2 <- Seurat::VlnPlot(demo_seurat_2, 
+                      features = "percent.mt", 
+              group.by = "seurat_clusters") + 
+              Seurat::NoLegend() + 
+              ggtitle("demo exp 2 - MT gene%")
+
+patchwork::wrap_plots(p1 + p2)
+
+func_save_images(image.object = list(patchwork::wrap_plots(p1 + p2)),
+                 image.name = "Initial MT genes percentages",
+                 image.path = saveTo,
+                 h = 5, 
+                 w = 5, 
+                 r = 300, 
+                 isHeatmap = F
+                 )
+
+
+```
+
+
+
+```{r}
+p3 <- Seurat::FeatureScatter(demo_seurat_1, 
+                             feature1 = "nCount_RNA", 
+                             feature2 = "nFeature_RNA", 
+                             group.by = "seurat_clusters") + 
+              scale_x_log10() +
+              scale_y_log10() +
+              ggtitle("demo exp 1")
+
+p4 <- Seurat::FeatureScatter(demo_seurat_2, 
+                             feature1 = "nCount_RNA", 
+                             feature2 = "nFeature_RNA", 
+                             group.by = "seurat_clusters") + 
+              scale_x_log10() +
+              scale_y_log10() +
+              ggtitle("demo exp 2")
+
+patchwork::wrap_plots(p3 + p4)
+
+func_save_images(image.object = list(patchwork::wrap_plots(p3 + p4)),
+                 image.name = "Initial nCounts and nFeatures",
+                 image.path = saveTo,
+                 h = 5, 
+                 w = 11, 
+                 r = 300, 
+                 isHeatmap = F
+                 )
+
+
+```
+
+
+
+```{r}
+# filter out cells with MT genes percentage > 50 (%) and 
+# cells with low nFeature_RNA
+subset_demo_seurat_1 <- subset(demo_seurat_1, 
+                               subset = percent.mt < 50 & 
+                                        nFeature_RNA > 200, 
+                               invert = F)
+
+subset_demo_seurat_2 <- subset(demo_seurat_2, 
+                               subset = percent.mt < 50 & 
+                                        nFeature_RNA > 100, 
+                               invert = F)
+
+p5 <- Seurat::VlnPlot(subset_demo_seurat_1, 
+                      features = "percent.mt", 
+                      group.by = "seurat_clusters") + 
+              Seurat::NoLegend() + 
+              ggtitle("demo exp 1 - MT gene%")
+
+p6 <- Seurat::VlnPlot(subset_demo_seurat_2, 
+                      features = "percent.mt", 
+                      group.by = "seurat_clusters") + 
+              Seurat::NoLegend() + 
+              ggtitle("demo exp 2 - MT gene%")
+
+patchwork::wrap_plots(p5 + p6)
+
+func_save_images(image.object = list(patchwork::wrap_plots(p5 + p6)),
+                 image.name = "Subset - MT genes percentages (before re-clustering)",
+                 image.path = saveTo,
+                 h = 5, 
+                 w = 5, 
+                 r = 300, 
+                 isHeatmap = F
+                 )
+
+p7 <- Seurat::FeatureScatter(subset_demo_seurat_1, 
+                             feature1 = "nCount_RNA", 
+                             feature2 = "nFeature_RNA", 
+                             group.by = "seurat_clusters") + 
+              scale_x_log10() +
+              scale_y_log10() +
+              ggtitle("demo exp 1")
+
+p8 <- Seurat::FeatureScatter(subset_demo_seurat_2, 
+                             feature1 = "nCount_RNA", 
+                             feature2 = "nFeature_RNA", 
+                             group.by = "seurat_clusters") + 
+              scale_x_log10() +
+              scale_y_log10() +
+              ggtitle("demo exp 2")
+
+patchwork::wrap_plots(p7 + p8)
+
+func_save_images(image.object = list(patchwork::wrap_plots(p7 + p8)),
+                 image.name = "Subset - nCounts and nFeatures (before re-clustering)",
+                 image.path = saveTo,
+                 h = 5, 
+                 w = 11, 
+                 r = 300, 
+                 isHeatmap = F
+                 )
+
+
+```
+
+
+
+Re-cluster subsetted samples
+```{r}
+
+subset_demo_seurat_1 <- func_quick_process(subset_demo_seurat_1)
+
+subset_demo_seurat_2 <- func_quick_process(subset_demo_seurat_2)
+
+```
+
+
+
+```{r}
+# UMAP plots
+
+p9 <- Seurat::DimPlot(subset_demo_seurat_1, 
+                      reduction = "umap", 
+                      group.by = "seurat_clusters") + 
+              ggtitle("demo exp 1")
+
+p10 <- Seurat::DimPlot(subset_demo_seurat_2, 
+                       reduction = "umap", 
+                       group.by = "seurat_clusters") + 
+              ggtitle("demo exp 2")
+
+patchwork::wrap_plots(p9+p10)
+
+func_save_images(image.object = list(patchwork::wrap_plots(p9 + p10)),
+                 image.name = "Subset - UMAP group by clusters",
+                 image.path = saveTo,
+                 h = 5, 
+                 w = 11, 
+                 r = 300, 
+                 isHeatmap = F
+                 )
+
+p11 <- Seurat::DimPlot(subset_demo_seurat_1, 
+                       reduction = "umap", 
+                       group.by = "smk") + 
+               ggtitle("demo exp 1")
+
+p12 <- Seurat::DimPlot(subset_demo_seurat_2, 
+                       reduction = "umap", 
+                       group.by = "smk")  + 
+               ggtitle("demo exp 2")
+
+patchwork::wrap_plots(p11+p12)
+
+func_save_images(image.object = list(patchwork::wrap_plots(p11 + p12)),
+                 image.name = "Subset - UMAP group by sample tag",
+                 image.path = saveTo,
+                 h = 5, 
+                 w = 13, 
+                 r = 300, 
+                 isHeatmap = F
+                 )
+
+
+```
+
+
+
+Save subsetted Seurat objects
+```{r}
+# Save Seurat objects to local drive
+save(subset_demo_seurat_1,
+     subset_demo_seurat_2,
+     file = paste(saveTo, 
+                  "subsetted demo Seurat objects.RData", 
+                  sep = "/"))
+
+```
+
+
+
+
