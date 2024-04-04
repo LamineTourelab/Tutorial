@@ -101,7 +101,15 @@ dashsidebar = dashboardSidebar(
     menuItem(
       text = 'IGV',
       tabName = 'igv',
-      icon = icon('dna', style = "color:#E87722"))
+      icon = icon('dna', style = "color:#E87722")),
+    
+    menuItem(
+      text = 'scRNAseq',
+      tabName = 'scrnaseq',
+      icon = icon('dna', style = "color:#E87722"),
+      menuSubItem(tabName = '10X', text = '10x Genomic'),
+      menuSubItem(tabName = 'rhapsody', text = 'BD Rhapsody')
+      )
     
     
   ) #sidebarMenu
