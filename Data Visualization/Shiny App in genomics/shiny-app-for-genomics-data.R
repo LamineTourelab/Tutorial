@@ -380,9 +380,9 @@ dashbody <- dashboardBody(
                                      plotOutput(outputId = 'missmap',height = "600px"),
                                      h4(strong("Exporting the Missing values plot")),
                                      fluidRow(
-                                       column(3,numericInput("width_png","Width of PNG", value = 1600)),
-                                       column(3,numericInput("height_png","Height of PNG", value = 1200)),
-                                       column(3,numericInput("resolution_PNG","Resolution of PNG", value = 144)),
+                                       column(3,numericInput("width_png_missmap","Width of PNG", value = 1600)),
+                                       column(3,numericInput("height_png_missmap","Height of PNG", value = 1200)),
+                                       column(3,numericInput("resolution_PNG_missmap","Resolution of PNG", value = 144)),
                                        column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_missmap','Download PNG'))
                                      )
                             ),
