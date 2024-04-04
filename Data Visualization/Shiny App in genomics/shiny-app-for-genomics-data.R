@@ -497,7 +497,8 @@ dashbody <- dashboardBody(
     ), # tabItem for ststs  test
     # # ================================================================================  Differential expression Analysis.
     tabItem(tabName = 'diffexp',
-            fluidRow(
+            fluidPage(
+              sidebarLayout(
               sidebarPanel(width = 2, height = 1170,
                            collapsible = TRUE,
                            title = 'Side bar',
@@ -514,7 +515,8 @@ dashbody <- dashboardBody(
                              column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
                            )
               ),
-              tabBox( width = 10,
+              mainPanel( width = 10,
+                         tabsetPanel(
                       tabPanel(title='Volcano plot',
                                textOutput("number_of_points"),
                                plotlyOutput(outputId = 'Volcanoplot',height = "600px"),
@@ -536,8 +538,10 @@ dashbody <- dashboardBody(
                       tabPanel(title='Gene Set Enrichment',
                                
                       )
-              )
-            )
+              ) #tabsetPanel
+              ) #mainPanel
+              ) #sidebarLayout
+            ) # fluidPage
             
     ), # tabItem for DEA
     # ================================================================================  IGV
