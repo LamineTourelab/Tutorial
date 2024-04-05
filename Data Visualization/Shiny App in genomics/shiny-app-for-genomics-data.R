@@ -33,6 +33,7 @@ library(slingshot) #BiocManager::install('slingshot')
 library(colorRamps)
 library(CellChat) #remotes::install_github('sqjin/CellChat')
 source("/Users/lamine/Documents/shinydashboard/INEM/Preprocessing.R")
+source("/Users/lamine/Documents/shinydashboard/INEM/Cell_type_annotation.R")
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -722,8 +723,23 @@ dashbody <- dashboardBody(
                                 )
                        ),
                        
-                       tabPanel(title = 'Cell annotation',
-                                plotlyOutput(outputId='rhapsodycellannotation',height = "600px"),
+                       tabPanel(title = 'Cell Type Annotation',
+                                plotlyOutput(outputId='rhapsodyplotScoreHeatmap',height = "600px"),
+                                h4(strong("Exporting the UMAP plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_plotScoreHeatmap","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_plotScoreHeatmap","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_plotScoreHeatmap","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_plotScoreHeatmap','Download PNG'))
+                                ),
+                                plotlyOutput(outputId='rhapsodyumapcelltype',height = "600px"),
+                                h4(strong("Exporting the TSNE plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_umapcelltype","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_umapcelltype","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_umapcelltype","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_umapcelltype','Download PNG'))
+                                )
                        ),
                        tabPanel(title = 'Merge and Remove batch effect',
                                 plotlyOutput(outputId='rhapsodybatcheffect',height = "600px"),
@@ -1537,6 +1553,25 @@ server <- shinyServer(function(input, output, session)
                           group.by = "seurat_clusters") + 
       ggtitle("PCA Plot")
   })
+  # 
+  # # use function to perform singleR cell type annotation
+  # subset_demo_seurat <- reactive({
+  #   subset_demo_seurat <- func_get_annotation(subset_demo_seurat())
+  # })
+  # 
+  # output$rhapsodyplotScoreHeatmap <- renderPlotly({
+  #   p_cell_1 <- plotScoreHeatmap(subset_demo_seurat()@misc$SingleR_results, 
+  #                                show_colnames = F)
+  #   p_cell_1
+  # })
+  # 
+  # output$rhapsodyumapcelltype <- renderPlotly({
+  #   # Display cells in UMAP plot
+  #   p_cell_3 <- Seurat::DimPlot(subset_demo_seurat(), 
+  #                               group.by = "cell_type") + 
+  #     ggtitle(Project(subset_demo_seurat_1))
+  # })
+  
   ## =======================================================================================. End Server =========================================================================================================#
   # This are for the server close
 })
