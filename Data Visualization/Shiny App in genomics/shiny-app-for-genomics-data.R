@@ -691,7 +691,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_hist <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Histogram_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -711,7 +711,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_densityplot <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Density_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -730,7 +730,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_boxplot <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Box_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -749,7 +749,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_violin <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Violin_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -776,7 +776,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_linearplot <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Linear_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -867,7 +867,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_volcano <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Volcanoplot_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -940,7 +940,7 @@ server <- shinyServer(function(input, output, session)
     # downloading PNG -----
     output$ downloadPlotPNG_enrichr <- downloadHandler(
       filename = function() {
-        x <- gsub(":", ".", Sys.Date())
+        x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
         paste("Enrichment_Analysis_",input$title, gsub("/", "-", x), ".png", sep = "")
       },
       content = function(file) {
@@ -1010,7 +1010,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PDF -----
   output$downloadPlot <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("PCA_Individuals_",input$title, gsub("/", "-", x), ".pdf", sep = "")
     },
     content = function(file) {
@@ -1024,7 +1024,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("PCA_Individuals_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -1047,7 +1047,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_biplot <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("PCA_Biplot",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -1069,7 +1069,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_scree <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("PCA_Component_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -1109,7 +1109,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_genepca <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("PCA_Importance_Genes_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -1179,7 +1179,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_heatmap <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Heatmap_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -1208,7 +1208,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_kmeanscluster <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Kmeans_clusters_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -1249,7 +1249,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_kmeansclusterannot <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Kmeans_clustrs_annotated_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
@@ -1269,7 +1269,7 @@ server <- shinyServer(function(input, output, session)
   # downloading PNG -----
   output$downloadPlotPNG_kmeanselbow <- downloadHandler(
     filename = function() {
-      x <- gsub(":", ".", Sys.Date())
+      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
       paste("Kmeans_Elbow_method_",input$title, gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
