@@ -592,7 +592,47 @@ dashbody <- dashboardBody(
     ),#tabItem
     # ================================================================================  10x Genomic
     tabItem(
-      tabName = '10X'
+      tabName = '10X',
+      fluidPage(
+        sidebarLayout(
+          sidebarPanel(width = 3, 
+                       p(style="text-align: justify;",
+                         "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
+                       selectInput("dataset10x", "Choose a dataset:", choices = c("test-data", "own")),
+                       p(style="text-align: justify;","The uploading data should be the .RDS output results of Seven Bridges platform."),
+                       fileInput(inputId = 'file10x', 'Seurat RDS file from SevenBridges',
+                                 accept=c('rds', '.rds')),
+                       
+          ),
+          mainPanel( width = 9,
+                     tabsetPanel(
+                       tabPanel(title = 'Preprocessing ',
+                                plotlyOutput(outputId='10xpreprocessing',height = "600px"),
+                       ),
+                       tabPanel(title = 'Cell annotation',
+                                plotlyOutput(outputId='10xcellannotation',height = "600px"),
+                       ),
+                       tabPanel(title = 'Merge and Remove batch effect',
+                                plotlyOutput(outputId='10xbatcheffect',height = "600px"),
+                       ),
+                       tabPanel(title = 'Finding doublets',
+                                plotlyOutput(outputId='10xdoublet',height = "600px"),
+                       ),
+                       tabPanel(title = 'Finding marker genes',
+                                plotlyOutput(outputId='10xmarkergenes',height = "600px"),
+                       ),
+                       navbarMenu(title = 'Further Analysis',
+                                  tabPanel(title = 'Pseudotime Analysis',
+                                           plotlyOutput(outputId='10xpseudotime',height = "600px"),
+                                  ),
+                                  tabPanel(title = 'Cell Communication',
+                                           plotlyOutput(outputId='10xcellcommunication',height = "600px"),
+                                  )
+                       ) # navbarMenu
+                     ) #tabsetPanel 
+          ) #mainPanel
+        ) # sidebarLayout
+      ) # fluidPage
     ),
     # ================================================================================  BD Rhapsody
     tabItem(
@@ -604,7 +644,7 @@ dashbody <- dashboardBody(
                          "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
                        selectInput("datasetrhapsody", "Choose a dataset:", choices = c("test-data", "own")),
                        p(style="text-align: justify;","The uploading data should be the .RDS output results of Seven Bridges platform."),
-                       fileInput(inputId = 'filediff', 'Seurat RDS file from SevenBridges',
+                       fileInput(inputId = 'filerhapsody', 'Seurat RDS file from SevenBridges',
                                  accept=c('rds', '.rds')),
                        
           ),
