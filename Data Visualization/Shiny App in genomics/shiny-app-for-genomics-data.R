@@ -1486,6 +1486,7 @@ server <- shinyServer(function(input, output, session)
                                    nFeature_RNA > 200, 
                                  invert = F)
     subset_demo_seurat <- func_quick_process(subset_demo_seurat)
+    subset_demo_seurat <- func_get_annotation(subset_demo_seurat())
   })
   # QC plots – check mitochondrial gene percentages
   output$rhapsodymtgene <- renderPlotly({
@@ -1558,19 +1559,19 @@ server <- shinyServer(function(input, output, session)
   # subset_demo_seurat <- reactive({
   #   subset_demo_seurat <- func_get_annotation(subset_demo_seurat())
   # })
-  # 
+
   # output$rhapsodyplotScoreHeatmap <- renderPlotly({
   #   p_cell_1 <- plotScoreHeatmap(subset_demo_seurat()@misc$SingleR_results, 
   #                                show_colnames = F)
   #   p_cell_1
   # })
   # 
-  # output$rhapsodyumapcelltype <- renderPlotly({
-  #   # Display cells in UMAP plot
-  #   p_cell_3 <- Seurat::DimPlot(subset_demo_seurat(), 
-  #                               group.by = "cell_type") + 
-  #     ggtitle(Project(subset_demo_seurat_1))
-  # })
+  output$rhapsodyumapcelltype <- renderPlotly({
+    # Display cells in UMAP plot
+    p_cell_3 <- Seurat::DimPlot(subset_demo_seurat(),
+                                group.by = "cell_type") +
+      ggtitle(Project(subset_demo_seurat_1))
+  })
   
   ## =======================================================================================. End Server =========================================================================================================#
   # This are for the server close
