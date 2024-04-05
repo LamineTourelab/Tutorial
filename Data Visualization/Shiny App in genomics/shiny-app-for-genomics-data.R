@@ -651,8 +651,66 @@ dashbody <- dashboardBody(
           mainPanel( width = 9,
                      tabsetPanel(
                        tabPanel(title = 'Preprocessing ',
-                                plotlyOutput(outputId='rhapsodypreprocessing',height = "600px"),
+                                plotlyOutput(outputId='rhapsodymtgene',height = "600px"),
+                                h4(strong("Exporting the MT gene% plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_mtgene","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_mtgene","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_mtgene","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_mtgene','Download PNG'))
+                                ),
+                                plotlyOutput(outputId='rhapsodymtgenefilter',height = "600px"),
+                                h4(strong("Exporting the MT gene% After Filter plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_mtgenefilter","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_mtgenefilter","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_mtgenefilter","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_mtgenefilter','Download PNG'))
+                                ),
+                                plotlyOutput(outputId='rhapsodyfeaturescatter',height = "600px"),
+                                h4(strong("Exporting the Feature Scatter plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_featurescatter","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_featurescatter","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_featurescatter","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_featurescatter','Download PNG'))
+                                ),
+                                plotlyOutput(outputId='rhapsodyfeaturescatterfilter',height = "600px"),
+                                h4(strong("Exporting the Feature Scatter plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_featurescatterfilter","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_featurescatterfilter","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_featurescatterfilter","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_featurescatterfilter','Download PNG'))
+                                )
                        ),
+                       tabPanel(title = 'Clustering Plots',
+                                plotlyOutput(outputId='rhapsodyumap',height = "600px"),
+                                h4(strong("Exporting the UMAP plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_umap","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_umap","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_umap","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_umap','Download PNG'))
+                                ),
+                                plotlyOutput(outputId='rhapsodytsne',height = "600px"),
+                                h4(strong("Exporting the TSNE plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_tsne","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_tsne","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_tsne","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_tsne','Download PNG'))
+                                ),
+                                plotlyOutput(outputId='rhapsodypca',height = "600px"),
+                                h4(strong("Exporting the PCA plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_ypca","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_ypca","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_ypca","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_ypca','Download PNG'))
+                                )
+                       ),
+                       
                        tabPanel(title = 'Cell annotation',
                                 plotlyOutput(outputId='rhapsodycellannotation',height = "600px"),
                        ),
