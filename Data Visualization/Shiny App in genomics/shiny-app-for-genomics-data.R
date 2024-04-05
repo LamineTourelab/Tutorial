@@ -608,7 +608,36 @@ dashbody <- dashboardBody(
                                  accept=c('rds', '.rds')),
                        
           ),
-    )
+          mainPanel( width = 9,
+                     tabsetPanel(
+                       tabPanel(title = 'Preprocessing ',
+                                plotlyOutput(outputId='rhapsodypreprocessing',height = "600px"),
+                       ),
+                       tabPanel(title = 'Cell annotation',
+                                plotlyOutput(outputId='rhapsodycellannotation',height = "600px"),
+                       ),
+                       tabPanel(title = 'Merge and Remove batch effect',
+                                plotlyOutput(outputId='rhapsodybatcheffect',height = "600px"),
+                       ),
+                       tabPanel(title = 'Finding doublets',
+                                plotlyOutput(outputId='rhapsodydoublet',height = "600px"),
+                       ),
+                       tabPanel(title = 'Finding marker genes',
+                                plotlyOutput(outputId='rhapsodymarkergenes',height = "600px"),
+                       ),
+                       navbarMenu(title = 'Further Analysis',
+                                  tabPanel(title = 'Pseudotime Analysis',
+                                           plotlyOutput(outputId='rhapsodypseudotime',height = "600px"),
+                                  ),
+                                  tabPanel(title = 'Cell Communication',
+                                           plotlyOutput(outputId='rhapsodycellcommunication',height = "600px"),
+                                  )
+                       ) # navbarMenu
+                     ) #tabsetPanel 
+          ) #mainPanel
+        ) # sidebarLayout
+      ) # fluidPage
+    ) #tabItem
     # ================================================================================  
   ) #tabItems
 ) # dashboardBody
