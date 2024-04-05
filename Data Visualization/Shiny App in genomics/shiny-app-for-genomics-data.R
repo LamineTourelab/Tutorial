@@ -20,8 +20,19 @@ library(Amelia) # for missing values visualization
 library(igvShiny)
 library(GenomicAlignments)
 library(rtracklayer)
-library(shinymanager)
-
+library(rstudioapi)
+library(Seurat)
+library(patchwork) #The goal of patchwork is to make it ridiculously simple to combine separate ggplots into the same graphic.
+library(S4Vectors)
+library(celldex) #BiocManager::install('celldex')
+library(SingleR) #BiocManager::install('SingleR')
+library(harmony)
+library(DoubletFinder) #remotes::install_github('chris-mcginnis-ucsf/DoubletFinder')
+library(SeuratWrappers) #remotes::install_github('satijalab/seurat-wrappers')
+library(slingshot) #BiocManager::install('slingshot')
+library(colorRamps)
+library(CellChat) #remotes::install_github('sqjin/CellChat')
+source("/Users/lamine/Documents/shinydashboard/INEM/Preprocessing.R")
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
