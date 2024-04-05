@@ -596,7 +596,18 @@ dashbody <- dashboardBody(
     ),
     # ================================================================================  BD Rhapsody
     tabItem(
-      tabName = 'rhapsody'
+      tabName = 'rhapsody',
+      fluidPage(
+        sidebarLayout(
+          sidebarPanel(width = 3, 
+                       p(style="text-align: justify;",
+                         "Here you can upload you own data by changing the mode test-data to own.", br(), "Maximum size = 50MB"),
+                       selectInput("datasetrhapsody", "Choose a dataset:", choices = c("test-data", "own")),
+                       p(style="text-align: justify;","The uploading data should be the .RDS output results of Seven Bridges platform."),
+                       fileInput(inputId = 'filediff', 'Seurat RDS file from SevenBridges',
+                                 accept=c('rds', '.rds')),
+                       
+          ),
     )
     # ================================================================================  
   ) #tabItems
