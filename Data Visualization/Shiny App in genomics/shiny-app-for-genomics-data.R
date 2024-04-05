@@ -1430,7 +1430,103 @@ server <- shinyServer(function(input, output, session)
       igvShiny(genomeSpec)
     )
   })
-  ## =======================================================================================. IGV =========================================================================================================#
+  ## =======================================================================================. Rhapsody =========================================================================================================#
+  Datastatrhapsody <- reactive({switch(input$datasetrhapsody,"test-data" = test.data.rhapsody(),"own" = own.data.rhapsody())})
+  
+  test.data.rhapsody <- reactive ({ 
+    readRDS("/Users/lamine/INEM/Projets/Peter/Test/BD-Demo-7Bridges-WTA_AbSeq_SMK/Protocol-rerun_Seurat.rds")
+  })
+  
+  own.data.rhapsody <- reactive({
+    if(is.null(input$filerhapsody)){
+      return(NULL)
+    }
+    dataframe = readRDS(input$filerhapsody$datapath)
+    
+  })
+  
+  demo_seurat <- reactive({
+    demo_seurat <- func_get_AbSeq(demo_seurat = Datastatrhapsody())
+    demo_seurat$smk <- demo_seurat$Sample_Name
+    demo_seurat <- func_quick_process(demo_seurat)
+  })
+  
+  # filter out cells with MT genes percentage > 50 (%) and 
+  # cells with low nFeature_RNA
+  subset_demo_seurat <- reactive({
+    subset_demo_seurat <- subset(demo_seurat(), 
+                                 subset = percent.mt < 50 & 
+                                   nFeature_RNA > 200, 
+                                 invert = F)
+    subset_demo_seurat <- func_quick_process(subset_demo_seurat)
+  })
+  # QC plots – check mitochondrial gene percentages
+  output$rhapsodymtgene <- renderPlotly({
+    
+    p <- Seurat::VlnPlot(demo_seurat(), 
+                         features = "percent.mt", 
+                         group.by = "seurat_clusters") + 
+      Seurat::NoLegend() + 
+      ggtitle("MT Gene %")
+    p
+  })
+  output$rhapsodymtgenefilter <- renderPlotly({
+    
+    p2 <- Seurat::VlnPlot(subset_demo_seurat(), 
+                          features = "percent.mt", 
+                          group.by = "seurat_clusters") + 
+      Seurat::NoLegend() + 
+      ggtitle("MT Gene % After Filter")
+    
+    p2
+  })
+  
+  # Feature Scatter 
+  output$rhapsodyfeaturescatter <- renderPlotly({
+    p3 <- Seurat::FeatureScatter(demo_seurat(), 
+                                 feature1 = "nCount_RNA", 
+                                 feature2 = "nFeature_RNA", 
+                                 group.by = "seurat_clusters") + 
+      scale_x_log10() +
+      scale_y_log10() +
+      ggtitle("Feature Scatter plot")
+    
+    p3
+  })
+  
+  output$rhapsodyfeaturescatterfilter <- renderPlotly({
+    p4 <- Seurat::FeatureScatter(subset_demo_seurat(), 
+                                 feature1 = "nCount_RNA", 
+                                 feature2 = "nFeature_RNA", 
+                                 group.by = "seurat_clusters") + 
+      scale_x_log10() +
+      scale_y_log10() +
+      ggtitle("Feature Scatter plot After Filter")
+    
+    p4
+  })
+  
+  output$rhapsodyumap <- renderPlotly({
+    p5 <- Seurat::DimPlot(subset_demo_seurat(), 
+                          reduction = "umap", 
+                          group.by = "seurat_clusters") + 
+      ggtitle("UMAP Plot")
+  })
+  
+  output$rhapsodytsne <- renderPlotly({
+    p5 <- Seurat::DimPlot(subset_demo_seurat(), 
+                          reduction = "tsne", 
+                          group.by = "seurat_clusters") + 
+      ggtitle("TSNE Plot")
+  })
+  
+  output$rhapsodypca <- renderPlotly({
+    p5 <- Seurat::DimPlot(subset_demo_seurat(), 
+                          reduction = "pca", 
+                          group.by = "seurat_clusters") + 
+      ggtitle("PCA Plot")
+  })
+  ## =======================================================================================. End Server =========================================================================================================#
   # This are for the server close
 })
 
