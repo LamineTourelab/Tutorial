@@ -306,21 +306,21 @@ dashbody <- dashboardBody(
                             ),
                             tabPanel(title='Individuals  plot',
                                      #Placeholder for plot
-                                     plotlyOutput(outputId='pca',height = "600px"),
+                                     plotlyOutput(outputId='pcaind',height = "600px"),
                                      h4(strong("Exporting the Individuals PCA plot")),
                                      fluidRow(
                                        
-                                       column(3,numericInput("width", "Width of PDF", value=10)),
-                                       column(3,numericInput("height", "Height of PDF", value=8)),
+                                       column(3,numericInput("width_pcaind", "Width of PDF", value=10)),
+                                       column(3,numericInput("height_pcaind", "Height of PDF", value=8)),
                                        column(3),
-                                       column(3,style = "margin-top: 25px;",downloadButton('downloadPlot','Download PDF'))
+                                       column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPDF_pcaind','Download PDF'))
                                      ),
                                      
                                      fluidRow(
-                                       column(3,numericInput("width_png","Width of PNG", value = 1600)),
-                                       column(3,numericInput("height_png","Height of PNG", value = 1200)),
-                                       column(3,numericInput("resolution_PNG","Resolution of PNG", value = 144)),
-                                       column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG','Download PNG'))
+                                       column(3,numericInput("width_png_pcaind","Width of PNG", value = 1600)),
+                                       column(3,numericInput("height_png_pcaind","Height of PNG", value = 1200)),
+                                       column(3,numericInput("resolution_PNG_pcaind","Resolution of PNG", value = 144)),
+                                       column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_pcaind','Download PNG'))
                                      )
                             ),
                             
@@ -848,17 +848,17 @@ server <- shinyServer(function(input, output, session)
       selected = 'subtype'
     )
   })
-  #++++++++++++++++++++ Histogram 
+  #++++++++++++++++++++++++++++++++++++++++ Histogram 
   output$Histplot <- renderPlotly({
     Hist <- ggplot(Datagraph(), aes_string(x=input$Vartoplot, fill=input$VarColor)) +  geom_histogram(bins = input$histbins)
     Hist1 = Hist %>% ggplotly(tooltip = 'all')
     vals$Hist = Hist
   })
   # downloading PNG -----
-  output$downloadPlotPNG_hist <- func_get_png(titlepng = "Histogram_", img = vals$Hist, width = input$width_png_hist, 
+  output$downloadPlotPNG_hist <- func_save_png(titlepng = "Histogram_", img = vals$Hist, width = input$width_png_hist, 
                                               height = input$height_png_hist, res = input$resolution_PNG_hist)
   
-  #++++++++++++++++++++ density
+  #++++++++++++++++++++++++++++++++++++++++ density
   output$density <- renderPlotly({
     Dens <- ggplot(Datagraph(), aes_string(x=input$Vartoplot1, fill=input$VarColor1)) +  geom_density(fill='grey50')
     Dens1 = Dens %>% 
@@ -867,10 +867,10 @@ server <- shinyServer(function(input, output, session)
     vals$densityplot = Dens
   })
   # downloading Density plot PNG -----
-  output$downloadPlotPNG_densityplot <- func_get_png(titlepng = "Density_plot_", img = vals$densityplot, width = input$width_png_densityplot, 
+  output$downloadPlotPNG_densityplot <- func_save_png(titlepng = "Density_plot_", img = vals$densityplot, width = input$width_png_densityplot, 
                                                      height = input$height_png_densityplot, res = input$resolution_PNG_densityplot)
    
-  #++++++++++++++++++++ Box plot
+  #++++++++++++++++++++++++++++++++++++++++ Box plot
   output$boxplot <- renderPlotly({
     Boxp <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_boxplot() 
     Boxp1 = Boxp %>% 
@@ -878,10 +878,10 @@ server <- shinyServer(function(input, output, session)
     vals$Boxp = Boxp
   })
   # downloading Box plot PNG -----
-  output$downloadPlotPNG_boxplot <- func_get_png(titlepng = "Box_plot_", img = vals$Boxp, width = input$width_png_boxplot, 
+  output$downloadPlotPNG_boxplot <- func_save_png(titlepng = "Box_plot_", img = vals$Boxp, width = input$width_png_boxplot, 
                height = input$height_png_boxplot, res = input$resolution_PNG_boxplot)
   
-  #++++++++++++++++++++ Violin plot
+  #++++++++++++++++++++++++++++++++++++++++ Violin plot
   output$violinplot <- renderPlotly({
     Violin <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_violin() 
     Violin1 = Violin %>% 
@@ -889,10 +889,10 @@ server <- shinyServer(function(input, output, session)
     vals$Violin = Violin
   })
   # downloading Violin PNG -----
-  output$downloadPlotPNG_violin <- func_get_png(titlepng = "Violin_plot_", img = vals$Violin, width = input$width_png_violin, 
+  output$downloadPlotPNG_violin <- func_save_png(titlepng = "Violin_plot_", img = vals$Violin, width = input$width_png_violin, 
                                                 height = input$height_png_violin, res = input$resolution_PNG_violin)
    
-  #++++++++++++++++++++ Linear plot
+  #++++++++++++++++++++++++++++++++++++++++ Linear plot
   output$linearplot <- renderPlotly({
     
     if(input$Vartofill == 'NULL'){
@@ -908,10 +908,10 @@ server <- shinyServer(function(input, output, session)
     }
   })
   # downloading Linear plot PNG -----
-  output$downloadPlotPNG_linearplot <- func_get_png(titlepng = "Linear_plot_", img = vals$linearplot, width = input$width_png_linearplot, 
+  output$downloadPlotPNG_linearplot <- func_save_png(titlepng = "Linear_plot_", img = vals$linearplot, width = input$width_png_linearplot, 
                                                     height = input$height_png_linearplot, res = input$resolution_PNG_linearplot)
   
-  #++++++++++++++++++++ Data table
+  #++++++++++++++++++++++++++++++++++++++++ Data table
   output$thetable <- DT::renderDataTable({
     DT::datatable(Datagraph(), rownames = TRUE, options = list(scrollX = TRUE))
   },
@@ -935,36 +935,7 @@ server <- shinyServer(function(input, output, session)
     dataframe = readr::read_csv(input$filediff$datapath)
   })
   
-  # 
-  # observe({
-  #   updateSelectInput(
-  #     inputId = 'Vartoplotdiff',
-  #     session = session,
-  #     label = 'Please choose a variable',
-  #     choices = dbs$libraryName
-  #   )
-  # })
-  
-  output$number_of_points <- renderPrint({
-    dat <- as.data.frame(Datadiff())
-    dat$Direction <- "NO"
-    dat$Direction[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
-    dat$Direction[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
-    dat$gene_name <- NA
-    dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
-    dat <- dat[order(dat$Pvalue),]
-    dat$logP <- -log10(dat$Pvalue)
-    total <- as.numeric(dim(dat)[1])
-    totalDown <- as.numeric(dim(dat[dat$Direction=='DOWN',])[1])
-    totalNO <- as.numeric(dim(dat[dat$Direction=='NO',])[1])
-    totalUP <- as.numeric(dim(dat[dat$Direction=='UP',])[1])
-    
-    cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none, ', 
-        ' which represents ' ,round(totalNO/total*500,2),'% of the data',sep='')
-  })
-  
-  output$Volcanoplot <- renderPlotly({
-    
+  Diffdata <- reactive({
     Datadiff = data.frame(Datadiff())
     # add a column of NAs
     Datadiff$Direction <- "NO"
@@ -977,7 +948,24 @@ server <- shinyServer(function(input, output, session)
     # Create a new column "gene_name" to de, that will contain the name of genes differentially expressed (NA in case they are not)
     Datadiff$gene_name <- NA
     Datadiff$gene_name[Datadiff$Direction != "NO"] <- Datadiff$ID[Datadiff$Direction != "NO"]
+    Diffdata <- Datadiff
+  })
+  
+  output$number_of_points <- renderPrint({
+    dat <- data.frame(Diffdata())
+    dat <- dat[order(dat$Pvalue),]
+    dat$logP <- -log10(dat$Pvalue)
+    total <- as.numeric(dim(dat)[1])
+    totalDown <- as.numeric(dim(dat[dat$Direction=='DOWN',])[1])
+    totalNO <- as.numeric(dim(dat[dat$Direction=='NO',])[1])
+    totalUP <- as.numeric(dim(dat[dat$Direction=='UP',])[1])
     
+    cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none, ', 
+        ' which represents ' ,round(totalNO/total*100,2),'% of the data',sep='')
+  })
+  
+  output$Volcanoplot <- renderPlotly({
+    Datadiff = data.frame(Diffdata())
     volcano_gplot <- ggplot(data=Datadiff, aes(x=logFC, y=-log10(Pvalue), col=Direction, label=gene_name)) + 
       geom_point() + 
       theme_minimal() +
@@ -990,38 +978,19 @@ server <- shinyServer(function(input, output, session)
       ggplotly(tooltip = 'all') 
     vals$volcano_gplot = volcano_gplot
   })
-  # downloading PNG -----
-  output$downloadPlotPNG_volcano <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Volcanoplot_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_volcano, height = input$height_png_volcano, res = input$resolution_PNG_volcano)
-      grid.arrange(vals$volcano_gplot)
-      dev.off()}
-  )
+  # downloading Volcano plot PNG -----
+  output$downloadPlotPNG_volcano <- func_save_png(titlepng = "Volcanoplot_", img = vals$volcano_gplot, width = input$width_png_volcano, 
+                                                 height = input$height_png_volcano, res = input$resolution_PNG_volcano)
+  
   #======
   output$summarytable <- DT::renderDataTable({
-    dat <- data.frame(Datadiff())
-    dat$Direction <- "NO"
-    dat$Direction[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
-    dat$Direction[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
-    dat$gene_name <- NA
-    dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
-    
+    dat <- data.frame(Diffdata())
     dat <- DT::datatable(dat, options = list(scrollX = TRUE))
     dat
   })
   
   output$summarytablecount <- DT::renderDataTable({
-    dat <- data.frame(Datadiff())
-    dat$Direction <- "NO"
-    dat$Direction[dat$logFC > 0.6 & dat$Pvalue < 0.05] <- "UP"
-    dat$Direction[dat$logFC < -0.6 & dat$Pvalue < 0.05] <- "DOWN"
-    dat$gene_name <- NA
-    dat$gene_name[dat$Direction != "NO"] <- dat$ID[dat$Direction != "NO"]
+    dat <- data.frame(Diffdata())
     dat <- dat %>% dplyr::count(Direction)
     DT::datatable(dat, options = list(scrollX = TRUE))
   })
@@ -1031,12 +1000,7 @@ server <- shinyServer(function(input, output, session)
   observeEvent(input$submit, {
     # Extraire les gènes saisis par l'utilisateur et les séparer par des virgules
     user_genes <- unlist(strsplit(input$genes, ","))
-    
-    # dbs <- c("GO_Molecular_Function_2015", "GO_Cellular_Component_2015", "GO_Biological_Process_2015",
-    #          "Reactome_2015", "Reactome_2016", "OMIM_Disease", "MSigDB_Oncogenic_Signatures", "KEGG_2015",
-    #          "KEGG_2016", "GO_Biological_Process_2018", "Human_Phenotype_Ontology", "Cancer_Cell_Line_Encyclopedia",
-    #          "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
-    
+  
     # Exécuter l'analyse d'enrichissement de gènes avec enrichR
     enrichment_result <- enrichr(user_genes, dbs$libraryName)
     
@@ -1063,18 +1027,9 @@ server <- shinyServer(function(input, output, session)
       vals$enrichment = enrichment
     })
     
-    # downloading PNG -----
-    output$ downloadPlotPNG_enrichr <- downloadHandler(
-      filename = function() {
-        x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-        paste("Enrichment_Analysis_",input$title, gsub("/", "-", x), ".png", sep = "")
-      },
-      content = function(file) {
-        
-        png(file, width = input$width_png_enrichr, height = input$height_png_enrichr, res = input$resolution_PNG_enrichr)
-        grid.arrange(vals$enrichment)
-        dev.off()}
-    )
+    # downloading Enrichment plot PNG -----
+    output$ downloadPlotPNG_enrichr <- func_save_png(titlepng = "Enrichment_Analysis_", img = vals$enrichment, width = input$width_png_enrichr, 
+                                                    height = input$height_png_enrichr, res = input$resolution_PNG_enrichr)
   })
   
   ## =========================================================================.  Statistical Panel results.  =============================================================================== #
@@ -1121,93 +1076,56 @@ server <- shinyServer(function(input, output, session)
       choices = names(Metadastats())
     )
   })
-  
-  # ======= PCA Ind  
-  output$pca <- renderPlotly({
+  #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ PCA 
+  pca <- reactive({
     Datastats <- as.matrix(Datastats())
-    metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
     pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
-    
-    pcafig = fviz_pca_ind(pca, fill.ind = metadata[,1],  geom.ind = "point", 
-                          pointshape=21,addEllipses = F,pointsize=4 )
-    vals$pcafig = pcafig
   })
   
-  # downloading PDF -----
-  output$downloadPlot <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("PCA_Individuals_",input$title, gsub("/", "-", x), ".pdf", sep = "")
-    },
-    content = function(file) {
-      pdf(file, width=input$width,height=input$height, onefile = FALSE) # open the pdf device
-      grid.arrange(vals$pcafig)
-      dev.off()},
+  # ======= PCA Ind  
+  output$pcaind <- renderPlotly({
+    metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
+    pcafig = fviz_pca_ind(pca(), fill.ind = metadata[,1],  geom.ind = "point", 
+                          pointshape=21,addEllipses = F,pointsize=4 )
+    vals$pcafigind = pcafig
+  })
+  
+  # downloading PCA Individuals PDF -----
+  output$downloadPlotPDF_pcaind <- func_save_pdf(titlepdf = "PCA_Individuals_", img = vals$pcafigind, width = input$width_pcaind, 
+                                       height = input$height_pcaind)
     
-    contentType = "application/pdf"
-    
-  )
-  # downloading PNG -----
-  output$downloadPlotPNG <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("PCA_Individuals_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png, height = input$height_png, res = input$resolution_PNG)
-      grid.arrange(vals$pcafig)
-      dev.off()}
-  )
+  # downloading PCA Individuals PNG -----
+  output$downloadPlotPNG_pcaind <- func_save_png(titlepng = "PCA_Individuals_", img = vals$pcafigind, width = input$width_png_pcaind, 
+                                         height = input$height_png_pcaind, res = input$resolution_PNG_pcaind)
+  
   # ======= PCA biplot
   output$pcabiplot <- renderPlotly({
-    Datastats <- as.matrix(Datastats())
     metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
-    pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
-    
-    pcabiplot = fviz_pca_biplot(pca, fill.ind = metadata[,1], geom.ind = "point", 
+  
+    pcabiplot = fviz_pca_biplot(pca(), fill.ind = metadata[,1], geom.ind = "point", 
                                 pointshape=10,addEllipses = T,pointsize=2)
     vals$pcabiplot = pcabiplot
   })
   
-  # downloading PNG -----
-  output$downloadPlotPNG_biplot <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("PCA_Biplot_", gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_biplot, height = input$height_png_biplot, res = input$resolution_PNG_biplot)
-      grid.arrange(vals$pcabiplot)
-      dev.off()}
-  )
+  # downloading PCA Biplot PNG -----
+  output$downloadPlotPNG_biplot <- func_save_png(titlepng = "PCA_Biplot_", img = vals$pcabiplot, width = input$width_png_biplot, 
+                                                 height = input$height_png_biplot, res = input$resolution_PNG_biplot)
+  
   # ======= PCA component
   output$pcacomp <- renderPlotly({
-    Datastats <- as.matrix(Datastats())
     metadata = Metadastats() %>% dplyr::select(input$Vartoplotstats)
-    pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
-    
-    pcacomp = fviz_eig(pca)
+  
+    pcacomp = fviz_eig(pca())
     vals$pcacomp = pcacomp
   })
   
-  # downloading PNG -----
-  output$downloadPlotPNG_scree <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("PCA_Component_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_scree, height = input$height_png_scree, res = input$resolution_PNG_scree)
-      grid.arrange(vals$pcacomp)
-      dev.off()}
-  )
+  # downloading PCA Component PNG -----
+  output$downloadPlotPNG_scree <- func_save_png(titlepng = "PCA_Component_", img = vals$pcacomp, width = input$width_png_scree, 
+                                                height = input$height_png_scree, res = input$resolution_PNG_scree)
+   
   # ======= PCA variable importance
   output$variableimp <- renderPlotly({
-    Datastats <- as.matrix(Datastats())
-    pca = FactoMineR::PCA(Datastats, scale.unit=T, graph=F)
+    pca = pca()
     
     loadings <- data.frame(pca$var$coord[1:10,1:5])
     loadings$Symbol <- row.names(loadings)
@@ -1232,24 +1150,16 @@ server <- shinyServer(function(input, output, session)
     vals$pcavar = pcavar
   })
   
-  # downloading PNG -----
-  output$downloadPlotPNG_genepca <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("PCA_Importance_Genes_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_genepca, height = input$height_png_genepca, res = input$resolution_PNG_genepca)
-      grid.arrange(vals$pcavar)
-      dev.off()}
-  )
+  # downloading PCA Gene Importances PNG -----
+  output$downloadPlotPNG_genepca <- func_save_png(titlepng = "PCA_Importance_Genes_", img = vals$pcavar, width = input$width_png_genepca, 
+                                                  height = input$height_png_genepca, res = input$resolution_PNG_genepca)
   
+  # Stats Data Table 
   output$thetablestats <- DT::renderDataTable({
     DT::datatable(Datastats(), options = list(scrollX = TRUE))
   },
   server = TRUE)
-  # =========================================================== Clustring
+  #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Clustring
   
   Datastatsclust <- reactive({switch(input$datasetstatsclust,"test-data" = test.data.statsclust(),"own" = own.data.statsclust())})
   
@@ -1302,56 +1212,39 @@ server <- shinyServer(function(input, output, session)
     
     vals$heatmapplot = heatmapplot
   })
-  # downloading PNG -----
-  output$downloadPlotPNG_heatmap <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Heatmap_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_heatmap, height = input$height_png_heatmap, res = input$resolution_PNG_heatmap)
-      grid.arrange(vals$heatmapplot)
-      dev.off()}
-  )
-  
+  # downloading Heatmap PNG -----
+  output$downloadPlotPNG_heatmap <- func_save_png(titlepng = "Heatmap_", img = vals$heatmapplot, width = input$width_png_heatmap, 
+                                                  height = input$height_png_heatmap, res = input$resolution_PNG_heatmap)
+    
   output$missmap <- renderPlot({
     missmap(Datastatsclust())
   })
+  #++++++++++++++++++++++++++++++++++++++++++++++++++ Kmeans
   
+  kmeanss <- reactive({
+    kmeanss <- kmeans(scale(Datastatsclust()), input$kmeansbins, nstart = 25)
+  })
   ##========== Kmeans
   output$kmeanscluster <- renderPlotly({
-    res.km <- kmeans(scale(Datastatsclust()), input$kmeansbins, nstart = 25)
     # Clustering K-means montrant le groupe de chaque individu
-    kmeanscluster = fviz_cluster(res.km, data = Datastatsclust(),
-                                 # palette = c("#2E9FDF", "#00AFBB", "#E7B800", '#E87722'), 
+    kmeanscluster = fviz_cluster(kmeanss(), data = Datastatsclust(),
                                  geom = "point",
                                  ellipse.type = "convex", 
                                  ggtheme = theme_bw()
     )
     vals$kmeanscluster = kmeanscluster
   })
-  # downloading PNG -----
-  output$downloadPlotPNG_kmeanscluster <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Kmeans_clusters_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_kmeanscluster, height = input$height_png_kmeanscluster, res = input$resolution_PNG_kmeanscluster)
-      grid.arrange(vals$kmeanscluster)
-      dev.off()}
-  )
-  
+  # downloading Kmeans clusters PNG -----
+  output$downloadPlotPNG_kmeanscluster <- func_save_png(titlepng = "Kmeans_clusters_", img = vals$kmeanscluster, width = input$width_png_kmeanscluster, 
+                                                        height = input$height_png_kmeanscluster, res = input$resolution_PNG_kmeanscluster)
+  ##========== Kmeana annotate
   output$kmeansclusterannot <- renderPlotly({
-    res.km <- kmeans(scale(Datastatsclust()), input$kmeansbins, nstart = 25)
     # Réduction de dimension en utilisant l'ACP
     res.pca <- prcomp(Datastatsclust(),  scale = TRUE)
     # Coordonnées des individus
     ind.coord <- as.data.frame(get_pca_ind(res.pca)$coord)
     # Ajouter les clusters obtenus à l'aide de l'algorithme k-means
-    ind.coord$cluster <- factor(res.km$cluster)
+    ind.coord$cluster <- factor(kmeanss()$cluster)
     # Ajouter les groupes d'espèces issues du jeu de données initial
     metadata = Metadastatsclust() %>% dplyr::select(input$Vartoplotstatsclust)
     ind.coord$metadata <- metadata[,1]
@@ -1372,18 +1265,9 @@ server <- shinyServer(function(input, output, session)
     vals$kmeansclusterannot = kmeansclusterannot
   })
   
-  # downloading PNG -----
-  output$downloadPlotPNG_kmeansclusterannot <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Kmeans_clustrs_annotated_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_kmeansclusterannot, height = input$height_png_kmeansclusterannot, res = input$resolution_PNG_kmeansclusterannot)
-      grid.arrange(vals$kmeansclusterannot)
-      dev.off()}
-  )
+  # downloading Kmeans clusters annotation PNG -----
+  output$downloadPlotPNG_kmeansclusterannot <- func_save_png(titlepng = "Kmeans_clustrs_annotated_", img = vals$kmeansclusterannot, width = input$width_png_kmeansclusterannot, 
+                                                             height = input$height_png_kmeansclusterannot, res = input$resolution_PNG_kmeansclusterannot)
   
   output$kmeanselbow <- renderPlotly({
     kmeanselbow = fviz_nbclust(Datastatsclust(), kmeans, method = "wss") +
@@ -1392,19 +1276,10 @@ server <- shinyServer(function(input, output, session)
     vals$kmeanselbow = kmeanselbow
   })
   
-  # downloading PNG -----
-  output$downloadPlotPNG_kmeanselbow <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Kmeans_Elbow_method_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_kmeanselbow, height = input$height_png_kmeanselbow, res = input$resolution_PNG_kmeanselbow)
-      grid.arrange(vals$kmeanselbow)
-      dev.off()}
-  )
-  
+  # downloading Kmeans Elbow plot PNG -----
+  output$downloadPlotPNG_kmeanselbow <- func_save_png(titlepng = "Kmeans_Elbow_method_", img = vals$kmeanselbow, width = input$width_png_kmeanselbow, 
+                                                      height = input$height_png_kmeanselbow, res = input$resolution_PNG_kmeanselbow)
+   
   #++++++++++++
   output$thetablestatsclust <- DT::renderDataTable({
     DT::datatable(Datastatsclust(), options = list(scrollX = TRUE))
