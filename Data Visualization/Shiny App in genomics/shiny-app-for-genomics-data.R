@@ -724,7 +724,7 @@ dashbody <- dashboardBody(
                        ),
                        
                        tabPanel(title = 'Cell Type Annotation',
-                                plotlyOutput(outputId='rhapsodyplotScoreHeatmap',height = "600px"),
+                                plotOutput(outputId='rhapsodyplotScoreHeatmap',height = "600px"),
                                 h4(strong("Exporting the UMAP plot")),
                                 fluidRow(
                                   column(3,numericInput("width_png_plotScoreHeatmap","Width of PNG", value = 1600)),
@@ -1213,7 +1213,7 @@ server <- shinyServer(function(input, output, session)
   output$downloadPlotPNG_biplot <- downloadHandler(
     filename = function() {
       x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("PCA_Biplot",input$title, gsub("/", "-", x), ".png", sep = "")
+      paste("PCA_Biplot_", gsub("/", "-", x), ".png", sep = "")
     },
     content = function(file) {
       
@@ -1486,7 +1486,7 @@ server <- shinyServer(function(input, output, session)
                                    nFeature_RNA > 200, 
                                  invert = F)
     subset_demo_seurat <- func_quick_process(subset_demo_seurat)
-    subset_demo_seurat <- func_get_annotation(subset_demo_seurat())
+    subset_demo_seurat <- func_get_annotation(subset_demo_seurat)
   })
   # QC plots – check mitochondrial gene percentages
   output$rhapsodymtgene <- renderPlotly({
@@ -1534,6 +1534,7 @@ server <- shinyServer(function(input, output, session)
     p4
   })
   
+  # clustering plots
   output$rhapsodyumap <- renderPlotly({
     p5 <- Seurat::DimPlot(subset_demo_seurat(), 
                           reduction = "umap", 
@@ -1554,23 +1555,19 @@ server <- shinyServer(function(input, output, session)
                           group.by = "seurat_clusters") + 
       ggtitle("PCA Plot")
   })
-  # 
-  # # use function to perform singleR cell type annotation
-  # subset_demo_seurat <- reactive({
-  #   subset_demo_seurat <- func_get_annotation(subset_demo_seurat())
-  # })
+  
+  # SingleR plots
+  output$rhapsodyplotScoreHeatmap <- renderPlot({
+    p_cell_1 <- plotScoreHeatmap(subset_demo_seurat()@misc$SingleR_results,
+                                 show_colnames = F)
+    p_cell_1
+  })
 
-  # output$rhapsodyplotScoreHeatmap <- renderPlotly({
-  #   p_cell_1 <- plotScoreHeatmap(subset_demo_seurat()@misc$SingleR_results, 
-  #                                show_colnames = F)
-  #   p_cell_1
-  # })
-  # 
   output$rhapsodyumapcelltype <- renderPlotly({
     # Display cells in UMAP plot
-    p_cell_3 <- Seurat::DimPlot(subset_demo_seurat(),
+    p_cell_2 <- Seurat::DimPlot(subset_demo_seurat(),
                                 group.by = "cell_type") +
-      ggtitle(Project(subset_demo_seurat_1))
+      ggtitle(Project(subset_demo_seurat()))
   })
   
   ## =======================================================================================. End Server =========================================================================================================#
