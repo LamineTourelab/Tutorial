@@ -32,8 +32,7 @@ library(SeuratWrappers) #remotes::install_github('satijalab/seurat-wrappers')
 library(slingshot) #BiocManager::install('slingshot')
 library(colorRamps)
 library(CellChat) #remotes::install_github('sqjin/CellChat')
-source("/Users/lamine/Documents/shinydashboard/INEM/Preprocessing.R")
-source("/Users/lamine/Documents/shinydashboard/INEM/Cell_type_annotation.R")
+source("/Users/lamine/Documents/shinydashboard/INEM/Rhapsody_funs.R")
 source("/Users/lamine/Documents/shinydashboard/INEM/Util.R")
 
 ## ==================================================================== Datasets ============================================================================================##
@@ -726,7 +725,7 @@ dashbody <- dashboardBody(
                        
                        tabPanel(title = 'Cell Type Annotation',
                                 plotOutput(outputId='rhapsodyplotScoreHeatmap',height = "600px"),
-                                h4(strong("Exporting the UMAP plot")),
+                                h4(strong("Exporting the SingleR plotScoreHeatmap plot")),
                                 fluidRow(
                                   column(3,numericInput("width_png_plotScoreHeatmap","Width of PNG", value = 1600)),
                                   column(3,numericInput("height_png_plotScoreHeatmap","Height of PNG", value = 1200)),
@@ -734,7 +733,7 @@ dashbody <- dashboardBody(
                                   column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_plotScoreHeatmap','Download PNG'))
                                 ),
                                 plotlyOutput(outputId='rhapsodyumapcelltype',height = "600px"),
-                                h4(strong("Exporting the TSNE plot")),
+                                h4(strong("Exporting the SingleR UMAP Cell type plot")),
                                 fluidRow(
                                   column(3,numericInput("width_png_umapcelltype","Width of PNG", value = 1600)),
                                   column(3,numericInput("height_png_umapcelltype","Height of PNG", value = 1200)),
@@ -756,7 +755,7 @@ dashbody <- dashboardBody(
                                 )
                        ),
                        tabPanel(title = 'Finding marker genes',
-                                plotlyOutput(outputId='rhapsodymarkergenes',height = "900px"),
+                                plotlyOutput(outputId='rhapsodymarkergenes',height = "1000px"),
                                 h4(strong("Exporting the Markers genes plot")),
                                 fluidRow(
                                   column(3,numericInput("width_png_markergenes","Width of PNG", value = 1600)),
@@ -767,13 +766,21 @@ dashbody <- dashboardBody(
                        ),
                        navbarMenu(title = 'Further Analysis',
                                   tabPanel(title = 'Pseudotime Analysis',
-                                           plotlyOutput(outputId='rhapsodypseudotime',height = "600px"),
+                                           plotOutput(outputId='rhapsodypseudotimelineage',height = "1000px"),
                                            h4(strong("Exporting the Pseudotime Analysis plot")),
                                            fluidRow(
-                                             column(3,numericInput("width_png_pseudotime","Width of PNG", value = 1600)),
-                                             column(3,numericInput("height_png_pseudotime","Height of PNG", value = 1200)),
-                                             column(3,numericInput("resolution_PNG_pseudotime","Resolution of PNG", value = 144)),
-                                             column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_pseudotime','Download PNG'))
+                                             column(3,numericInput("width_png_pseudotimelineage","Width of PNG", value = 1600)),
+                                             column(3,numericInput("height_png_pseudotimelineage","Height of PNG", value = 1200)),
+                                             column(3,numericInput("resolution_PNG_pseudotimelineage","Resolution of PNG", value = 144)),
+                                             column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_pseudotimelineage','Download PNG'))
+                                           ),
+                                           plotOutput(outputId='rhapsodypseudotimesampletag',height = "1000px"),
+                                           h4(strong("Exporting the Pseudotime Analysis plot")),
+                                           fluidRow(
+                                             column(3,numericInput("width_png_pseudotimesampletag","Width of PNG", value = 1600)),
+                                             column(3,numericInput("height_png_pseudotimesampletag","Height of PNG", value = 1200)),
+                                             column(3,numericInput("resolution_PNG_pseudotimesampletag","Resolution of PNG", value = 144)),
+                                             column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_pseudotimesampletag','Download PNG'))
                                            )
                                   ),
                                   tabPanel(title = 'Cell Communication',
@@ -1441,7 +1448,7 @@ server <- shinyServer(function(input, output, session)
   output$downloadPlotPNG_ypca <- func_save_png(titlepng = "PCA_plot_", img = vals$rhapsodypca, width = input$width_png_ypca, 
                                                height = input$height_png_ypca, res = input$resolution_PNG_ypca)
   
-  # ======================================. SingleR plots
+  # ============================================================================. SingleR plots
   output$rhapsodyplotScoreHeatmap <- renderPlot({
     subset_demo_seurat <- subset_demo_seurat()
     p_cell_1 <- plotScoreHeatmap(subset_demo_seurat@misc$SingleR_results,
@@ -1457,14 +1464,14 @@ server <- shinyServer(function(input, output, session)
     # Display cells in UMAP plot
     p_cell_2 <- Seurat::DimPlot(subset_demo_seurat(),
                                 group.by = "cell_type") +
-      ggtitle(Project(subset_demo_seurat()))
+      ggtitle("SINGLER UMAP CELL TYPE")
     vals$umapcelltype <- p_cell_2
   })
   # downloading SingleR UMAP Cell type plot PNG -----
   output$downloadPlotPNG_umapcelltype <- func_save_png(titlepng = "SingleR_UMAP_cell_type_", img = vals$umapcelltype, width = input$width_png_umapcelltype, 
                                                            height = input$height_png_umapcelltype, res = input$resolution_PNG_umapcelltype)
   
-  # ============================================================. Find doublets
+  # ============================================================================. Find doublets
   # BD provided doublet rates with different cell load numbers
   rhapsody_doublet_rate <- data.frame(
     "cell_num" = c(100,500,1000*(1:20)), 
@@ -1492,7 +1499,7 @@ server <- shinyServer(function(input, output, session)
   output$downloadPlotPNG_doublet <- func_save_png(titlepng = "Doublet_Check_plot_", img = vals$doublet, width = input$width_png_doublet, 
                                                        height = input$height_png_doublet, res = input$resolution_PNG_doublet)
   
-  # =======================================================. Finding marker genes
+  # ============================================================================. Finding marker genes
   output$rhapsodymarkergenes <- renderPlotly({
     # use function to get marker genes
     subset_demo1_DGEs <- func_get_marker_genes(subset_demo_seurat1(),
@@ -1513,9 +1520,73 @@ server <- shinyServer(function(input, output, session)
   output$downloadPlotPNG_markergenes <- func_save_png(titlepng = "Marker_Genes_plot_", img = vals$markergenes, width = input$width_png_markergenes, 
                                                   height = input$height_png_markergenes, res = input$resolution_PNG_markergenes)
   
-  # =======================================================. Pseudotime Analysis
+  # ============================================================================. Pseudotime Analysis
+  lineages <- reactive({
+    # use function to get results
+    subset_demo_slingshot_1 <- func_slingshot(subset_demo_seurat1())
+    pt_lineages <- slingshot::slingPseudotime(subset_demo_slingshot_1)
+    
+    # add Slingshot results to the input Seurat object
+    lineages <- sapply(slingLineages(colData(subset_demo_slingshot_1)$slingshot), 
+                       paste, 
+                       collapse = " -> ")
+  })
+  output$rhapsodypseudotimelineage <- renderPlot({
+   
+    subset_demo_seurat_1 <- subset_demo_seurat1()
+    subset_demo_seurat_1@meta.data[lineages()] <- pt_lineages
+    # visualization
+    
+    # display every lineage pseudotime
+    name_lineage <- colnames(subset_demo_seurat_1@meta.data)[grepl("->",
+                                                                   colnames(subset_demo_seurat_1@meta.data))]
+    
+    p_ss_1 <- list()
+    
+    Idents(subset_demo_seurat_1) <- "smk"
+    
+    for (i in name_lineage) {
+      
+      p_ss_1[[i]] <- Seurat::FeaturePlot(subset(subset_demo_seurat_1, 
+                                                idents = c("SampleTag01_hs", 
+                                                           "SampleTag02_hs")),  
+                                         features = i, split.by = "smk") & 
+        theme(legend.position="top") &
+        scale_color_viridis_c() 
+    }
+    
+    wrap_plots(p_ss_1, 
+               ncol = 1)
+  })
   
-  
+  output$rhapsodypseudotimesampletag <- renderPlot({
+    subset_demo_seurat_1 <- subset_demo_seurat1()
+    subset_demo_seurat_1@meta.data[lineages()] <- pt_lineages
+    
+    p_ss_celltype <- list()
+    
+    Idents(subset_demo_seurat_1) <- "smk"
+    
+    for (i in name_lineage) {
+      
+      p_ss_celltype[[i]] <- ggplot(subset(subset_demo_seurat_1, 
+                                          idents = c("Multiplet", 
+                                                     "Undetermined"), 
+                                          invert = T)@meta.data, 
+                                   aes(x = .data[[i]], 
+                                       y = cell_type, 
+                                       colour = cell_type)) +
+        geom_point() +
+        geom_jitter(width = 0.1, 
+                    height = 0.2) +
+        theme_gray() +
+        theme(legend.position = "none") +
+        facet_grid(. ~ smk )
+    }
+    
+    wrap_plots(p_ss_celltype, 
+               ncol = 2)
+  })
   ## =======================================================================================. End Server =========================================================================================================#
   # This are for the server close
 })
