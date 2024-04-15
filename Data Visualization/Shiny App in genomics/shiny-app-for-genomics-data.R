@@ -34,6 +34,7 @@ library(colorRamps)
 library(CellChat) #remotes::install_github('sqjin/CellChat')
 source("/Users/lamine/Documents/shinydashboard/INEM/Preprocessing.R")
 source("/Users/lamine/Documents/shinydashboard/INEM/Cell_type_annotation.R")
+source("/Users/lamine/Documents/shinydashboard/INEM/Util.R")
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -854,17 +855,9 @@ server <- shinyServer(function(input, output, session)
     vals$Hist = Hist
   })
   # downloading PNG -----
-  output$downloadPlotPNG_hist <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Histogram_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_hist, height = input$height_png_hist, res = input$resolution_PNG_hist)
-      grid.arrange(vals$Hist)
-      dev.off()}
-  )
+  output$downloadPlotPNG_hist <- func_get_png(titlepng = "Histogram_", img = vals$Hist, width = input$width_png_hist, 
+                                              height = input$height_png_hist, res = input$resolution_PNG_hist)
+  
   #++++++++++++++++++++ density
   output$density <- renderPlotly({
     Dens <- ggplot(Datagraph(), aes_string(x=input$Vartoplot1, fill=input$VarColor1)) +  geom_density(fill='grey50')
@@ -873,18 +866,10 @@ server <- shinyServer(function(input, output, session)
       layout(dragmode = "select")
     vals$densityplot = Dens
   })
-  # downloading PNG -----
-  output$downloadPlotPNG_densityplot <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Density_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_densityplot, height = input$height_png_densityplot, res = input$resolution_PNG_densityplot)
-      grid.arrange(vals$densityplot)
-      dev.off()}
-  )
+  # downloading Density plot PNG -----
+  output$downloadPlotPNG_densityplot <- func_get_png(titlepng = "Density_plot_", img = vals$densityplot, width = input$width_png_densityplot, 
+                                                     height = input$height_png_densityplot, res = input$resolution_PNG_densityplot)
+   
   #++++++++++++++++++++ Box plot
   output$boxplot <- renderPlotly({
     Boxp <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_boxplot() 
@@ -892,18 +877,10 @@ server <- shinyServer(function(input, output, session)
       ggplotly(tooltip = 'all') 
     vals$Boxp = Boxp
   })
-  # downloading PNG -----
-  output$downloadPlotPNG_boxplot <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Box_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_boxplot, height = input$height_png_boxplot, res = input$resolution_PNG_boxplot)
-      grid.arrange(vals$Boxp)
-      dev.off()}
-  )
+  # downloading Box plot PNG -----
+  output$downloadPlotPNG_boxplot <- func_get_png(titlepng = "Box_plot_", img = vals$Boxp, width = input$width_png_boxplot, 
+               height = input$height_png_boxplot, res = input$resolution_PNG_boxplot)
+  
   #++++++++++++++++++++ Violin plot
   output$violinplot <- renderPlotly({
     Violin <- ggplot(Datagraph(), aes_string(input$VarColor, input$Vartoplot, fill=input$VarColor)) +  geom_violin() 
@@ -911,18 +888,10 @@ server <- shinyServer(function(input, output, session)
       ggplotly(tooltip = 'all') 
     vals$Violin = Violin
   })
-  # downloading PNG -----
-  output$downloadPlotPNG_violin <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Violin_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_violin, height = input$height_png_violin, res = input$resolution_PNG_violin)
-      grid.arrange(vals$Violin)
-      dev.off()}
-  )
+  # downloading Violin PNG -----
+  output$downloadPlotPNG_violin <- func_get_png(titlepng = "Violin_plot_", img = vals$Violin, width = input$width_png_violin, 
+                                                height = input$height_png_violin, res = input$resolution_PNG_violin)
+   
   #++++++++++++++++++++ Linear plot
   output$linearplot <- renderPlotly({
     
@@ -938,18 +907,10 @@ server <- shinyServer(function(input, output, session)
       vals$linearplot = Corrp
     }
   })
-  # downloading PNG -----
-  output$downloadPlotPNG_linearplot <- downloadHandler(
-    filename = function() {
-      x <- gsub(":", ".", format(Sys.time(), "%a_%b_%d_%Y_%X"))
-      paste("Linear_plot_",input$title, gsub("/", "-", x), ".png", sep = "")
-    },
-    content = function(file) {
-      
-      png(file, width = input$width_png_linearplot, height = input$height_png_linearplot, res = input$resolution_PNG_linearplot)
-      grid.arrange(vals$linearplot)
-      dev.off()}
-  )
+  # downloading Linear plot PNG -----
+  output$downloadPlotPNG_linearplot <- func_get_png(titlepng = "Linear_plot_", img = vals$linearplot, width = input$width_png_linearplot, 
+                                                    height = input$height_png_linearplot, res = input$resolution_PNG_linearplot)
+  
   #++++++++++++++++++++ Data table
   output$thetable <- DT::renderDataTable({
     DT::datatable(Datagraph(), rownames = TRUE, options = list(scrollX = TRUE))
