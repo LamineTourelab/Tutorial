@@ -747,13 +747,34 @@ dashbody <- dashboardBody(
                        ),
                        tabPanel(title = 'Finding doublets',
                                 plotlyOutput(outputId='rhapsodydoublet',height = "600px"),
+                                h4(strong("Exporting the Doublets plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_doublet","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_doublet","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_doublet","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_doublet','Download PNG'))
+                                )
                        ),
                        tabPanel(title = 'Finding marker genes',
-                                plotlyOutput(outputId='rhapsodymarkergenes',height = "600px"),
+                                plotlyOutput(outputId='rhapsodymarkergenes',height = "900px"),
+                                h4(strong("Exporting the Markers genes plot")),
+                                fluidRow(
+                                  column(3,numericInput("width_png_markergenes","Width of PNG", value = 1600)),
+                                  column(3,numericInput("height_png_markergenes","Height of PNG", value = 1200)),
+                                  column(3,numericInput("resolution_PNG_markergenes","Resolution of PNG", value = 144)),
+                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_markergenes','Download PNG'))
+                                )
                        ),
                        navbarMenu(title = 'Further Analysis',
                                   tabPanel(title = 'Pseudotime Analysis',
                                            plotlyOutput(outputId='rhapsodypseudotime',height = "600px"),
+                                           h4(strong("Exporting the Pseudotime Analysis plot")),
+                                           fluidRow(
+                                             column(3,numericInput("width_png_pseudotime","Width of PNG", value = 1600)),
+                                             column(3,numericInput("height_png_pseudotime","Height of PNG", value = 1200)),
+                                             column(3,numericInput("resolution_PNG_pseudotime","Resolution of PNG", value = 144)),
+                                             column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_pseudotime','Download PNG'))
+                                           )
                                   ),
                                   tabPanel(title = 'Cell Communication',
                                            plotlyOutput(outputId='rhapsodycellcommunication',height = "600px"),
@@ -1324,7 +1345,7 @@ server <- shinyServer(function(input, output, session)
     subset_demo_seurat <- func_quick_process(subset_demo_seurat)
     subset_demo_seurat <- func_get_annotation(subset_demo_seurat)
   })
-  # QC plots – check mitochondrial gene percentages
+  # =============================. QC plots – check mitochondrial gene percentages
   output$rhapsodymtgene <- renderPlotly({
     
     p <- Seurat::VlnPlot(demo_seurat(), 
@@ -1333,6 +1354,7 @@ server <- shinyServer(function(input, output, session)
       Seurat::NoLegend() + 
       ggtitle("MT Gene %")
     p
+    vals$mtgene <- p
   })
   output$rhapsodymtgenefilter <- renderPlotly({
     
@@ -1341,11 +1363,19 @@ server <- shinyServer(function(input, output, session)
                           group.by = "seurat_clusters") + 
       Seurat::NoLegend() + 
       ggtitle("MT Gene % After Filter")
-    
     p2
+    
+    vals$mtgenefilter <- p2
   })
+  # downloading QC plots – check mitochondrial gene percentages PNG -----
+  # downloading QC plots – check mitochondrial gene percentages PNG -----
+  output$downloadPlotPNG_mtgene <- func_save_png(titlepng = "MT_Gene_%_", img = vals$mtgene, width = input$width_png_mtgene, 
+                                                  height = input$height_png_mtgene, res = input$resolution_PNG_mtgene)
+  # downloading QC plots – check mitochondrial gene percentages after filtering PNG -----
+  output$downloadPlotPNG_mtgenefilter <- func_save_png(titlepng = "MT_Gene_%_After_Filter_", img = vals$mtgenefilter, width = input$width_png_mtgenefilter, 
+                                                 height = input$height_png_mtgenefilter, res = input$resolution_PNG_mtgenefilter)
   
-  # Feature Scatter 
+  # =================================. Feature Scatter 
   output$rhapsodyfeaturescatter <- renderPlotly({
     p3 <- Seurat::FeatureScatter(demo_seurat(), 
                                  feature1 = "nCount_RNA", 
@@ -1356,6 +1386,7 @@ server <- shinyServer(function(input, output, session)
       ggtitle("Feature Scatter plot")
     
     p3
+    vals$featurescatter <- p3
   })
   
   output$rhapsodyfeaturescatterfilter <- renderPlotly({
@@ -1368,43 +1399,122 @@ server <- shinyServer(function(input, output, session)
       ggtitle("Feature Scatter plot After Filter")
     
     p4
+    vals$featurescatterfilter <- p4
   })
+  # downloading Feature Scatter plot PNG -----
+  output$downloadPlotPNG_featurescatter <- func_save_png(titlepng = "Feature_Scatter_plot_", img = vals$featurescatter, width = input$width_png_featurescatter, 
+                                                 height = input$height_png_featurescatter, res = input$resolution_PNG_featurescatter)
+  # downloading Feature Scatter after filtering plot PNG -----
+  output$downloadPlotPNG_featurescatterfilter <- func_save_png(titlepng = "Feature_Scatter_plot_", img = vals$featurescatterfilter, width = input$width_png_featurescatterfilter, 
+                                                         height = input$height_png_featurescatterfilter, res = input$resolution_PNG_featurescatterfilter)
   
-  # clustering plots
+  # ===================================. clustering plots
   output$rhapsodyumap <- renderPlotly({
     p5 <- Seurat::DimPlot(subset_demo_seurat(), 
                           reduction = "umap", 
                           group.by = "seurat_clusters") + 
       ggtitle("UMAP Plot")
+    vals$umap <- p5
   })
-  
+  # downloading Rhapsody Umap plot PNG -----
+  output$downloadPlotPNG_umap <- func_save_png(titlepng = "Umap_plot_", img = vals$umap, width = input$width_png_umap, 
+                                               height = input$height_png_umap, res = input$resolution_PNG_umap)
   output$rhapsodytsne <- renderPlotly({
-    p5 <- Seurat::DimPlot(subset_demo_seurat(), 
+    p6 <- Seurat::DimPlot(subset_demo_seurat(), 
                           reduction = "tsne", 
                           group.by = "seurat_clusters") + 
       ggtitle("TSNE Plot")
+    vals$tsne <- p6
   })
+  # downloading Rhapsody TSNE plot PNG -----
+  output$downloadPlotPNG_tsne <- func_save_png(titlepng = "Tsne_plot_", img = vals$tsne, width = input$width_png_tsne, 
+                                               height = input$height_png_tsne, res = input$resolution_PNG_tsne)
   
   output$rhapsodypca <- renderPlotly({
-    p5 <- Seurat::DimPlot(subset_demo_seurat(), 
+    p7 <- Seurat::DimPlot(subset_demo_seurat(), 
                           reduction = "pca", 
                           group.by = "seurat_clusters") + 
       ggtitle("PCA Plot")
+    vals$rhapsodypca <- p7
   })
+  # downloading Rhapsody PCA plot PNG -----
+  output$downloadPlotPNG_ypca <- func_save_png(titlepng = "PCA_plot_", img = vals$rhapsodypca, width = input$width_png_ypca, 
+                                               height = input$height_png_ypca, res = input$resolution_PNG_ypca)
   
-  # SingleR plots
+  # ======================================. SingleR plots
   output$rhapsodyplotScoreHeatmap <- renderPlot({
-    p_cell_1 <- plotScoreHeatmap(subset_demo_seurat()@misc$SingleR_results,
+    subset_demo_seurat <- subset_demo_seurat()
+    p_cell_1 <- plotScoreHeatmap(subset_demo_seurat@misc$SingleR_results,
                                  show_colnames = F)
     p_cell_1
+    vals$plotScoreHeatmap <- p_cell_1
   })
-
+  # downloading SingleR plotScoreHeatmap plot PNG -----
+  output$downloadPlotPNG_plotScoreHeatmap <- func_save_png(titlepng = "SingleR_plotScoreHeatmap_", img = vals$plotScoreHeatmap, width = input$width_png_plotScoreHeatmap, 
+                                               height = input$height_png_plotScoreHeatmap, res = input$resolution_PNG_plotScoreHeatmap)
+  
   output$rhapsodyumapcelltype <- renderPlotly({
     # Display cells in UMAP plot
     p_cell_2 <- Seurat::DimPlot(subset_demo_seurat(),
                                 group.by = "cell_type") +
       ggtitle(Project(subset_demo_seurat()))
+    vals$umapcelltype <- p_cell_2
   })
+  # downloading SingleR UMAP Cell type plot PNG -----
+  output$downloadPlotPNG_umapcelltype <- func_save_png(titlepng = "SingleR_UMAP_cell_type_", img = vals$umapcelltype, width = input$width_png_umapcelltype, 
+                                                           height = input$height_png_umapcelltype, res = input$resolution_PNG_umapcelltype)
+  
+  # ============================================================. Find doublets
+  # BD provided doublet rates with different cell load numbers
+  rhapsody_doublet_rate <- data.frame(
+    "cell_num" = c(100,500,1000*(1:20)), 
+    "rate" = c(0, 0.1, 0.2, 0.5, 0.7, 1, 
+               1.2, 1.4, 1.7, 1.9, 2.1, 
+               2.4, 2.6, 2.8, 3.1, 3.3, 
+               3.5, 3.8, 4, 4.2, 4.5 , 4.7))
+  
+  # Build a linear model to calculate theoretical doublet rate
+  model_rhap <- lm(rate ~ cell_num, 
+                   rhapsody_doublet_rate)
+  # Run find doublets func
+  subset_demo_seurat1 <- reactive({
+    subset_demo_seurat1 <- func_get_doublets(subset_demo_seurat(),
+                                            pc = 1:15)
+  })
+  output$rhapsodydoublet <- renderPlotly({
+    # Visualize the result
+    p_cell_3 <- DimPlot(subset_demo_seurat1(), 
+                        group.by = "doublet_check") + 
+      ggtitle("Doublet Check Plot")
+    vals$doublet <- p_cell_3
+  })
+  # downloading doublet rates plot PNG -----
+  output$downloadPlotPNG_doublet <- func_save_png(titlepng = "Doublet_Check_plot_", img = vals$doublet, width = input$width_png_doublet, 
+                                                       height = input$height_png_doublet, res = input$resolution_PNG_doublet)
+  
+  # =======================================================. Finding marker genes
+  output$rhapsodymarkergenes <- renderPlotly({
+    # use function to get marker genes
+    subset_demo1_DGEs <- func_get_marker_genes(subset_demo_seurat1(),
+                                               p_adj_cutoff = 0.05,
+                                               log2FC_cutoff = 1,
+                                               view_top_X_genes = 5) 
+    
+    # visualise top genes on dotplot
+    p_cell_4 <- DotPlot(subset_demo_seurat1(), 
+                         features = subset_demo1_DGEs$top_cell_gene, 
+                         group.by = "cell_type") + 
+      coord_flip() +
+      RotatedAxis() +
+      ggtitle("Marker Genes plot")
+    vals$markergenes <- p_cell_4
+  })
+  # downloading Marker Genes plot PNG -----
+  output$downloadPlotPNG_markergenes <- func_save_png(titlepng = "Marker_Genes_plot_", img = vals$markergenes, width = input$width_png_markergenes, 
+                                                  height = input$height_png_markergenes, res = input$resolution_PNG_markergenes)
+  
+  # =======================================================. Pseudotime Analysis
+  
   
   ## =======================================================================================. End Server =========================================================================================================#
   # This are for the server close
