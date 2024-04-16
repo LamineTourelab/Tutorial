@@ -1521,20 +1521,23 @@ server <- shinyServer(function(input, output, session)
                                                   height = input$height_png_markergenes, res = input$resolution_PNG_markergenes)
   
   # ============================================================================. Pseudotime Analysis
-  lineages <- reactive({
+  subset_demo_slingshot_1 <- reactive({
     # use function to get results
     subset_demo_slingshot_1 <- func_slingshot(subset_demo_seurat1())
-    pt_lineages <- slingshot::slingPseudotime(subset_demo_slingshot_1)
-    
-    # add Slingshot results to the input Seurat object
-    lineages <- sapply(slingLineages(colData(subset_demo_slingshot_1)$slingshot), 
-                       paste, 
-                       collapse = " -> ")
   })
+  # ++++++++++++++++++++++ Pseudotime
   output$rhapsodypseudotimelineage <- renderPlot({
    
     subset_demo_seurat_1 <- subset_demo_seurat1()
-    subset_demo_seurat_1@meta.data[lineages()] <- pt_lineages
+    
+    pt_lineages <- slingshot::slingPseudotime(subset_demo_slingshot_1())
+    
+    # add Slingshot results to the input Seurat object
+    lineages <- sapply(slingLineages(colData(subset_demo_slingshot_1())$slingshot), 
+                       paste, 
+                       collapse = " -> ")
+    
+    subset_demo_seurat_1@meta.data[lineages] <- pt_lineages
     # visualization
     
     # display every lineage pseudotime
@@ -1561,7 +1564,19 @@ server <- shinyServer(function(input, output, session)
   
   output$rhapsodypseudotimesampletag <- renderPlot({
     subset_demo_seurat_1 <- subset_demo_seurat1()
-    subset_demo_seurat_1@meta.data[lineages()] <- pt_lineages
+    
+    pt_lineages <- slingshot::slingPseudotime(subset_demo_slingshot_1())
+    
+    # add Slingshot results to the input Seurat object
+    lineages <- sapply(slingLineages(colData(subset_demo_slingshot_1())$slingshot), 
+                       paste, 
+                       collapse = " -> ")
+    
+    subset_demo_seurat_1@meta.data[lineages] <- pt_lineages
+    
+    # display every lineage pseudotime
+    name_lineage <- colnames(subset_demo_seurat_1@meta.data)[grepl("->",
+                                                                   colnames(subset_demo_seurat_1@meta.data))]
     
     p_ss_celltype <- list()
     
