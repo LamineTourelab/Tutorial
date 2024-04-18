@@ -522,11 +522,12 @@ dashbody <- dashboardBody(
                            p(style="text-align: justify;","The uploading data should be in the format :ID, logFC, Pvalue."),
                            fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
                                      accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                           actionButton('diffsubmit', strong('Submit Enrichment'))
                            # Placeholder for input selection
-                           fluidRow(
-                             column(6, selectInput(inputId='Vartoplotdiff',label = 'Waiting for data plot',choices = NULL )),
-                             column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
-                           )
+                           # fluidRow(
+                           #   column(6, selectInput(inputId='Vartoplotdiff',label = 'Waiting for data plot',choices = NULL )),
+                           #   column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
+                           # )
               ),
               mainPanel( width = 10,
                          tabsetPanel(
@@ -549,7 +550,7 @@ dashbody <- dashboardBody(
                                DT::dataTableOutput(outputId = 'summarytablecount')
                       ),
                       tabPanel(title='Gene Set Enrichment',
-                               
+                               plotlyOutput(outputId = 'diffenrichplot',height = "600px")
                       )
               ) #tabsetPanel
               ) #mainPanel
@@ -1038,7 +1039,7 @@ server <- shinyServer(function(input, output, session)
   output$summarytablecount <- DT::renderDataTable({
     dat <- data.frame(Diffdata())
     dat <- dat %>% dplyr::count(Direction)
-    DT::datatable(dat, filter = 'bottom', options = list(scrollX = TRUE))
+    DT::datatable(dat, options = list(scrollX = TRUE))
   })
   ## =========================================================================.  Enrichment.  =============================================================================== #
   ##### Enrichment
