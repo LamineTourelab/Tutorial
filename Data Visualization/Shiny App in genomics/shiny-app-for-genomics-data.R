@@ -1032,9 +1032,10 @@ server <- shinyServer(function(input, output, session)
     names(SYMBOL_list) <- "list"
     
     dat$GeneCards <- paste('<a href=https://www.genecards.org/cgi-bin/carddisp.pl?gene=',dat$ID,' target="_blank" class="btn btn-link"','>',dat$ID,'</a>',sep="")
-    dat$Protein_atlas <- paste('<a href=https://www.proteinatlas.org/',dat$protein_atlas,' target="_blank" class="btn btn-link"','>',dat$protein_atlas,'</a>',sep="")
-    dat$Human_Uniprot <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$UniProt_human,' target="_blank" class="btn btn-link"','>',dat$UniProt_human,"</a>", sep="")
-    dat$UniProt <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$UniProt_ID,' target="_blank" class="btn btn-link"','>',dat$UniProt_ID,'</a>',sep="")
+    dat$Protein_atlas <- paste('<a href=https://www.proteinatlas.org/',dat$dat$ID,' target="_blank" class="btn btn-link"','>',dat$dat$ID,'</a>',sep="")
+    dat$Human_Uniprot <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$dat$ID,' target="_blank" class="btn btn-link"','>',dat$dat$ID,"</a>", sep="")
+    dat$UniProt <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$dat$ID,' target="_blank" class="btn btn-link"','>',dat$dat$ID,'</a>',sep="")
+    dat <- dat[,!names(dat) %in% c("protein_atlas","UniProt_ID","UniProt_human","Gene.Name","chrom","Biotype")]
     
     dat <- DT::datatable(dat, escape = FALSE, filter = 'top', options = list(scrollX = TRUE)) %>%
       formatStyle('logFC', 
