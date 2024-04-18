@@ -35,6 +35,7 @@ library(colorRamps)
 library(CellChat) #remotes::install_github('sqjin/CellChat')
 source("/Users/lamine/Documents/shinydashboard/INEM/Rhapsody_funs.R")
 source("/Users/lamine/Documents/shinydashboard/INEM/Util.R")
+species <- c("BOVIN","CHICK","ECOLI","HORSE","HUMAN","MAIZE","MOUSE","PEA", "PIG","RABIT","RAT","SHEEP","SOYBN","TOBAC","WHEAT","YEAST","Other")
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -522,6 +523,8 @@ dashbody <- dashboardBody(
                            p(style="text-align: justify;","The uploading data should be in the format :ID, logFC, Pvalue."),
                            fileInput(inputId = 'filediff', 'ID, logFC, Pvalue',
                                      accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+                           hr(style="border-color: blue;"),
+                           selectInput("diffenrich", "Choose a database:", choices = dbs$libraryName, selected = 'GO_Biological_Process_2023'),
                            actionButton('diffsubmit', strong('Submit Enrichment'))
                            # Placeholder for input selection
                            # fluidRow(
@@ -544,6 +547,7 @@ dashbody <- dashboardBody(
                       ),
                       tabPanel(title='Summary Table',
                                #Placeholder for plot
+                               selectInput("species", label = "Select relevant species",species,selected = "HUMAN"),
                                h2("Data table:"),
                                div(DT::dataTableOutput(outputId = 'summarytable')),
                                h2("The summary count table:"),
@@ -1024,6 +1028,14 @@ server <- shinyServer(function(input, output, session)
   #======
   output$summarytable <- DT::renderDataTable({
     dat <- data.frame(Diffdata())
+    SYMBOL_list <- as.data.frame(paste(dat$ID,"_",input$species,sep=""))
+    names(SYMBOL_list) <- "list"
+    
+    dat$GeneCards <- paste('<a href=https://www.genecards.org/cgi-bin/carddisp.pl?gene=',dat$ID,' target="_blank" class="btn btn-link"','>',dat$ID,'</a>',sep="")
+    dat$Protein_atlas <- paste('<a href=https://www.proteinatlas.org/',dat$protein_atlas,' target="_blank" class="btn btn-link"','>',dat$protein_atlas,'</a>',sep="")
+    dat$Human_Uniprot <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$UniProt_human,' target="_blank" class="btn btn-link"','>',dat$UniProt_human,"</a>", sep="")
+    dat$UniProt <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$UniProt_ID,' target="_blank" class="btn btn-link"','>',dat$UniProt_ID,'</a>',sep="")
+    
     dat <- DT::datatable(dat, escape = FALSE, filter = 'top', options = list(scrollX = TRUE)) %>%
       formatStyle('logFC', 
                   backgroundColor = styleInterval(c(-0.6,0.6), c('#abd7eb', '#D2D2CF',"#ff6961")),
@@ -1040,6 +1052,24 @@ server <- shinyServer(function(input, output, session)
     dat <- data.frame(Diffdata())
     dat <- dat %>% dplyr::count(Direction)
     DT::datatable(dat, options = list(scrollX = TRUE))
+  })
+  # Réagir lorsque l'utilisateur clique sur le bouton Soumettre
+  observeEvent(input$diffsubmit, {
+    dat <- data.frame(Diffdata())
+    Geneup <- dat %>% 
+      dplyr::arrange(desc(logFC)) %>%
+      dplyr::slice(1:10)
+    gene_list <- Geneup$gene_name
+    # Exécuter l'analyse d'enrichissement de gènes avec enrichR
+    enrichment_result <- enrichr(gene_list, dbs$libraryName)
+    
+    output$diffenrichplot <- renderPlotly({
+      
+      enrichment =  plotEnrich(enrichment_result[[input$diffenrich]], showTerms = 20, numChar = 50,
+                               y = "Count", orderBy = "P.value", title = "Enrichment analysis by Enrichr",
+                               xlab = "Enriched terms")
+    })
+    
   })
   ## =========================================================================.  Enrichment.  =============================================================================== #
   ##### Enrichment
