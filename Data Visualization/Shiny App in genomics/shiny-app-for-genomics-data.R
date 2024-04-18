@@ -1038,7 +1038,7 @@ server <- shinyServer(function(input, output, session)
   output$summarytablecount <- DT::renderDataTable({
     dat <- data.frame(Diffdata())
     dat <- dat %>% dplyr::count(Direction)
-    DT::datatable(dat, options = list(scrollX = TRUE))
+    DT::datatable(dat, filter = 'bottom', options = list(scrollX = TRUE))
   })
   ## =========================================================================.  Enrichment.  =============================================================================== #
   ##### Enrichment
