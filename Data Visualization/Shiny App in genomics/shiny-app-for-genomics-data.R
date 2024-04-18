@@ -7,6 +7,7 @@ library(plotly)
 library(gridExtra)
 library(tidyr)
 library(tidyverse)
+library(DT)
 library(dplyr)
 library(factoextra) # for pca visualization 
 library(ggpubr)
@@ -543,7 +544,7 @@ dashbody <- dashboardBody(
                       tabPanel(title='Summary Table',
                                #Placeholder for plot
                                h2("Data table:"),
-                               DT::dataTableOutput(outputId = 'summarytable'),
+                               div(DT::dataTableOutput(outputId = 'summarytable')),
                                h2("The summary count table:"),
                                DT::dataTableOutput(outputId = 'summarytablecount')
                       ),
@@ -658,7 +659,16 @@ dashbody <- dashboardBody(
                        p(style="text-align: justify;","The uploading data should be the .RDS output results of Seven Bridges platform."),
                        fileInput(inputId = 'filerhapsody', 'Seurat RDS file from SevenBridges',
                                  accept=c('rds', '.rds')),
+                       hr(style="border-color: blue;"),
+                       # Choose number of bins
+                       p(style="text-align: justify;","Set the filter parameters."),
+                       numericInput(inputId='sliderrhapsodymtgene',
+                                   label = 'Choose a MT Gene % < than ', value = 50, min = 5, max = 200),
                        
+                       numericInput(inputId='sliderrhapsodyfeatures',
+                                   label = 'Choose a number for minimum features > than', value = 200, min = 100, max = 5000),
+                       hr(style="border-color: blue;"),
+                       actionButton("submitrhapsody", strong("Submit Analysis")),
           ),
           mainPanel( width = 9,
                      tabsetPanel(
@@ -1013,8 +1023,16 @@ server <- shinyServer(function(input, output, session)
   #======
   output$summarytable <- DT::renderDataTable({
     dat <- data.frame(Diffdata())
-    dat <- DT::datatable(dat, options = list(scrollX = TRUE))
-    dat
+    dat <- DT::datatable(dat, escape = FALSE, filter = 'top', options = list(scrollX = TRUE)) %>%
+      formatStyle('logFC', 
+                  backgroundColor = styleInterval(c(-0.6,0.6), c('#abd7eb', '#D2D2CF',"#ff6961")),
+                  color = styleInterval(c(-0.6,0.6), c('#181A18', '#181A18', '#181A18')),
+                  fontWeight = styleInterval(c(-0.6,0.6), c('bold', 'normal','bold'))) %>% 
+      formatStyle('Pvalue',
+                  backgroundColor = styleInterval(c(0.05), c('#181A18', '#D2D2CF')),
+                  color = styleInterval(c(0.05), c('#d99058',  '#181A18')),
+                  fontWeight = styleInterval(0.05, c('bold', 'normal'))
+      )
   })
   
   output$summarytablecount <- DT::renderDataTable({
@@ -1022,7 +1040,7 @@ server <- shinyServer(function(input, output, session)
     dat <- dat %>% dplyr::count(Direction)
     DT::datatable(dat, options = list(scrollX = TRUE))
   })
-  
+  ## =========================================================================.  Enrichment.  =============================================================================== #
   ##### Enrichment
   # Réagir lorsque l'utilisateur clique sur le bouton Soumettre
   observeEvent(input$submit, {
@@ -1036,11 +1054,6 @@ server <- shinyServer(function(input, output, session)
     output$results <- renderPrint({
       head(enrichment_result[[input$databaseenrich]])
     })
-    
-    output$enrichrdatabase <- DT::renderDataTable({
-      DT::datatable(dbs, rownames = dbs$libraryName, options = list(scrollX = TRUE))
-    },
-    server = TRUE)
     
     output$thetableenrich <- DT::renderDataTable({
       DT::datatable(enrichment_result[[input$databaseenrich]], rownames = TRUE, options = list(scrollX = TRUE))
@@ -1060,6 +1073,10 @@ server <- shinyServer(function(input, output, session)
                                                     height = input$height_png_enrichr, res = input$resolution_PNG_enrichr)
   })
   
+  output$enrichrdatabase <- DT::renderDataTable({
+    DT::datatable(dbs, rownames = dbs$libraryName, options = list(scrollX = TRUE))
+  },
+  server = TRUE)
   ## =========================================================================.  Statistical Panel results.  =============================================================================== #
   
   # ===========================================================PCA
@@ -1335,7 +1352,9 @@ server <- shinyServer(function(input, output, session)
     dataframe = readRDS(input$filerhapsody$datapath)
     
   })
-  
+  # Réagir lorsque l'utilisateur clique sur le bouton Soumettre analyse
+  observeEvent(input$submitrhapsody, {
+    
   demo_seurat <- reactive({
     demo_seurat <- func_get_AbSeq(demo_seurat = Datastatrhapsody())
     demo_seurat$smk <- demo_seurat$Sample_Name
@@ -1346,8 +1365,8 @@ server <- shinyServer(function(input, output, session)
   # cells with low nFeature_RNA
   subset_demo_seurat <- reactive({
     subset_demo_seurat <- subset(demo_seurat(), 
-                                 subset = percent.mt < 50 & 
-                                   nFeature_RNA > 200, 
+                                 subset = percent.mt < input$sliderrhapsodymtgene & 
+                                   nFeature_RNA > input$sliderrhapsodyfeatures, 
                                  invert = F)
     subset_demo_seurat <- func_quick_process(subset_demo_seurat)
     subset_demo_seurat <- func_get_annotation(subset_demo_seurat)
@@ -1602,6 +1621,8 @@ server <- shinyServer(function(input, output, session)
     wrap_plots(p_ss_celltype, 
                ncol = 2)
   })
+  
+  }) # submitrhapsody 
   ## =======================================================================================. End Server =========================================================================================================#
   # This are for the server close
 })
