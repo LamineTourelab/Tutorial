@@ -1024,20 +1024,44 @@ server <- shinyServer(function(input, output, session)
   # downloading Volcano plot PNG -----
   output$downloadPlotPNG_volcano <- func_save_png(titlepng = "Volcanoplot_", img = vals$volcano_gplot, width = input$width_png_volcano, 
                                                  height = input$height_png_volcano, res = input$resolution_PNG_volcano)
+  # Filter data and do ID conversion
+  type.of.data <- function () {
+    
+    dat <- Diffdata();
+    
+    
+    dat <- dat[, c("ID","logFC","Pvalue", "Direction")]
+    
+    ID.conversion <- read.csv(system.file("extdata","uniprot.d.anno.210905.csv",package = "ggVolcanoR"))
+    dat <- as.data.frame(dat)
+    dat <- dat[order(dat$Pvalue),]
+    rownames(dat) <- 1:dim(dat)[1]
+    names(ID.conversion) <- c("Ensembl","Uniprot_human","UNIPROT","Chrom","Gene.Name","Biotype")
+    
+    dat.top <- merge(dat,ID.conversion,by.x="ID",by.y="Gene.Name", all.x=T)
+    dat.top[is.na(dat.top)] <- "No_ID"
+    names(dat.top) <- c("ID","logFC","Pvalue", "Direction","protein_atlas","UniProt_ID","UniProt_human","chrom","Biotype")
+    type.of.data <- dat.top
+    
+  }
   
   #======
   output$summarytable <- DT::renderDataTable({
-    dat <- data.frame(Diffdata())
-    SYMBOL_list <- as.data.frame(paste(dat$ID,"_",input$species,sep=""))
-    names(SYMBOL_list) <- "list"
+    top <- type.of.data()
+    # dat <- data.frame(Diffdata())
+    # SYMBOL_list <- as.data.frame(paste(dat$ID,"_",input$species,sep=""))
+    # names(SYMBOL_list) <- "list"
     
-    dat$GeneCards <- paste('<a href=https://www.genecards.org/cgi-bin/carddisp.pl?gene=',dat$ID,' target="_blank" class="btn btn-link"','>',dat$ID,'</a>',sep="")
-    dat$Protein_atlas <- paste('<a href=https://www.proteinatlas.org/',dat$dat$ID,' target="_blank" class="btn btn-link"','>',dat$dat$ID,'</a>',sep="")
-    dat$Human_Uniprot <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$dat$ID,' target="_blank" class="btn btn-link"','>',dat$dat$ID,"</a>", sep="")
-    dat$UniProt <- paste('<a href=https://www.uniprot.org/uniprot/?query=',dat$dat$ID,' target="_blank" class="btn btn-link"','>',dat$dat$ID,'</a>',sep="")
-    dat <- dat[,!names(dat) %in% c("protein_atlas","UniProt_ID","UniProt_human","Gene.Name","chrom","Biotype")]
+    top$HGNC <- paste('<a href=https://www.genenames.org/tools/search/#!/?query=',top$ID,' target="_blank" class="btn btn-link"','>',top$ID,'</a>',sep="")
+    top$GeneCards <- paste('<a href=https://www.genecards.org/cgi-bin/carddisp.pl?gene=',top$ID,' target="_blank" class="btn btn-link"','>',top$ID,'</a>',sep="")
+    top$Protein_atlas <- paste('<a href=https://www.proteinatlas.org/',top$protein_atlas,' target="_blank" class="btn btn-link"','>',top$protein_atlas,'</a>',sep="")
+   # top$Human_Uniprot <- paste('<a href=https://www.uniprot.org/uniprot/?query=',top$UniProt_human,' target="_blank" class="btn btn-link"','>',top$UniProt_human,"</a>", sep="")
+    top$UniProt <- paste('<a href=https://www.uniprot.org/uniprot/?query=',top$UniProt_ID,' target="_blank" class="btn btn-link"','>',top$UniProt_ID,'</a>',sep="")
+    top$Ensembl <- paste('<a href=https://www.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=',top$protein_atlas,' target="_blank" class="btn btn-link"','>',top$protein_atlas,'</a>',sep="")
+    top <- top[,!names(top) %in% c("protein_atlas","UniProt_ID","UniProt_human","Gene.Name")]
+    top <- top[order(top$Pvalue),]
     
-    dat <- DT::datatable(dat, escape = FALSE, filter = 'top', options = list(scrollX = TRUE)) %>%
+    top <- DT::datatable(top, escape = FALSE, filter = 'top', options = list(scrollX = TRUE), rownames = FALSE) %>%
       formatStyle('logFC', 
                   backgroundColor = styleInterval(c(-0.6,0.6), c('#abd7eb', '#D2D2CF',"#ff6961")),
                   color = styleInterval(c(-0.6,0.6), c('#181A18', '#181A18', '#181A18')),
