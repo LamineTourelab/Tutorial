@@ -35,7 +35,6 @@ library(colorRamps)
 library(CellChat) #remotes::install_github('sqjin/CellChat')
 source("/Users/lamine/Documents/shinydashboard/INEM/Rhapsody_funs.R")
 source("/Users/lamine/Documents/shinydashboard/INEM/Util.R")
-species <- c("BOVIN","CHICK","ECOLI","HORSE","HUMAN","MAIZE","MOUSE","PEA", "PIG","RABIT","RAT","SHEEP","SOYBN","TOBAC","WHEAT","YEAST","Other")
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -535,7 +534,9 @@ dashbody <- dashboardBody(
               mainPanel( width = 10,
                          tabsetPanel(
                       tabPanel(title='Volcano plot',
+                               p(),
                                textOutput("number_of_points"),
+                               p(),
                                plotlyOutput(outputId = 'Volcanoplot',height = "600px"),
                                h4(strong("Exporting the Vocano plot")),
                                fluidRow(
@@ -545,11 +546,14 @@ dashbody <- dashboardBody(
                                  column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_volcano','Download PNG'))
                                )
                       ),
-                      tabPanel(title='Summary Table',
+                      tabPanel(title='Data Table with links',
                                #Placeholder for plot
-                               selectInput("species", label = "Select relevant species",species,selected = "HUMAN"),
-                               h2("Data table:"),
+                               #selectInput("species", label = "Select relevant species",species,selected = "HUMAN"),
+                               h2("Data table with database links:"),
                                div(DT::dataTableOutput(outputId = 'summarytable')),
+                               
+                      ),
+                      tabPanel(title='Summary count table',
                                h2("The summary count table:"),
                                DT::dataTableOutput(outputId = 'summarytablecount')
                       ),
@@ -981,7 +985,7 @@ server <- shinyServer(function(input, output, session)
   Diffdata <- reactive({
     Datadiff = data.frame(Datadiff())
     # add a column of NAs
-    Datadiff$Direction <- "NO"
+    Datadiff$Direction <- "NO_Signif"
     # if log2Foldchange > 0.6 and pvalue < 0.05, set as "UP" 
     Datadiff$Direction[Datadiff$logFC > 0.6 & Datadiff$Pvalue < 0.05] <- "UP"
     # if log2Foldchange < -0.6 and pvalue < 0.05, set as "DOWN"
@@ -990,7 +994,7 @@ server <- shinyServer(function(input, output, session)
     # Now write down the name of genes beside the points...
     # Create a new column "gene_name" to de, that will contain the name of genes differentially expressed (NA in case they are not)
     Datadiff$gene_name <- NA
-    Datadiff$gene_name[Datadiff$Direction != "NO"] <- Datadiff$ID[Datadiff$Direction != "NO"]
+    Datadiff$gene_name[Datadiff$Direction != "NO_Signif"] <- Datadiff$ID[Datadiff$Direction != "NO_Signif"]
     Diffdata <- Datadiff
   })
   
@@ -1000,7 +1004,7 @@ server <- shinyServer(function(input, output, session)
     dat$logP <- -log10(dat$Pvalue)
     total <- as.numeric(dim(dat)[1])
     totalDown <- as.numeric(dim(dat[dat$Direction=='DOWN',])[1])
-    totalNO <- as.numeric(dim(dat[dat$Direction=='NO',])[1])
+    totalNO <- as.numeric(dim(dat[dat$Direction=='NO_Signif',])[1])
     totalUP <- as.numeric(dim(dat[dat$Direction=='UP',])[1])
     
     cat('\n There are a total of ', total, ' where '  , totalDown, ' are dowregulated ', totalUP, ' are upregulated and ', totalNO, ' are none, ', 
@@ -1076,7 +1080,11 @@ server <- shinyServer(function(input, output, session)
   output$summarytablecount <- DT::renderDataTable({
     dat <- data.frame(Diffdata())
     dat <- dat %>% dplyr::count(Direction)
+    colnames(dat) <- c('Direction', 'Count')
+    dat[nrow(dat) +1,] = c('Total', sum(dat$Count))
+    
     DT::datatable(dat, options = list(scrollX = TRUE))
+    
   })
   # Réagir lorsque l'utilisateur clique sur le bouton Soumettre
   observeEvent(input$diffsubmit, {
