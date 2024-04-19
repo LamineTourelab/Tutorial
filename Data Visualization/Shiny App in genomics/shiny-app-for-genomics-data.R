@@ -1112,7 +1112,12 @@ server <- shinyServer(function(input, output, session)
     })
     
     output$thetableenrich <- DT::renderDataTable({
-      DT::datatable(enrichment_result[[input$databaseenrich]], rownames = TRUE, options = list(scrollX = TRUE))
+      DT::datatable(enrichment_result[[input$databaseenrich]], filter = 'top', rownames = TRUE, options = list(scrollX = TRUE)) %>%
+        formatStyle('P.value',
+                    backgroundColor = styleInterval(c(0.05), c('#181A18', '#D2D2CF')),
+                    color = styleInterval(c(0.05), c('#d99058',  '#181A18')),
+                    fontWeight = styleInterval(0.05, c('bold', 'normal'))
+        )
     },
     server = TRUE)
     
