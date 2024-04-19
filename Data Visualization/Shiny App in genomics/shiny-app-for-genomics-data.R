@@ -960,7 +960,7 @@ server <- shinyServer(function(input, output, session)
   
   #++++++++++++++++++++++++++++++++++++++++ Data table
   output$thetable <- DT::renderDataTable({
-    DT::datatable(Datagraph(), rownames = TRUE, options = list(scrollX = TRUE))
+    DT::datatable(Datagraph(), filter = 'top', rownames = TRUE, options = list(scrollX = TRUE))
   },
   server = TRUE)
   
@@ -1270,7 +1270,7 @@ server <- shinyServer(function(input, output, session)
   
   # Stats Data Table 
   output$thetablestats <- DT::renderDataTable({
-    DT::datatable(Datastats(), options = list(scrollX = TRUE))
+    DT::datatable(Datastats(), filter = 'top', options = list(scrollX = TRUE))
   },
   server = TRUE)
   #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Clustring
@@ -1396,7 +1396,7 @@ server <- shinyServer(function(input, output, session)
    
   #++++++++++++
   output$thetablestatsclust <- DT::renderDataTable({
-    DT::datatable(Datastatsclust(), options = list(scrollX = TRUE))
+    DT::datatable(Datastatsclust(), filter = 'top', options = list(scrollX = TRUE))
   },
   server = TRUE)
   ## =======================================================================================. IGV =========================================================================================================#
