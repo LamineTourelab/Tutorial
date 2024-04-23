@@ -33,8 +33,8 @@ library(SeuratWrappers) #remotes::install_github('satijalab/seurat-wrappers')
 library(slingshot) #BiocManager::install('slingshot')
 library(colorRamps)
 library(CellChat) #remotes::install_github('sqjin/CellChat')
-source("/Users/lamine/Documents/shinydashboard/INEM/Rhapsody_funs.R")
-source("/Users/lamine/Documents/shinydashboard/INEM/Util.R")
+source("Rhapsody_funs.R")
+source("Util.R")
 
 ## ==================================================================== Datasets ============================================================================================##
 data(breast.TCGA) # from the mixomics package.
@@ -1411,7 +1411,7 @@ server <- shinyServer(function(input, output, session)
   Datastatrhapsody <- reactive({switch(input$datasetrhapsody,"test-data" = test.data.rhapsody(),"own" = own.data.rhapsody())})
   
   test.data.rhapsody <- reactive ({ 
-    readRDS("/Users/lamine/INEM/Projets/Peter/Test/BD-Demo-7Bridges-WTA_AbSeq_SMK/Protocol-rerun_Seurat.rds")
+    readRDS("Protocol-rerun_Seurat.rds")
   })
   
   own.data.rhapsody <- reactive({
