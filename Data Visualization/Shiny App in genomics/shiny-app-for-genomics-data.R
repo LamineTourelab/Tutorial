@@ -1649,6 +1649,10 @@ server <- shinyServer(function(input, output, session)
     wrap_plots(p_ss_1, 
                ncol = 1)
   })
+  # downloading Pseudotime lineage plot PNG -----
+  output$downloadPlotPNG_pseudotimelineage <- func_save_png(titlepng = "Pseudotime_lineage_plot_", img = vals$markergenes, width = input$width_png_markergenes, 
+                                                      height = input$height_png_markergenes, res = input$resolution_PNG_markergenes)
+  
   
   output$rhapsodypseudotimesampletag <- renderPlot({
     subset_demo_seurat_1 <- subset_demo_seurat1()
