@@ -1646,12 +1646,13 @@ server <- shinyServer(function(input, output, session)
         scale_color_viridis_c() 
     }
     
-    wrap_plots(p_ss_1, 
+    pseudotimelineage <- wrap_plots(p_ss_1, 
                ncol = 1)
+    vals$pseudotimelineage <- pseudotimelineage
   })
   # downloading Pseudotime lineage plot PNG -----
-  output$downloadPlotPNG_pseudotimelineage <- func_save_png(titlepng = "Pseudotime_lineage_plot_", img = vals$markergenes, width = input$width_png_markergenes, 
-                                                      height = input$height_png_markergenes, res = input$resolution_PNG_markergenes)
+  output$downloadPlotPNG_pseudotimelineage <- func_save_png(titlepng = "Pseudotime_lineage_plot_", img = vals$pseudotimelineage, width = input$width_png_pseudotimelineage, 
+                                                      height = input$height_png_pseudotimelineage, res = input$resolution_PNG_pseudotimelineage)
   
   
   output$rhapsodypseudotimesampletag <- renderPlot({
@@ -1691,9 +1692,15 @@ server <- shinyServer(function(input, output, session)
         facet_grid(. ~ smk )
     }
     
-    wrap_plots(p_ss_celltype, 
+    pseudotimesampletag <-  wrap_plots(p_ss_celltype, 
                ncol = 2)
+    
+    vals$pseudotimesampletag <- pseudotimesampletag
   })
+  
+  # downloading Pseudotime Sample tag plot PNG -----
+  output$downloadPlotPNG_pseudotimesampletag <- func_save_png(titlepng = "Pseudotime_lineage_plot_", img = vals$pseudotimesampletag, width = input$width_png_pseudotimesampletag, 
+                                                            height = input$height_png_pseudotimesampletag, res = input$resolution_PNG_pseudotimesampletag)
   
   }) # submitrhapsody 
   ## =======================================================================================. End Server =========================================================================================================#
