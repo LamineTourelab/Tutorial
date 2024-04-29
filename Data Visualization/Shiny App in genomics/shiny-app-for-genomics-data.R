@@ -512,7 +512,7 @@ dashbody <- dashboardBody(
     tabItem(tabName = 'diffexp',
             fluidPage(
               sidebarLayout(
-              sidebarPanel(width = 2, height = 1170,
+              sidebarPanel(width = 3, height = 1170,
                            collapsible = TRUE,
                            title = 'Side bar',
                            status = 'primary', solidHeader = TRUE,
@@ -531,7 +531,7 @@ dashbody <- dashboardBody(
                            #   column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
                            # )
               ),
-              mainPanel( width = 10,
+              mainPanel( width = 9,
                          tabsetPanel(
                       tabPanel(title='Volcano plot',
                                p(),
@@ -558,7 +558,13 @@ dashbody <- dashboardBody(
                                DT::dataTableOutput(outputId = 'summarytablecount')
                       ),
                       tabPanel(title='Gene Set Enrichment',
-                               plotlyOutput(outputId = 'diffenrichplot',height = "600px")
+                               h4(strong("Top 10 gene based on the Pvalue")),
+                               DT::dataTableOutput(outputId = 'Top10gene'),
+                               p(),
+                               h4(strong("Enrichment plot on Top 10 gene based on the Pvalue")),
+                               p(style="text-align: justify;", "If you want to get the enrichment plot based on these top 10 gene, click on the", strong("Submit Enrichment"), "buttom."),
+                               plotlyOutput(outputId = 'diffenrichplot',height = "600px"),
+                               
                       )
               ) #tabsetPanel
               ) #mainPanel
@@ -1081,18 +1087,34 @@ server <- shinyServer(function(input, output, session)
     dat <- data.frame(Diffdata())
     dat <- dat %>% dplyr::count(Direction)
     colnames(dat) <- c('Direction', 'Count')
-    dat[nrow(dat) +1,] = c('Total', sum(dat$Count))
+    # Add Percentage column
+    dat <- dat %>% 
+      dplyr::mutate(Percentage=round(Count/sum(Count)*100,2))
+    # Add total row 
+    dat[nrow(dat) +1,] = c('Total', sum(dat$Count), sum(dat$Percentage))
+    # Add Precentage sign
+    dat <- dat %>% 
+      dplyr::mutate(Percentage=paste0(Percentage, '%'))
     
     DT::datatable(dat, options = list(scrollX = TRUE))
     
   })
+  
+  # Select 10 top gene based on their Pvalue
+  Top10gene <- reactive({
+    Top10gene <- data.frame(Diffdata())
+    Top10gene <- Top10gene %>% 
+      dplyr::arrange(Pvalue) %>%
+      dplyr::slice(1:10)
+  })
+  
+  output$Top10gene <- DT::renderDataTable({
+    Top10gene()
+  })
   # Réagir lorsque l'utilisateur clique sur le bouton Soumettre
   observeEvent(input$diffsubmit, {
-    dat <- data.frame(Diffdata())
-    Geneup <- dat %>% 
-      dplyr::arrange(desc(logFC)) %>%
-      dplyr::slice(1:10)
-    gene_list <- Geneup$gene_name
+    Top10gene <- data.frame(Top10gene())
+    gene_list <- Top10gene$ID
     # Exécuter l'analyse d'enrichissement de gènes avec enrichR
     enrichment_result <- enrichr(gene_list, dbs$libraryName)
     
