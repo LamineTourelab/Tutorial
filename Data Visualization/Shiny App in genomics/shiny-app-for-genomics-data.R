@@ -808,9 +808,9 @@ dashbody <- dashboardBody(
                                              column(3,style = "margin-top: 25px;",downloadButton('downloadPlotPNG_pseudotimesampletag','Download PNG'))
                                            )
                                   ),
-                                  # tabPanel(title = 'Cell Communication',
-                                  #          plotlyOutput(outputId='rhapsodycellcommunication',height = "600px"),
-                                  # )
+                                  tabPanel(title = 'Cell Communication',
+                                           plotlyOutput(outputId='rhapsodycellcommunication',height = "600px"),
+                                  )
                        ) # navbarMenu
                      ) #tabsetPanel 
           ) #mainPanel
