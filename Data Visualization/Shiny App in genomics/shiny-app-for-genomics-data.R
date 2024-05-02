@@ -1353,7 +1353,9 @@ server <- shinyServer(function(input, output, session)
                                                   height = input$height_png_heatmap, res = input$resolution_PNG_heatmap)
     
   output$missmap <- renderPlot({
-    missmap(Datastatsclust())
+    d <- dist(Datastatsclust())
+    hcl <- hclust(d)
+    plot(hcl)
   })
   #++++++++++++++++++++++++++++++++++++++++++++++++++ Kmeans
   
