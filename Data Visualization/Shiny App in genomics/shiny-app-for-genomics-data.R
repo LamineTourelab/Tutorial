@@ -525,11 +525,6 @@ dashbody <- dashboardBody(
                            hr(style="border-color: blue;"),
                            selectInput("diffenrich", "Choose a database:", choices = dbs$libraryName, selected = 'GO_Biological_Process_2023'),
                            actionButton('diffsubmit', strong('Submit Enrichment'))
-                           # Placeholder for input selection
-                           # fluidRow(
-                           #   column(6, selectInput(inputId='Vartoplotdiff',label = 'Waiting for data plot',choices = NULL )),
-                           #   column(6, checkboxGroupInput(inputId='Vardatabasediff',label = 'Choose database',choices = NULL ))
-                           # )
               ),
               mainPanel( width = 9,
                          tabsetPanel(
