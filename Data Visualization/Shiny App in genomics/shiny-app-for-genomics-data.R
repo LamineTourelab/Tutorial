@@ -548,7 +548,6 @@ dashbody <- dashboardBody(
                       ),
                       tabPanel(title='Data Table with links',
                                #Placeholder for plot
-                               #selectInput("species", label = "Select relevant species",species,selected = "HUMAN"),
                                h2("Data table with database links:"),
                                div(DT::dataTableOutput(outputId = 'summarytable')),
                                
